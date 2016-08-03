@@ -27,18 +27,26 @@ def enable_event_loop():
     global thread
     if thread is None:
         s = Semaphore(0)
-        thread = Thread(target=event_loop_target, args=(s,))
+        thread = Thread(target=event_loop_target, args=(s,), daemon=True)
+        # print(1)
         thread.start()
+        # print(2)
         s.acquire()
+        # print(4)
 
 
 def event_loop_target(s):
+    # print(2)
     global loop
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
+    # print(3)
     s.release()
+    # print(4)
     loop.run_forever()
+    # print(999999)
 
 
 if __name__ == "__main__":
-    enable_event_loop()
+    loop = get()
+

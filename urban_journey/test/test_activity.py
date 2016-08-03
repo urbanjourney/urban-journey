@@ -1,7 +1,7 @@
 """These tests are here to test the functions and classes in 'activity.py'"""
 
-from sub_pub.base.activity import activity
-from sub_pub.base.trigger import Trigger
+from urban_journey.base.activity import activity
+from urban_journey.base.trigger import Trigger
 
 import unittest
 
@@ -21,7 +21,7 @@ class TestActivity(unittest.TestCase):
         def bar():
             global bas
             bas = "Triggered"
-        foo()
+        foo.trigger()
         self.assertEqual(bas, "Triggered")
 
     def test_direct_call(self):
@@ -49,7 +49,7 @@ class TestActivity(unittest.TestCase):
             global bas
             bas = p + k
 
-        foo()
+        foo.trigger()
         self.assertEqual(bas, "argkwarg")
 
     def test_multiple_activity(self):
@@ -68,7 +68,7 @@ class TestActivity(unittest.TestCase):
             global bas2
             bas2 = "bar2"
 
-        foo()
+        foo.trigger()
         self.assertEqual(bas, "bar1")
         self.assertEqual(bas2, "bar2")
 
