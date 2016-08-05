@@ -2,76 +2,89 @@
 
 from urban_journey.base.activity import activity
 from urban_journey.base.trigger import Trigger
+from urban_journey import event_loop
 
 import unittest
+import asyncio
+from threading import Semaphore
+
 
 # Some global variables. Ugly but it solves the problem of passing information from an activity to a test.
-bas = None
 bas2 = None
 
 
 class TestActivity(unittest.TestCase):
+    def setUp(self):
+        self.loop = event_loop.get()
+
     def test_simple_trigger(self):
         """Creates one trigger and an activity and triggers it."""
-        global bas
         foo = Trigger()
-        bas = None
+        bas = [None]
+        s = Semaphore(0)
 
         @activity(foo)
-        def bar():
-            global bas
-            bas = "Triggered"
-        foo.trigger()
-        self.assertEqual(bas, "Triggered")
+        async def bar():
+            bas[0] = "Triggered"
+            s.release()
+
+        asyncio.run_coroutine_threadsafe(foo.trigger(), self.loop)
+        s.acquire()
+
+        self.assertEqual(bas[0], "Triggered")
 
     def test_direct_call(self):
         """Calls the activity directly."""
         """Creates one trigger and an activity and triggers it."""
-        global bas
         foo = Trigger()
-        bas = None
+        bas = [None]
+        s = Semaphore(0)
 
         @activity(foo)
-        def bar():
-            global bas
-            bas = "Triggered"
-        bar()
-        self.assertEqual(bas, "Triggered")
+        async def bar():
+            bas[0] = "Triggered"
+            s.release()
+
+        asyncio.run_coroutine_threadsafe(bar(), self.loop)
+        s.acquire()
+
+        self.assertEqual(bas[0], "Triggered")
 
     def test_parameters(self):
         """Triggers an activity and passes extra parameters."""
-        global bas
-        bas = None
+        bas = [None]
         foo = Trigger()
+
+        s = Semaphore(0)
 
         @activity(foo, "arg", k="kwarg")
-        def bar(p, k):
-            global bas
-            bas = p + k
+        async def bar(p, k):
+            bas[0] = p + k
+            s.release()
 
-        foo.trigger()
-        self.assertEqual(bas, "argkwarg")
+        asyncio.run_coroutine_threadsafe(foo.trigger(), self.loop)
+        s.acquire()
+
+        self.assertEqual(bas[0], "argkwarg")
 
     def test_multiple_activity(self):
-        global bas, bas2
-        bas = None
-        bas2 = None
+        bas = [None, None]
         foo = Trigger()
 
-        @activity(foo)
-        def bar1():
-            global bas
-            bas = "bar1"
+        s = Semaphore(0)
 
         @activity(foo)
-        def bar2():
-            global bas2
-            bas2 = "bar2"
+        async def bar1():
+            bas[0] = "bar1"
 
-        foo.trigger()
-        self.assertEqual(bas, "bar1")
-        self.assertEqual(bas2, "bar2")
+        @activity(foo)
+        async def bar2():
+            bas[1] = "bar2"
+            await asyncio.sleep(0.01)
+            s.release()
 
+        asyncio.run_coroutine_threadsafe(foo.trigger(), self.loop)
+        s.acquire()
 
-if __name__ == '__main__':
-    unittest.main()
+        self.assertEqual(bas[0], "bar1")
+        self.assertEqual(bas[1], "bar2")

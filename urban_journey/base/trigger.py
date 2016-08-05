@@ -1,7 +1,7 @@
 """
 Base classes for triggers.
-WARNING: I don't know exactly how to explain how these work. It's kinda simple when understood. Before continuing make
-sure you know what a descriptor is in python. Then continue on reading the rest of the documentation here.
+WARNING: I don't know exactly how to explain how these work.Before continuing make sure you know what a descriptor is \
+in python. Then continue on reading the rest of the documentation here.
 """
 from urban_journey.common.cached import cached
 
@@ -9,16 +9,17 @@ from urban_journey.common.cached import cached
 class Trigger:
     """Base class for all triggers"""
     def __init__(self):
+        super().__init__()
         self._activities = []
 
     def add_activity(self, activity):
         """Subscribe an activity to this trigger."""
         self._activities.append(activity)
 
-    def trigger(self, *args, **kwargs):
+    async def trigger(self, *args, **kwargs):
         """Trigger all activities subscribed to this trigger."""
         for activity in self._activities:
-            activity.trigger(*args, **kwargs)
+            await activity.trigger(*args, **kwargs)
 
 
 class DescriptorClassTrigger(Trigger):
@@ -89,13 +90,13 @@ class DescriptorClassTrigger(Trigger):
                     return super().__repr__()
                 return '<%s.%s object at %s>' % (
                     self.__class__.__module__,
-                    '%s<%s>' % (self.__class__.__name__, base_name),
+                    '%s(%s)' % (self.__class__.__name__, base_name),
                     hex(id(self))
                 )
 
-            def trigger(self, *args, **kwargs):
+            async def trigger(self, *args, **kwargs):
                 for activity in self._activities:
-                    activity.trigger(self.__obj, *args, **kwargs)
+                    await activity.trigger(self.__obj, *args, **kwargs)
         return DescriptorInstanceTrigger
 
 if __name__ == "__main__":

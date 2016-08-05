@@ -24,20 +24,12 @@ class Clock(Trigger):
         self.running = True
         self.trigger_time = self.loop.time() + self.period
         # There isn't a thread safe option for call_at, so the first clock trigger will happen immediately after start()
-        self.loop.call_soon_threadsafe(self.start_callback)
+        asyncio.run_coroutine_threadsafe(self.timer_callback(), loop=self.loop)
 
     def stop(self):
         self.running = False
 
-    def start_callback(self):
-        if self.running:
-            self.loop.call_at(self.trigger_time, self.timer_callback)
-
-    def timer_callback(self):
-        if self.running:
-            self.trigger()
-            self.trigger_time += self.period
-            # If for some reason the execution time of the trigger is longer than the clock period then skip a trigger.
-            while self.loop.time() >= self.trigger_time:
-                self.trigger_time += self.period
-            self.loop.call_at(self.trigger_time, self.timer_callback)
+    async def timer_callback(self):
+        while self.running:
+            await asyncio.sleep(self.period)
+            await self.trigger()

@@ -13,21 +13,17 @@ class TestClock(unittest.TestCase):
         bas = [0]
         clk = Clock(100)
 
-        semp = Semaphore(0)
+        s = Semaphore(0)
 
         @activity(clk)
-        def foo():
+        async def foo():
             bas[0] += 1
             if bas[0] >= 5:
                 clk.stop()
-                semp.release()
+                s.release()
 
         t0 = time()
         clk.start()
-        semp.acquire()
+        s.acquire()
         self.assertGreaterEqual(time() - t0, 0.05)
         self.assertEqual(bas[0], 5)
-
-
-if __name__ == '__main__':
-    unittest.main()

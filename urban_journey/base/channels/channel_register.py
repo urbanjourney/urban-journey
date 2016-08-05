@@ -1,3 +1,6 @@
+"""
+Creates and destroys channels as needed and keeps a record of all currently living channels.
+"""
 
 
 class ChannelRegister:
@@ -9,4 +12,3 @@ class ChannelRegister:
 
     def create_channel(self, name):
         pass
-

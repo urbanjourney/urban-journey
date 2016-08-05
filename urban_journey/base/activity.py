@@ -12,7 +12,7 @@ class ActivityBase:
 def activity(trigger: Trigger, *args, **kwargs):
     """Activity decorator factory. This function returns a function decorator class."""
     class ActivityDecorator(ActivityBase):
-        def __init__(self, target: FunctionType):
+        def __init__(self, target):
             self.target = target
 
             self.trigger_obj = trigger
@@ -25,11 +25,11 @@ def activity(trigger: Trigger, *args, **kwargs):
             self._args = args
             self._kwargs = kwargs
 
-        def trigger(self, *args, **kwargs):
+        async def trigger(self, *args, **kwargs):
             """Called by the trigger."""
-            self.target(*args, *self._args, **kwargs,  **self._kwargs)
+            await self.target(*args, *self._args, **kwargs,  **self._kwargs)
 
         def __call__(self, *args, **kwargs):
-            self.target(*args, **kwargs)
+            return self.target(*args, **kwargs)
 
     return ActivityDecorator
