@@ -45,10 +45,10 @@ class TestModule(unittest.TestCase):
         self.assertEqual(len(trigger_list), len(foo.triggers))
         self.assertEqual(len(activity_list), len(foo.activities))
 
-        for name, _ in Foo.triggers:
+        for name in Foo.triggers:
             self.assertIn(name, trigger_list)
 
-        for name, _ in foo.activities:
+        for name in foo.activities:
             self.assertIn(name, activity_list)
 
 

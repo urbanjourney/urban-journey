@@ -8,11 +8,13 @@ loop = None
 thread = None
 
 
-def get() -> asyncio.BaseEventLoop:
+def get(debug_enabled=False) -> asyncio.BaseEventLoop:
     """Returns the event secondary event loop."""
     global loop
     if loop is None:
         enable_event_loop()
+    if debug_enabled:
+        loop.set_debug(True)
     return loop
 
 

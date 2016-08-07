@@ -4,35 +4,48 @@ import asyncio
 
 from urban_journey.base.channels.channel import Channel
 from urban_journey.base.ports.output import OutputPort
-from urban_journey.base.ports.input import InputPort
+from urban_journey.base.ports.input import InputPortStatic
+from urban_journey.base.descriptor.static import DescriptorStatic
+from urban_journey.base.module import ModuleBase
 from urban_journey.base.activity import activity
+from urban_journey.base.channels.channel_register import ChannelRegister
 from urban_journey import event_loop
 
 
 class TestChannelAndPorts(unittest.TestCase):
     def test_simple(self):
-        """
-        Simplest possible test with channels and ports. It creates 1 input port, 1 output port and 1 channel. Then it
-        adds the ports to the channel, Connects the input channel to an activity and flushes some data through the output
-        port. """
-        ch = Channel("foo")
-        op = OutputPort()
-        ip = InputPort()
-        ch.add_port(op)
-        ch.add_port(ip)
+        class A(ModuleBase):
+            op = DescriptorStatic(OutputPort)
 
-        qux = [None]
+            def __init__(self, channel_register):
+                super().__init__(channel_register)
 
-        s = Semaphore(0)
+            async def transmit(self):
+                print("transmitting:", self.op.channel_name)
+                await self.op.flush("Some Data")
 
-        @activity(ip)
-        async def bar():
-            qux[0] = "bar triggered: " + await ip.data
-            s.release()
+        class B(ModuleBase):
+            ip = InputPortStatic(channel_name="op")
 
-        op.data = "Random data"
+            def __init__(self, channel_register, semaphore):
+                super().__init__(channel_register)
+                self.semaphore = semaphore
 
+            @activity(ip)
+            async def foo(self, ip):
+                print("foo triggered:", ip)
+                self.semaphore.release()
+
+        semaphore = Semaphore(0)
+
+        channel_register = ChannelRegister()
+
+        a = A(channel_register)
+        b = B(channel_register, semaphore)
+
+        print("starting")
         loop = event_loop.get()
-        asyncio.run_coroutine_threadsafe(op.flush(), loop)
+        loop.set_debug(True)
+        asyncio.run_coroutine_threadsafe(a.transmit(), loop=loop)
+        assert semaphore.acquire(timeout=0.1)
 
-        s.acquire()

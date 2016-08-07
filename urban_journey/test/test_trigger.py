@@ -96,7 +96,7 @@ class TestTrigger(unittest.TestCase):
 
         # This will fail if the package name (urban_journey) is changed.
         self.assertEqual(repr(foo.clk).split("at")[0],
-                         "<urban_journey.base.trigger.DescriptorInstanceTrigger(urban_journey.clock.Clock) object ")
+                         "<urban_journey.base.trigger.descriptor_class_trigger.DescriptorInstanceTrigger(urban_journey.clock.Clock) object ")
 
     @staticmethod
     def assertListSameContent(list1, list2, msg=None):

@@ -3,10 +3,11 @@ Channel Class
 Handles and retransmits data in between ports.
 """
 
-from asyncio import shield, wait, wait_for
+from asyncio import shield, wait, wait_for, ensure_future
 
 from urban_journey.base.ports.output import OutputPort
 from urban_journey.base.ports.input import InputPort
+from urban_journey import event_loop
 
 
 class Channel:
@@ -15,6 +16,7 @@ class Channel:
         self.output_list = []
         self.input_list = []
         self.timeout = timeout
+        self.loop = event_loop.get()
 
     def add_port(self, port):
         if isinstance(port, OutputPort):
@@ -27,7 +29,6 @@ class Channel:
             raise TypeError()
 
     async def flush(self, data):
-        futures = [None]*len(self.input_list)
+        print("Channel.flush({})".format(data))
         for i, port in enumerate(self.input_list):
-            futures[i] = port.flush(data)
-        await wait_for(shield(wait(futures)), self.timeout)
+            ensure_future(wait_for(port.flush(data), self.timeout), loop=self.loop)
