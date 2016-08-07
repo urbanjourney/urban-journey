@@ -84,7 +84,7 @@ class TestActivity(unittest.TestCase):
             s.release()
 
         asyncio.run_coroutine_threadsafe(foo.trigger(), self.loop)
-        s.acquire()
+        assert s.acquire(timeout=0.1)
 
         self.assertEqual(bas[0], "bar1")
         self.assertEqual(bas[1], "bar2")

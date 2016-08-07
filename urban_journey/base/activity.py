@@ -43,7 +43,10 @@ def activity(trigger: Trigger, *args, mode=ActivityMode.schedule, **kwargs):
 
             # TODO: Add a check to check senders[1] contains all parameters self.target needs.
             with (await self.lock):
-                await self.target(*args, *self._args, **kwargs, **self._kwargs, **senders[1])
+                if senders[1] is None:
+                    await self.target(*args, *self._args, **kwargs, **self._kwargs)
+                else:
+                    await self.target(*args, *self._args, **kwargs, **self._kwargs, **senders[1])
 
         def __call__(self, *args, **kwargs):
             return self.target(*args, **kwargs)

@@ -2,7 +2,6 @@ import unittest
 from threading import Semaphore
 import asyncio
 
-from urban_journey.base.channels.channel import Channel
 from urban_journey.base.ports.output import OutputPort
 from urban_journey.base.ports.input import InputPortStatic
 from urban_journey.base.descriptor.static import DescriptorStatic

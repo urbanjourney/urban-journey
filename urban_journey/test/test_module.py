@@ -50,7 +50,3 @@ class TestModule(unittest.TestCase):
 
         for name in foo.activities:
             self.assertIn(name, activity_list)
-
-
-if __name__ == '__main__':
-    unittest.main(verbosity=2)

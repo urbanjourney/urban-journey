@@ -24,6 +24,6 @@ class TestClock(unittest.TestCase):
 
         t0 = time()
         clk.start()
-        s.acquire()
+        assert s.acquire(timeout=0.1)
         self.assertGreaterEqual(time() - t0, 0.05)
         self.assertEqual(bas[0], 5)
