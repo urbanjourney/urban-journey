@@ -1,5 +1,5 @@
 import builtins
-from urban_journey.ujml.python_interpreter import UJMLPythonSourceClass
+from urban_journey.ujml.interpreter import UJMLPythonSourceClass
 from urban_journey.ujml.attribute_types.base import AttributeBaseClass
 from urban_journey.common.code_formatting import python_pre_process
 

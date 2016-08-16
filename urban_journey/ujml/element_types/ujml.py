@@ -5,7 +5,7 @@ from urban_journey.ujml import attribute_types
 from urban_journey.ujml.element_types.base import BaseUJMLElement
 from urban_journey.ujml.element_types.case import CaseElement
 from urban_journey.ujml.exceptions import MissingRequiredAttributeError, UJMLTagMustBeRootError, IncompatibleDTSTVersion
-from urban_journey.ujml.python_interpreter import UJMLPythonInterpreterClass
+from urban_journey.ujml.interpreter import UJMLPythonInterpreterClass
 
 
 class UJMLElement(BaseUJMLElement):
