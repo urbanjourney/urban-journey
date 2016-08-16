@@ -1,5 +1,5 @@
 from urban_journey.ujml.exceptions import ModifyingReadOnlyUJMLAttributeError
-from urban_journey.ujml.required_placeholder import Required
+from urban_journey.ujml.unique import Required
 
 from urban_journey.ujml.exceptions import MissingRequiredAttributeError
 

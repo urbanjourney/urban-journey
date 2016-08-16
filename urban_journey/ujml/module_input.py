@@ -1,4 +1,4 @@
-from urban_journey.ujml.required_placeholder import Required
+from urban_journey.ujml.unique import Required
 from urban_journey.ujml.exceptions import InvalidTypeError, InvalidShapeError, MissingRequiredInput
 from urban_journey.ujml import namespace as ujml_namespace
 

@@ -1,5 +1,5 @@
 from urban_journey.ujml.element_types.base import BaseUJMLElement
-from urban_journey.ujml.required_placeholder import Empty
+from urban_journey.ujml.unique import Empty
 
 import urban_journey.ujml.attribute_types as attr
 
