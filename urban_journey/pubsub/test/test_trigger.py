@@ -3,10 +3,10 @@ from time import time
 from threading import Semaphore
 import asyncio
 
-from urban_journey.base.module import ModuleBase
-from urban_journey.base.activity import activity
-from urban_journey.base.trigger import DescriptorClassTrigger
-from urban_journey.base.trigger import Trigger
+from urban_journey.pubsub.module import ModuleBase
+from urban_journey.pubsub.activity import activity
+from urban_journey.pubsub.trigger import DescriptorClassTrigger
+from urban_journey.pubsub.trigger import Trigger
 from urban_journey.clock import Clock
 from urban_journey import event_loop
 
@@ -96,7 +96,7 @@ class TestTrigger(unittest.TestCase):
 
         # This will fail if the package name (urban_journey) is changed.
         self.assertEqual(repr(foo.clk).split("at")[0],
-                         "<urban_journey.base.trigger.descriptor_class_trigger.DescriptorInstanceTrigger(urban_journey.clock.Clock) object ")
+                         "<urban_journey.pubsub.trigger.descriptor_class_trigger.DescriptorInstanceTrigger(urban_journey.clock.Clock) object ")
 
     @staticmethod
     def assertListSameContent(list1, list2, msg=None):

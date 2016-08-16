@@ -4,7 +4,7 @@ WARNING: I don't know exactly how to explain how these work.Before continuing ma
 in python. Then continue on reading the rest of the documentation here.
 """
 from urban_journey.common.cached import cached
-from urban_journey.base.trigger import Trigger
+from urban_journey.pubsub.trigger import Trigger
 
 
 class DescriptorClassTrigger(Trigger):

@@ -1,5 +1,5 @@
-from urban_journey.base.ports.base import PortBase
-from urban_journey.base.descriptor.instance import DescriptorInstance
+from urban_journey.pubsub.ports.base import PortBase
+from urban_journey.pubsub.descriptor.instance import DescriptorInstance
 
 
 class OutputPort(PortBase, DescriptorInstance):

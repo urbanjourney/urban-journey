@@ -1,8 +1,8 @@
 import unittest
 
-from urban_journey.base.module import ModuleBase
-from urban_journey.base.activity import activity
-from urban_journey.base.trigger import Trigger, DescriptorClassTrigger
+from urban_journey.pubsub.module import ModuleBase
+from urban_journey.pubsub.activity import activity
+from urban_journey.pubsub.trigger import Trigger, DescriptorClassTrigger
 
 
 class TestModule(unittest.TestCase):

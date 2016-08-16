@@ -1,7 +1,7 @@
 """
 Creates and destroys channels as needed and keeps a record of all currently living channels.
 """
-from urban_journey.base.channels.channel import Channel
+from urban_journey.pubsub.channels.channel import Channel
 
 
 class ChannelRegister:

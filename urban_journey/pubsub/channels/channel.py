@@ -5,8 +5,8 @@ Handles and retransmits data in between ports.
 
 from asyncio import shield, wait, wait_for, ensure_future
 
-from urban_journey.base.ports.output import OutputPort
-from urban_journey.base.ports.input import InputPort
+from urban_journey.pubsub.ports.output import OutputPort
+from urban_journey.pubsub.ports.input import InputPort
 from urban_journey import event_loop
 
 

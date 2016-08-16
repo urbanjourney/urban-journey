@@ -10,7 +10,7 @@ if __name__ == "__main__":
     sys.path.append(os.path.abspath("../.."))
 
 from urban_journey.common.load_ui import load_ui
-from urban_journey.base.trigger import Trigger
+from urban_journey.pubsub.trigger import Trigger
 
 
 class ButtonWindow(QtGui.QWidget):
@@ -50,7 +50,7 @@ from urban_journey.event_loop import get, enable_event_loop, loop
 
 
 if __name__ == "__main__":
-    from urban_journey.base.activity import activity
+    from urban_journey.pubsub.activity import activity
     enable_event_loop()
 
     app = QApplication(sys.argv)

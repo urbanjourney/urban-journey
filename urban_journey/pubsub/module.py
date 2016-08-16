@@ -1,9 +1,9 @@
 import inspect
 
-from urban_journey.base.trigger import DescriptorClassTrigger
+from urban_journey.pubsub.trigger import DescriptorClassTrigger
 from urban_journey.common.cached import cached_class
-from urban_journey.base.activity import ActivityBase
-from urban_journey.base.descriptor.static import DescriptorStatic
+from urban_journey.pubsub.activity import ActivityBase
+from urban_journey.pubsub.descriptor.static import DescriptorStatic
 
 
 class ModuleBase:

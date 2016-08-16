@@ -1,6 +1,6 @@
 import asyncio
 
-from urban_journey.base.trigger import Trigger
+from urban_journey.pubsub.trigger import Trigger
 from urban_journey import event_loop
 
 

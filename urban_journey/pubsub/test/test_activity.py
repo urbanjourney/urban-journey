@@ -1,7 +1,7 @@
 """These tests are here to test the functions and classes in 'activity.py'"""
 
-from urban_journey.base.activity import activity
-from urban_journey.base.trigger import Trigger
+from urban_journey.pubsub.activity import activity
+from urban_journey.pubsub.trigger import Trigger
 from urban_journey import event_loop
 
 import unittest

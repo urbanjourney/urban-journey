@@ -2,10 +2,10 @@
 
 """
 
-from urban_journey.base.ports.base import PortBase
-from urban_journey.base.trigger import DescriptorClassTriggerBase, Trigger
-from urban_journey.base.descriptor.instance import DescriptorInstance
-from urban_journey.base.descriptor.static import DescriptorStatic
+from urban_journey.pubsub.ports.base import PortBase
+from urban_journey.pubsub.trigger import DescriptorClassTriggerBase, Trigger
+from urban_journey.pubsub.descriptor.instance import DescriptorInstance
+from urban_journey.pubsub.descriptor.static import DescriptorStatic
 
 
 from asyncio import wait_for, wait, shield
