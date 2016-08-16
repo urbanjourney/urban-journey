@@ -2,7 +2,7 @@
 This is the base class that represent data in dtsml files.
 """
 
-from dtst.dtsml.element_types.base import BaseDTSMLElement
+from urban_journey.ujml.element_types.base import BaseDTSMLElement
 
 
 class DataBaseElement(BaseDTSMLElement):

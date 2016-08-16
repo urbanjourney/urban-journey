@@ -1,5 +1,5 @@
-from dtst.dtsml.element_types.channel import ChannelStateElements
-from dtst.dtsml.element_types.base import BaseDTSMLElement
+from urban_journey.ujml.element_types.channel import ChannelStateElements
+from urban_journey.ujml.element_types.base import BaseDTSMLElement
 from dtst.core.channel import Channel
 
 

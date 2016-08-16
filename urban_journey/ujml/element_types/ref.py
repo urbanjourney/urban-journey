@@ -1,5 +1,5 @@
-from dtst.dtsml.element_types.base import BaseDTSMLElement
-from dtst.dtsml.exceptions import IdNotFoundError
+from urban_journey.ujml.element_types.base import BaseDTSMLElement
+from urban_journey.ujml.exceptions import IdNotFoundError
 
 
 class ReferenceElementClass(BaseDTSMLElement):

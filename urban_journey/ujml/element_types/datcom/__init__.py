@@ -1,1 +1,1 @@
-from dtst.dtsml.element_types.datcom.datcom import DatcomElement
+from urban_journey.ujml.element_types.datcom.datcom import DatcomElement

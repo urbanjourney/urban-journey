@@ -1,17 +1,16 @@
-from dtst.core.channel import Channel
-from dtst.dtsml.element_types.base import BaseDTSMLElement
-from dtst.dtsml.required_placeholder import Empty
+from urban_journey.ujml.element_types.base import BaseDTSMLElement
+from urban_journey.ujml.required_placeholder import Empty
 
-import dtst.dtsml.attribute_types as attr
+import urban_journey.ujml.attribute_types as attr
 
 
-class ChannelElement(BaseDTSMLElement, Channel):
+class ChannelElement(BaseDTSMLElement):
     """This element is used to create and define a new channel"""
     name_attr = attr.string_t("name", optional_value=None)
 
     def _init(self):
         super()._init()
-        Channel.__init__(self, self.name, self.schema)
+        # Channel.__init__(self, self.name, self.schema)
         self.__schema = None
 
     @property

@@ -1,5 +1,5 @@
 import builtins
-from dtst.dtsml.attribute_types.base import AttributeBaseClass
+from urban_journey.ujml.attribute_types.base import AttributeBaseClass
 
 
 

@@ -1,6 +1,6 @@
-from dtst.dtsml.element_types.base import BaseDTSMLElement
-from dtst.dtsml.exceptions import InvalidDataElement, DTSMLError
-from dtst.common.code_formatting import python_pre_process
+from urban_journey.ujml.element_types.base import BaseDTSMLElement
+from urban_journey.ujml.exceptions import InvalidDataElement, DTSMLError
+from urban_journey.common.code_formatting import python_pre_process
 
 
 class InputElement(BaseDTSMLElement):

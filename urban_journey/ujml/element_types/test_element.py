@@ -1,5 +1,5 @@
-from dtst.dtsml.element_types.base import BaseDTSMLElement
-from dtst.dtsml import attribute_types
+from urban_journey.ujml.element_types.base import BaseDTSMLElement
+from urban_journey.ujml import attribute_types
 
 
 class TestElement(BaseDTSMLElement):

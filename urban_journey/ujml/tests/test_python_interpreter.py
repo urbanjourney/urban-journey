@@ -5,7 +5,7 @@ import sys
 class TestDTSMLPythonInterpreter(unittest.TestCase):
     def test_compile_exception_handling(self):
         '''Checks if exceptions are properly handled when compiling the python source code'''
-        from dtst.dtsml.python_interpreter import DTSMLPythonSourceClass
+        from urban_journey.ujml.python_interpreter import DTSMLPythonSourceClass
 
         # Check compile time error.
         try:
@@ -17,7 +17,7 @@ class TestDTSMLPythonInterpreter(unittest.TestCase):
 
     def test_runtime_exception_handling(self):
         '''Check if runtime exceptions are properly handled.'''
-        from dtst.dtsml.python_interpreter import DTSMLPythonInterpreterClass
+        from urban_journey.ujml.python_interpreter import DTSMLPythonInterpreterClass
 
         # Check runtime error.
         try:
@@ -29,19 +29,19 @@ class TestDTSMLPythonInterpreter(unittest.TestCase):
             self.assertEqual(tb.tb_next.tb_next.tb_frame.f_code.co_filename, "asdfg")
 
     def test_interpreter_single_line_eval(self):
-        from dtst.dtsml.python_interpreter import DTSMLPythonInterpreterClass
+        from urban_journey.ujml.python_interpreter import DTSMLPythonInterpreterClass
         dpi = DTSMLPythonInterpreterClass()
         res = dpi.eval('1234567890', 'asdf', 55)
         self.assertEqual(res, 1234567890)
 
     def test_interpreter_multi_line_eval(self):
-        from dtst.dtsml.python_interpreter import DTSMLPythonInterpreterClass
+        from urban_journey.ujml.python_interpreter import DTSMLPythonInterpreterClass
         dpi = DTSMLPythonInterpreterClass()
         res = dpi.eval('a=1234567890\na', 'asdf', 55)
         self.assertEqual(res, 1234567890)
 
     def test_interpreter_multi_line_eval_exec_exception_handling(self):
-        from dtst.dtsml.python_interpreter import DTSMLPythonInterpreterClass
+        from urban_journey.ujml.python_interpreter import DTSMLPythonInterpreterClass
         dpi = DTSMLPythonInterpreterClass()
         try:
             dpi.eval('a=1234567890bb\na', 'asdf', 55)
@@ -51,7 +51,7 @@ class TestDTSMLPythonInterpreter(unittest.TestCase):
             self.assertEqual(vl.filename, 'asdf')
 
     def test_interpreter_multi_line_eval_eval_exception_handling(self):
-        from dtst.dtsml.python_interpreter import DTSMLPythonInterpreterClass
+        from urban_journey.ujml.python_interpreter import DTSMLPythonInterpreterClass
         dpi = DTSMLPythonInterpreterClass()
         try:
             dpi.eval('a=1234567890\n1212a', 'asdf', 55)
@@ -61,7 +61,7 @@ class TestDTSMLPythonInterpreter(unittest.TestCase):
             self.assertEqual(vl.filename, 'asdf')
 
     def test_interpreter_multi_line_eval_exec_runtime_exception_handling(self):
-        from dtst.dtsml.python_interpreter import DTSMLPythonInterpreterClass
+        from urban_journey.ujml.python_interpreter import DTSMLPythonInterpreterClass
         dpi = DTSMLPythonInterpreterClass()
         try:
             dpi.eval('a=1234567890+"dscsdc"\na', 'asdf', 55)
@@ -71,7 +71,7 @@ class TestDTSMLPythonInterpreter(unittest.TestCase):
             self.assertEqual(tb.tb_next.tb_next.tb_frame.f_code.co_filename, "asdf")
 
     def test_interpreter_multi_line_eval_eval_runtime_exception_handling(self):
-        from dtst.dtsml.python_interpreter import DTSMLPythonInterpreterClass
+        from urban_journey.ujml.python_interpreter import DTSMLPythonInterpreterClass
         dpi = DTSMLPythonInterpreterClass()
         try:
             dpi.eval('a=1234567890\n1212+"sdcsdc"', 'asdf', 55)

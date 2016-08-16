@@ -1,10 +1,10 @@
-from dtst.dtsml.element_types.dtsml import DTSMLElement
-from dtst.dtsml.element_types.test_element import TestElement
-from dtst.dtsml.element_types.vehicle import VehicleElement
-from dtst.dtsml.element_types.data_elements.csv import CsvLoaderClass
-from dtst.dtsml.element_types.data_elements.pickle import PickleLoaderClass
-from dtst.dtsml.element_types.ref import ReferenceElementClass
-from dtst.dtsml.element_types.datcom import DatcomElement
+from urban_journey.ujml.element_types.dtsml import DTSMLElement
+from urban_journey.ujml.element_types.test_element import TestElement
+from urban_journey.ujml.element_types.vehicle import VehicleElement
+from urban_journey.ujml.element_types.data_elements.csv import CsvLoaderClass
+from urban_journey.ujml.element_types.data_elements.pickle import PickleLoaderClass
+from urban_journey.ujml.element_types.ref import ReferenceElementClass
+from urban_journey.ujml.element_types.datcom import DatcomElement
 
 element_type_registry = {
     # General DTSML elemets

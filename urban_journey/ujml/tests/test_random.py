@@ -1,6 +1,6 @@
 """Just for some random test that don't belong anywhere else."""
 import unittest
-from dtst import __version__ as dtst_version
+from urban_journey import __version__ as dtst_version
 
 
 class TestRandom(unittest.TestCase):

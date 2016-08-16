@@ -1,6 +1,6 @@
-from dtst.dtsml.required_placeholder import Required
-from dtst.dtsml.exceptions import InvalidTypeError, InvalidShapeError, MissingRequiredInput
-from dtst.dtsml import namespace as dtsml_namespace
+from urban_journey.ujml.required_placeholder import Required
+from urban_journey.ujml.exceptions import InvalidTypeError, InvalidShapeError, MissingRequiredInput
+from urban_journey.ujml import namespace as dtsml_namespace
 
 import numpy as np
 

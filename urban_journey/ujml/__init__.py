@@ -4,4 +4,4 @@ __all__ = ['fromstring', 'fromfile']
 
 namespace = ''
 
-from dtst.dtsml.dtsml_loaders import fromstring, fromfile
+from urban_journey.ujml.dtsml_loaders import fromstring, fromfile

@@ -1,8 +1,8 @@
-from dtst.dtsml.element_types.base import BaseDTSMLElement
-from dtst.dtsml import attribute_types
+from urban_journey.ujml.element_types.base import BaseDTSMLElement
+from urban_journey.ujml import attribute_types
 
-from dtst.dtsml.element_types.phase import PhaseElement
-from dtst.dtsml.element_types.channel import ChannelElement
+from urban_journey.ujml.element_types.phase import PhaseElement
+from urban_journey.ujml.element_types.channel import ChannelElement
 
 
 class CaseElement(BaseDTSMLElement):

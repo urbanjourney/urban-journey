@@ -1,7 +1,7 @@
-from dtst.dtsml.element_types.base import BaseDTSMLElement
-from dtst.dtsml.element_types.channel import ChannelElement
+from urban_journey.ujml.element_types.base import BaseDTSMLElement
+from urban_journey.ujml.element_types.channel import ChannelElement
 
-import dtst.modules as sim_modules
+# import dtst.modules as sim_modules
 
 
 class PhaseElement(BaseDTSMLElement):
@@ -14,8 +14,8 @@ class PhaseElement(BaseDTSMLElement):
     def lookup_child(document, element):
         if element.tag == "channel":
             return ChannelElement
-        if hasattr(sim_modules, element.tag):
-            return getattr(sim_modules, element.tag)
+        # if hasattr(sim_modules, element.tag):
+        #     return getattr(sim_modules, element.tag)
         return None
 
     @property

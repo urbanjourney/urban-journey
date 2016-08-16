@@ -1,12 +1,12 @@
 from lxml import etree
-from dtst.dtsml.element_types.element_type_registry import element_type_registry
-from dtst.dtsml.element_types.dtsml import DTSMLElement
-from dtst.dtsml.exceptions import UnknownElementError
-from dtst.common.xml_tag_proc import is_default_namespace
+from urban_journey.ujml.element_types.element_type_registry import element_type_registry
+from urban_journey.ujml.element_types.dtsml import DTSMLElement
+from urban_journey.ujml.exceptions import UnknownElementError
+from urban_journey.common.xml_tag_proc import is_default_namespace
 
 
 # Element types
-from dtst.dtsml.element_types.base import BaseDTSMLElement
+from urban_journey.ujml.element_types.base import BaseDTSMLElement
 
 
 class DTSMLLookup(etree.PythonElementClassLookup):

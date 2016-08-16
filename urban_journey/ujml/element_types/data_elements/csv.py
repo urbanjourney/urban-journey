@@ -1,6 +1,6 @@
-from dtst.dtsml.element_types.data_base import DataBaseElement
-from dtst.dtsml.attribute_types import string_t
-from dtst.dtsml.exceptions import DataLoadError, MissingRequiredAttributeError
+from urban_journey.ujml.element_types.data_base import DataBaseElement
+from urban_journey.ujml.attribute_types import string_t
+from urban_journey.ujml.exceptions import DataLoadError, MissingRequiredAttributeError
 
 
 import numpy as np

@@ -1,8 +1,8 @@
-from dtst.dtsml.element_types.datcom.datcom_namelists import Namelist
-from dtst.dtsml.element_types.base import BaseDTSMLElement
+from urban_journey.ujml.element_types.datcom.datcom_namelists import Namelist
+from urban_journey.ujml.element_types.base import BaseDTSMLElement
 
-from dtst.dtsml.element_types.input import InputElement
-from dtst.dtsml.exceptions import InvalidChildError, InvalidElementInputError
+from urban_journey.ujml.element_types.input import InputElement
+from urban_journey.ujml.exceptions import InvalidChildError, InvalidElementInputError
 
 
 class DatcomElement(BaseDTSMLElement):

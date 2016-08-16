@@ -1,1 +1,1 @@
-from dtst.dtsml.element_types.channel.channel import ChannelElement
+from urban_journey.ujml.element_types.channel.channel import ChannelElement

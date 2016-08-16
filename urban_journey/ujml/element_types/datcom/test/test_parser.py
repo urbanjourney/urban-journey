@@ -2,8 +2,8 @@ import unittest
 import os
 import os.path
 from dtst import __version__ as dtst_version
-from dtst.dtsml.element_types.datcom.datcom_namelists import Namelist
-from dtst.dtsml.dtsml_loaders import fromstring
+from urban_journey.ujml.element_types.datcom.datcom_namelists import Namelist
+from urban_journey.ujml.dtsml_loaders import fromstring
 
 
 class MyTestCase(unittest.TestCase):

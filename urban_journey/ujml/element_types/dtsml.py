@@ -1,11 +1,11 @@
 from lxml import etree
 
-from dtst import __version__ as dtst_version
-from dtst.dtsml import attribute_types
-from dtst.dtsml.element_types.base import BaseDTSMLElement
-from dtst.dtsml.element_types.case import CaseElement
-from dtst.dtsml.exceptions import MissingRequiredAttributeError, DTSMLTagMustBeRootError, IncompatibleDTSTVersion
-from dtst.dtsml.python_interpreter import DTSMLPythonInterpreterClass
+from urban_journey import __version__ as dtst_version
+from urban_journey.ujml import attribute_types
+from urban_journey.ujml.element_types.base import BaseDTSMLElement
+from urban_journey.ujml.element_types.case import CaseElement
+from urban_journey.ujml.exceptions import MissingRequiredAttributeError, DTSMLTagMustBeRootError, IncompatibleDTSTVersion
+from urban_journey.ujml.python_interpreter import DTSMLPythonInterpreterClass
 
 
 class DTSMLElement(BaseDTSMLElement):

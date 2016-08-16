@@ -1,7 +1,7 @@
 import builtins
-from dtst.dtsml.python_interpreter import DTSMLPythonSourceClass
-from dtst.dtsml.attribute_types.base import AttributeBaseClass
-from dtst.common.code_formatting import python_pre_process
+from urban_journey.ujml.python_interpreter import DTSMLPythonSourceClass
+from urban_journey.ujml.attribute_types.base import AttributeBaseClass
+from urban_journey.common.code_formatting import python_pre_process
 
 
 class Exec(AttributeBaseClass):

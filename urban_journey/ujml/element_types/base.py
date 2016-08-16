@@ -1,7 +1,6 @@
 from lxml import etree
-from lxml.cssselect import CSSSelector
-from dtst.dtsml import attribute_types
-from dtst.dtsml.internal_state import InternalState
+from urban_journey.ujml import attribute_types
+from urban_journey.ujml.internal_state import InternalState
 
 import inspect
 
@@ -52,12 +51,6 @@ class BaseDTSMLElement(etree.ElementBase):
         """Restores the internal states to the last save"""
         for state in self.internal_states_repo:
             state.restore(self)
-
-    def __getitem__(self, item):
-        if isinstance(item, str):
-            return CSSSelector(item)(self)
-        else:
-            return super().__getitem__(item)
 
     @property
     def dtsml(self):

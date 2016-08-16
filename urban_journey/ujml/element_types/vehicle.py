@@ -1,7 +1,7 @@
-from dtst.dtsml.element_types.base import BaseDTSMLElement
-from dtst.dtsml.element_types.case import CaseElement
-from dtst.dtsml.exceptions import InvalidChildError
-from dtst.dtsml import attribute_types
+from urban_journey.ujml.element_types.base import BaseDTSMLElement
+from urban_journey.ujml.element_types.case import CaseElement
+from urban_journey.ujml.exceptions import InvalidChildError
+from urban_journey.ujml import attribute_types
 
 
 class VehicleElement(BaseDTSMLElement):

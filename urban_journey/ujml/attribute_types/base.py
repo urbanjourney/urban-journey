@@ -1,7 +1,7 @@
-from dtst.dtsml.exceptions import ModifyingReadOnlyDTSMLAttributeError
-from dtst.dtsml.required_placeholder import Required
+from urban_journey.ujml.exceptions import ModifyingReadOnlyDTSMLAttributeError
+from urban_journey.ujml.required_placeholder import Required
 
-from dtst.dtsml.exceptions import MissingRequiredAttributeError
+from urban_journey.ujml.exceptions import MissingRequiredAttributeError
 
 import inspect
 
