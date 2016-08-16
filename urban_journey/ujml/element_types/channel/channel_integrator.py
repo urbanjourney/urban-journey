@@ -1,9 +1,9 @@
 from urban_journey.ujml.element_types.channel import ChannelStateElements
-from urban_journey.ujml.element_types.base import BaseDTSMLElement
+from urban_journey.ujml.element_types.base import BaseUJMLElement
 from dtst.core.channel import Channel
 
 
-class IntegratorChannelElement(BaseDTSMLElement, Channel):
+class IntegratorChannelElement(BaseUJMLElement, Channel):
     def _init(self):
         super()._init()
         Channel.__init__(self.name, self.schema_x0)
@@ -37,7 +37,7 @@ class IntegratorChannelElement(BaseDTSMLElement, Channel):
         return IntegratorChannelStatesGroupElement
 
 
-class IntegratorChannelStatesGroupElement(BaseDTSMLElement):
+class IntegratorChannelStatesGroupElement(BaseUJMLElement):
     @staticmethod
     def lookup_child(document, element):
         return ChannelStateElements

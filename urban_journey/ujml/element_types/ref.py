@@ -1,8 +1,8 @@
-from urban_journey.ujml.element_types.base import BaseDTSMLElement
+from urban_journey.ujml.element_types.base import BaseUJMLElement
 from urban_journey.ujml.exceptions import IdNotFoundError
 
 
-class ReferenceElementClass(BaseDTSMLElement):
+class ReferenceElementClass(BaseUJMLElement):
     """Reference element. It can be used to reference to an other element within the dtsml file."""
     # def __init__(self, elm):
     #     self._referenced_element = elm

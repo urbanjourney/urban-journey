@@ -9,7 +9,7 @@ import pickle
 class PickleLoaderClass(DataBaseElement):
     """This element is used to load in python pickle files.
 
-        **DTSML attributes**
+        **UJML attributes**
 
         .. attribute:: file
 

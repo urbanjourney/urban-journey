@@ -10,7 +10,7 @@ import sys
 class CsvLoaderClass(DataBaseElement):
     """This element is used to load in csv files.
 
-        **DTSML attributes**
+        **UJML attributes**
 
         .. attribute:: file
 

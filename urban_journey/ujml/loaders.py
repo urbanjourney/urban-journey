@@ -24,8 +24,8 @@ def fromstring(dtsml_string, filename='<dtsml_input>'):
 
 def lxml_parser(filename):
     # Not pep8, but necessary. I can't remember why. Probably because of circular import thingy.
-    from urban_journey.ujml.parser_lookup import DTSMLLookup
+    from urban_journey.ujml.parser_lookup import UJMLLookup
 
     parser = etree.XMLParser()
-    parser.set_element_class_lookup(DTSMLLookup(filename))
+    parser.set_element_class_lookup(UJMLLookup(filename))
     return parser

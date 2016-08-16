@@ -1,8 +1,8 @@
-from urban_journey.ujml.element_types.base import BaseDTSMLElement
+from urban_journey.ujml.element_types.base import BaseUJMLElement
 from urban_journey.ujml.element_types.input import InputElement
 
 
-class ModuleBaseElement(BaseDTSMLElement):
+class ModuleBaseElement(BaseUJMLElement):
     '''Base class for dtst modules. This base class implements the lxml specific API.'''
 
     def _init(self):

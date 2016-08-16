@@ -1,11 +1,11 @@
-from urban_journey.ujml.element_types.base import BaseDTSMLElement
+from urban_journey.ujml.element_types.base import BaseUJMLElement
 from urban_journey.ujml import attribute_types
 
 from urban_journey.ujml.element_types.phase import PhaseElement
 from urban_journey.ujml.element_types.channel import ChannelElement
 
 
-class CaseElement(BaseDTSMLElement):
+class CaseElement(BaseUJMLElement):
     """This elements encloses one simulation case. There is not much here yet. But in the end I hope to let this element
        inherit from the core class."""
     # Events

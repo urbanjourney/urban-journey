@@ -1,10 +1,10 @@
-from urban_journey.ujml.element_types.base import BaseDTSMLElement
+from urban_journey.ujml.element_types.base import BaseUJMLElement
 from urban_journey.ujml.element_types.case import CaseElement
 from urban_journey.ujml.exceptions import InvalidChildError
 from urban_journey.ujml import attribute_types
 
 
-class VehicleElement(BaseDTSMLElement):
+class VehicleElement(BaseUJMLElement):
     """This element hold some extra information about the vehicle being simulated."""
     name = attribute_types.string_t('name', True)
     version = attribute_types.string_t('version', True)

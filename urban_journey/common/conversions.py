@@ -87,6 +87,7 @@ def dcm_to_q(DCM):
         raise ValueError("Invalid DCM")
     return q
 
+
 def q_to_dcm(q):
     """Converts Quaternions to Direction Cosine Matrix.
     
@@ -105,6 +106,7 @@ def q_to_dcm(q):
                     [2*q[1,0]*q[2,0]-2*q[0,0]*q[3,0], q[0,0]**2-q[1,0]**2+q[2,0]**2-q[3,0]**2, 2*q[2,0]*q[3,0]+2*q[0,0]*q[1,0]],
                     [2*q[1,0]*q[3,0]+2*q[0,0]*q[2,0], 2*q[2,0]*q[3,0]-2*q[0,0]*q[1,0], q[0,0]**2-q[1,0]**2-q[2,0]**2+q[3,0]**2]])
     return DCM
+
 
 def omega_to_qdot(omega, quat, k=1.0):
     """Converts Rotational Rates (omega) to Quaternion rates.
@@ -140,6 +142,7 @@ def omega_to_qdot(omega, quat, k=1.0):
 def qdot_to_omega(q):
     """Not implemented"""
     pass
+
 
 def dcm_to_euler(DCM, rtype='zyx', unit='rad'):
     """Converts Direction Cosine Matrix to Euler angles.   
@@ -338,6 +341,7 @@ def flat_to_lla(x, lla0):
 
     return np.add(lla0, np.array([[dLat],[dLon],[da]]))
 
+
 def ecef_to_wgs84(Xc):
     """Converts coordinates (x,y,z) in the ECEF frame to coordinates 
     (lat,lon,h) in the WGS84 frame [1]_ .
@@ -404,6 +408,7 @@ def ecef_to_wgs84(Xc):
     if (z < 0):
         lat = -lat
     return np.array([[lat],[lon],[h]])
+
 
 def wgs84_to_ecef(lla ,unit="rad"):
     """Converts coordinates (altitude, latitude, longitude) in WGS84 to 

@@ -1,10 +1,10 @@
-from urban_journey.ujml.element_types.base import BaseDTSMLElement
+from urban_journey.ujml.element_types.base import BaseUJMLElement
 from urban_journey.ujml.required_placeholder import Empty
 
 import urban_journey.ujml.attribute_types as attr
 
 
-class ChannelElement(BaseDTSMLElement):
+class ChannelElement(BaseUJMLElement):
     """This element is used to create and define a new channel"""
     name_attr = attr.string_t("name", optional_value=None)
 
@@ -46,11 +46,11 @@ class ChannelElement(BaseDTSMLElement):
         return ChannelStateElements
 
 
-class ChannelStateElements(BaseDTSMLElement):
+class ChannelStateElements(BaseUJMLElement):
     """
         This element is used to define a channel state.
 
-**DTSML attributes**
+**UJML attributes**
 
 .. attribute:: type
 

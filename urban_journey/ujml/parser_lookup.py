@@ -1,15 +1,15 @@
 from lxml import etree
 from urban_journey.ujml.element_types.element_type_registry import element_type_registry
-from urban_journey.ujml.element_types.dtsml import DTSMLElement
+from urban_journey.ujml.element_types.dtsml import UJMLElement
 from urban_journey.ujml.exceptions import UnknownElementError
 from urban_journey.common.xml_tag_proc import is_default_namespace
 
 
 # Element types
-from urban_journey.ujml.element_types.base import BaseDTSMLElement
+from urban_journey.ujml.element_types.base import BaseUJMLElement
 
 
-class DTSMLLookup(etree.PythonElementClassLookup):
+class UJMLLookup(etree.PythonElementClassLookup):
     def __init__(self, filename):
         self.filename = filename
         self.dtsml_read_elements = {}
@@ -38,7 +38,7 @@ class DTSMLLookup(etree.PythonElementClassLookup):
 
         # This is the root element, since it has no parent it has to be dealt with seperately.
         if element.tag == "dtsml":
-            return DTSMLElement
+            return UJMLElement
 
         # Initialize the elements and paths lists with the current tag and it's parent.
         elements = [element, element.getparent()]

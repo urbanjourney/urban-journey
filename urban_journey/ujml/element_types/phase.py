@@ -1,10 +1,10 @@
-from urban_journey.ujml.element_types.base import BaseDTSMLElement
+from urban_journey.ujml.element_types.base import BaseUJMLElement
 from urban_journey.ujml.element_types.channel import ChannelElement
 
 # import dtst.modules as sim_modules
 
 
-class PhaseElement(BaseDTSMLElement):
+class PhaseElement(BaseUJMLElement):
     """This element represents a simulation phase."""
     def _init(self):
         '''Initializes the phase element.'''

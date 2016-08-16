@@ -11,7 +11,7 @@ from urban_journey.ujml.exceptions import MissingRequiredAttributeError, \
                                   MissingRequiredInput
 
 
-class TestDTSMLParser(unittest.TestCase):
+class TestUJMLParser(unittest.TestCase):
     def setUp(self):
         self.old_path = os.getcwd()
         os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -27,9 +27,9 @@ class TestDTSMLParser(unittest.TestCase):
     def test_root_element_type(self):
         '''Tests whether the root element is of the correct type. If succesfull this means that the custom parser was used.'''
         import urban_journey.ujml as dtsml
-        from urban_journey.ujml.element_types.dtsml import DTSMLElement
+        from urban_journey.ujml.element_types.dtsml import UJMLElement
         elem_dtsml = dtsml.fromstring("<dtsml version='{}'/>".format(dtst_version))
-        self.assertTrue(isinstance(elem_dtsml, DTSMLElement))
+        self.assertTrue(isinstance(elem_dtsml, UJMLElement))
 
     def test_basic(self):
         '''Tests whether the root element is of the correct type. If succesfull this means that the custom parser was used.'''

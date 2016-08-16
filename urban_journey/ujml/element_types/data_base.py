@@ -2,10 +2,10 @@
 This is the base class that represent data in dtsml files.
 """
 
-from urban_journey.ujml.element_types.base import BaseDTSMLElement
+from urban_journey.ujml.element_types.base import BaseUJMLElement
 
 
-class DataBaseElement(BaseDTSMLElement):
+class DataBaseElement(BaseUJMLElement):
     """Base element for elements holding or processing data."""
     def _init(self):
         super()._init()

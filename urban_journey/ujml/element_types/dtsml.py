@@ -2,16 +2,16 @@ from lxml import etree
 
 from urban_journey import __version__ as dtst_version
 from urban_journey.ujml import attribute_types
-from urban_journey.ujml.element_types.base import BaseDTSMLElement
+from urban_journey.ujml.element_types.base import BaseUJMLElement
 from urban_journey.ujml.element_types.case import CaseElement
-from urban_journey.ujml.exceptions import MissingRequiredAttributeError, DTSMLTagMustBeRootError, IncompatibleDTSTVersion
-from urban_journey.ujml.python_interpreter import DTSMLPythonInterpreterClass
+from urban_journey.ujml.exceptions import MissingRequiredAttributeError, UJMLTagMustBeRootError, IncompatibleDTSTVersion
+from urban_journey.ujml.python_interpreter import UJMLPythonInterpreterClass
 
 
-class DTSMLElement(BaseDTSMLElement):
+class UJMLElement(BaseUJMLElement):
     """The root element for all dtsml files.
 
-    **DTSML attribute**
+    **UJML attribute**
     .. attribute:: req_version (version in dtsml)
 
            **type:** string\n
@@ -24,7 +24,7 @@ class DTSMLElement(BaseDTSMLElement):
 
     def _init(self):
         self.filename = "<dtsml_input>"
-        self.interpreter = DTSMLPythonInterpreterClass()
+        self.interpreter = UJMLPythonInterpreterClass()
 
         self.configure_interpreter()
         self.check_dtst_version()
@@ -41,7 +41,7 @@ class DTSMLElement(BaseDTSMLElement):
     def check_if_root_element(self):
         """Checks whether it is the root element of the xml file"""
         if not self.getparent() is None:
-            raise DTSMLTagMustBeRootError(self.filename, self.sourceline)
+            raise UJMLTagMustBeRootError(self.filename, self.sourceline)
 
     def check_dtst_version(self):
         """Check whether the currently installed version of dtst satisfies the requirements set in the dtsml file."""

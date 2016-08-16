@@ -1,5 +1,5 @@
 import builtins
-from urban_journey.ujml.python_interpreter import DTSMLPythonSourceClass
+from urban_journey.ujml.python_interpreter import UJMLPythonSourceClass
 from urban_journey.ujml.attribute_types.base import AttributeBaseClass
 from urban_journey.common.code_formatting import python_pre_process
 
@@ -14,7 +14,7 @@ class Exec(AttributeBaseClass):
 
     def get(self, instance, owner):
         try:
-            code = DTSMLPythonSourceClass(python_pre_process(instance.get(self.attrib_name)),
+            code = UJMLPythonSourceClass(python_pre_process(instance.get(self.attrib_name)),
                                           instance.dtsml.filename,
                                           'exec',
                                           instance.sourceline)

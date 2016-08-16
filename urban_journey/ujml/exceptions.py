@@ -1,5 +1,5 @@
-class BaseDTSMLError(Exception):
-    '''Base class for all dtsml related exceptions.'''
+class BaseUJMLError(Exception):
+    '''Base class for all ujml related exceptions.'''
     def __init__(self, filename, lineno):
         super().__init__()
         self.__filename = filename
@@ -7,28 +7,28 @@ class BaseDTSMLError(Exception):
 
     def _error_message(self):
         return 'This message should never be shown. If you are reading this then someone is either raising a ' \
-               'BaseDTSMLError or forgot to override the _error_message() function.'
+               'BaseUJMLError or forgot to override the _error_message() function.'
 
     def __str__(self):
         return '\n    File "{}", line {}\n        '.format(self.__filename, self.__lineno)+self._error_message()
 
 
-class ModifyingReadOnlyDTSMLAttributeError(Exception):
+class ModifyingReadOnlyUJMLAttributeError(Exception):
     '''Raised when a read-only attribute is being modified.'''
     def __str__(self):
-        return "Read-only dtsml attribute is being modified"
+        return "Read-only ujml attribute is being modified"
 
 
-class DTSMLTagMustBeRootError(BaseDTSMLError):
+class UJMLTagMustBeRootError(BaseUJMLError):
     '''Raised when a required attributed is missing.'''
     def __init__(self, filename, lineno):
         super().__init__(filename, lineno)
 
     def _error_message(self):
-        return "Element 'dtsml' must be root element."
+        return "Element 'ujml' must be root element."
 
 
-class UnknownProcessingInstructionError(BaseDTSMLError):
+class UnknownProcessingInstructionError(BaseUJMLError):
     '''Raised when a required attributed is missing.'''
     def __init__(self, filename, lineno, pi_name):
         super().__init__(filename, lineno)
@@ -38,7 +38,7 @@ class UnknownProcessingInstructionError(BaseDTSMLError):
         return "Unknown processing instructiion '{}'.".format(self.pi_name)
 
 
-class UnknownElementError(BaseDTSMLError):
+class UnknownElementError(BaseUJMLError):
     '''Raised when a required attributed is missing.'''
     def __init__(self, filename, lineno, elem_name):
         super().__init__(filename, lineno)
@@ -48,7 +48,7 @@ class UnknownElementError(BaseDTSMLError):
         return "Unknown element '{}'.".format(self.elem_name)
 
 
-class IncompatibleDTSTVersion(BaseDTSMLError):
+class IncompatibleDTSTVersion(BaseUJMLError):
     '''Raised when the required DTST version is incompatible with the one installed.'''
     def __init__(self, filename, lineno, ver_required, ver_installed):
         super().__init__(filename, lineno)
@@ -59,7 +59,7 @@ class IncompatibleDTSTVersion(BaseDTSMLError):
         return "DTST version '{}' was found but '{}' is required.".format(self.ver_installed, self.ver_required)
 
 
-class InvalidAttributeInputError(BaseDTSMLError):
+class InvalidAttributeInputError(BaseUJMLError):
     def __init__(self, filename, lineno, elem_name, attrib_name):
         super().__init__(filename, lineno)
         self.elem_name = elem_name
@@ -70,7 +70,7 @@ class InvalidAttributeInputError(BaseDTSMLError):
             .format(self.atrib_name, self.elem_name)
 
 
-class InvalidElementInputError(BaseDTSMLError):
+class InvalidElementInputError(BaseUJMLError):
     def __init__(self, filename, lineno, elem_name):
         super().__init__(filename, lineno)
         self.elem_name = elem_name
@@ -80,7 +80,7 @@ class InvalidElementInputError(BaseDTSMLError):
             .format(self.elem_name)
 
 
-class InvalidChildError(BaseDTSMLError):
+class InvalidChildError(BaseUJMLError):
     '''Raised when an element is not a valid child of the parent element.'''
     def __init__(self, filename, lineno, parent_name, child_name):
         super().__init__(filename, lineno)
@@ -91,8 +91,8 @@ class InvalidChildError(BaseDTSMLError):
         return "Element '{}' is not a valid child of '{}'".format(self.child_name, self.parent_name)
 
 
-class DTSMLError(BaseDTSMLError):
-    '''Generic DTSML exception that only takes a message as parameter.'''
+class UJMLError(BaseUJMLError):
+    '''Generic UJML exception that only takes a message as parameter.'''
     # This exception exists only because I'm sometimes to lazy to create a new exception class.
     def __init__(self, filename, lineno, msg):
         super().__init__(filename, lineno)
@@ -102,7 +102,7 @@ class DTSMLError(BaseDTSMLError):
         return self.msg
 
 
-class DataLoadError(BaseDTSMLError):
+class DataLoadError(BaseUJMLError):
     """Error while loading data."""
     # This exception exists only because I'm sometimes to lazy to create a new exception class.
     def __init__(self, filename, lineno, data_element_name):
@@ -113,8 +113,8 @@ class DataLoadError(BaseDTSMLError):
         return "Error loading data at data element '{}'.".format(self.data_element_name)
 
 
-class MissingRequiredAttributeError(BaseDTSMLError):
-    """An dtsml element is missing a required attribute."""
+class MissingRequiredAttributeError(BaseUJMLError):
+    """An ujml element is missing a required attribute."""
     def __init__(self, filename, lineno, element_name, attribute_name):
         super().__init__(filename, lineno)
         self.element_name = element_name
@@ -124,7 +124,7 @@ class MissingRequiredAttributeError(BaseDTSMLError):
         return "Element '{}' is missing required attribute '{}'.".format(self.element_name, self.attribute_name)
 
 
-class IdNotFoundError(BaseDTSMLError):
+class IdNotFoundError(BaseUJMLError):
     """No element was found with the target id."""
     def __init__(self, filename, lineno, id):
         super().__init__(filename, lineno)
@@ -134,7 +134,7 @@ class IdNotFoundError(BaseDTSMLError):
         return "No element was found with id '{}'.".format(self.id)
 
 
-class InvalidDataElement(BaseDTSMLError):
+class InvalidDataElement(BaseUJMLError):
     """This error is raised when an non data element has been passed where a data element was expected"""
     def __init__(self, filename, lineno, element_name):
         super().__init__(filename, lineno)
@@ -144,7 +144,7 @@ class InvalidDataElement(BaseDTSMLError):
         return "'{}' is not  valid data element.".format(self.element_name)
 
 
-class InvalidTypeError(BaseDTSMLError):
+class InvalidTypeError(BaseUJMLError):
     """This error is raised whenever a parameter of invalid type has been passed."""
     def __init__(self, filename, lineno, element_name):
         super().__init__(filename, lineno)
@@ -154,7 +154,7 @@ class InvalidTypeError(BaseDTSMLError):
         return "Element '{}' received data of invalid type".format(self.element_name)
 
 
-class InvalidShapeError(BaseDTSMLError):
+class InvalidShapeError(BaseUJMLError):
     """This error is raised whenever a parameter of invalid shape has been passed."""
     def __init__(self, filename, lineno, element_name):
         super().__init__(filename, lineno)
@@ -164,7 +164,7 @@ class InvalidShapeError(BaseDTSMLError):
         return "Element '{}' received data of invalid shape".format(self.element_name)
 
 
-class MissingRequiredInput(BaseDTSMLError):
+class MissingRequiredInput(BaseUJMLError):
     """This error is raised whenever a required input was not given to a module."""
     def __init__(self, filename, lineno, module_name, input_name):
         super().__init__(filename, lineno)

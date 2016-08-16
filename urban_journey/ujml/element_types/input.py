@@ -1,9 +1,9 @@
-from urban_journey.ujml.element_types.base import BaseDTSMLElement
-from urban_journey.ujml.exceptions import InvalidDataElement, DTSMLError
+from urban_journey.ujml.element_types.base import BaseUJMLElement
+from urban_journey.ujml.exceptions import InvalidDataElement, UJMLError
 from urban_journey.common.code_formatting import python_pre_process
 
 
-class InputElement(BaseDTSMLElement):
+class InputElement(BaseUJMLElement):
     """This element represent the module inputs. It may either contain python code which is evaluated to get a value or
        a it can contain a data element."""
     @property
@@ -28,5 +28,5 @@ class InputElement(BaseDTSMLElement):
                                                    self.sourceline)
             else:
                 # There is neither code nor a data element in this input. Raise an error.
-                raise DTSMLError(self.dtsml.filename, self.sourceline,
+                raise UJMLError(self.dtsml.filename, self.sourceline,
                                  "Input element '{}' is missing data".format(self.tag))

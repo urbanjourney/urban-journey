@@ -1,7 +1,7 @@
 import sys
 
 
-class DTSMLPythonSourceClass(object):
+class UJMLPythonSourceClass(object):
     def __init__(self, source, filename, mode, lineno=0):
         self.__code = compile('\n'*(lineno-1)+source, filename, mode)
         self.__mode = mode
@@ -21,7 +21,7 @@ class DTSMLPythonSourceClass(object):
         return self.__lineno
 
 
-class DTSMLPythonInterpreterClass(object):
+class UJMLPythonInterpreterClass(object):
     def __init__(self):
         self.__dtsml_locals = {}
 
@@ -35,10 +35,10 @@ class DTSMLPythonInterpreterClass(object):
         exec(compile('\n'*(lineno-1)+source, filename, 'exec'), self.__dtsml_locals)
 
     def run_src_object(self, src_obj):
-        if isinstance(src_obj, DTSMLPythonSourceClass):
+        if isinstance(src_obj, UJMLPythonSourceClass):
             return eval(src_obj.code, self.__dtsml_locals)
         else:
-            raise TypeError("Parameter should be of type 'DTSMLPythonSourceClass'")
+            raise TypeError("Parameter should be of type 'UJMLPythonSourceClass'")
 
     def eval(self, source, filename, lineno):
         lines = source.strip().splitlines()

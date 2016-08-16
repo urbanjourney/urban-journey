@@ -1,4 +1,4 @@
-from urban_journey.ujml.exceptions import ModifyingReadOnlyDTSMLAttributeError
+from urban_journey.ujml.exceptions import ModifyingReadOnlyUJMLAttributeError
 from urban_journey.ujml.required_placeholder import Required
 
 from urban_journey.ujml.exceptions import MissingRequiredAttributeError
@@ -16,7 +16,7 @@ class AttributeBaseClass(object):
         pass
 
     def set(self, instance, value):
-        raise ModifyingReadOnlyDTSMLAttributeError(instance.sourceline, instance.dtsml.filename)
+        raise ModifyingReadOnlyUJMLAttributeError(instance.sourceline, instance.dtsml.filename)
 
     def get_optional(self, instance):
         if self.optional_value is not Required:
@@ -52,6 +52,6 @@ class AttributeBaseClass(object):
         if self.attrib_name is None:
             self.get_attribute_name(instance)
         if self.read_only:
-            raise ModifyingReadOnlyDTSMLAttributeError(instance.sourceline, instance.dtsml.filename)
+            raise ModifyingReadOnlyUJMLAttributeError(instance.sourceline, instance.dtsml.filename)
         else:
             self.set(instance, value)

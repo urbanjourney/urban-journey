@@ -1,4 +1,4 @@
-from urban_journey.ujml.element_types.dtsml import DTSMLElement
+from urban_journey.ujml.element_types.dtsml import UJMLElement
 from urban_journey.ujml.element_types.test_element import TestElement
 from urban_journey.ujml.element_types.vehicle import VehicleElement
 from urban_journey.ujml.element_types.data_elements.csv import CsvLoaderClass
@@ -6,9 +6,9 @@ from urban_journey.ujml.element_types.data_elements.pickle import PickleLoaderCl
 from urban_journey.ujml.element_types.ref import ReferenceElementClass
 
 element_type_registry = {
-    # General DTSML elemets
+    # General UJML elemets
     'test_element': TestElement,
-    'dtsml': DTSMLElement,
+    'dtsml': UJMLElement,
     'vehicle': VehicleElement,
     'ref': ReferenceElementClass,
 

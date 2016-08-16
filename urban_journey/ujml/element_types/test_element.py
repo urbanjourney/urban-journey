@@ -1,8 +1,8 @@
-from urban_journey.ujml.element_types.base import BaseDTSMLElement
+from urban_journey.ujml.element_types.base import BaseUJMLElement
 from urban_journey.ujml import attribute_types
 
 
-class TestElement(BaseDTSMLElement):
+class TestElement(BaseUJMLElement):
     """This is a test element used in unit test and experiments."""
     # Standard types
     a_str = attribute_types.string_t('a_str')  # Explisitly giving a name to an attribute is optional.

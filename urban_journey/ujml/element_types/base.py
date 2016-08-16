@@ -5,12 +5,12 @@ from urban_journey.ujml.internal_state import InternalState
 import inspect
 
 
-class BaseDTSMLElement(etree.ElementBase):
+class BaseUJMLElement(etree.ElementBase):
     """
         This is the base element type for all dtsml element. By default it already defines the following xml attributes.
 
 
-        **DTSML attributes**
+        **UJML attributes**
 
         .. attribute:: id
 
