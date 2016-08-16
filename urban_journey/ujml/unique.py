@@ -7,6 +7,7 @@ class RequiredType:
     val = None
 
     def __new__(cls, *args, **kwargs):
+        """Returns existing instance of RequiredType if it exists already, otherwise it creates it."""
         if cls.val is None:
             cls.val = super().__new__(cls)
         return cls.val
@@ -22,6 +23,7 @@ class EmptyType:
     val = None
 
     def __new__(cls, *args, **kwargs):
+        """Returns existing instance of EmptyType if it exists already, otherwise it creates it."""
         if cls.val is None:
             cls.val = super().__new__(cls)
         return cls.val
@@ -35,8 +37,3 @@ class EmptyType:
 Required = RequiredType()
 Empty = EmptyType()
 
-
-if __name__ == "__main__":
-    r2 = RequiredType()
-    print(id(r2))
-    print(id(Required))
