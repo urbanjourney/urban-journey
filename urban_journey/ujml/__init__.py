@@ -1,6 +1,6 @@
 __all__ = ['fromstring', 'fromfile']
 
-# http://dare.tudelft.nl/2016/dtsml
+# http://dare.tudelft.nl/2016/ujml
 
 namespace = ''
 

@@ -1,6 +1,6 @@
 from urban_journey.ujml.required_placeholder import Required
 from urban_journey.ujml.exceptions import InvalidTypeError, InvalidShapeError, MissingRequiredInput
-from urban_journey.ujml import namespace as dtsml_namespace
+from urban_journey.ujml import namespace as ujml_namespace
 
 import numpy as np
 
@@ -20,7 +20,7 @@ class Input(object):
             return self.validate(elems[0], elems[0].data)
         else:
             if self.__optional_value is Required:
-                raise MissingRequiredInput(instance.dtsml.filename, instance.sourceline, instance.tag, self.__name)
+                raise MissingRequiredInput(instance.ujml.filename, instance.sourceline, instance.tag, self.__name)
             else:
                 return self.validate(instance, self.__optional_value)
 
@@ -33,18 +33,18 @@ class Input(object):
     def validate(self, instance, data):
         if self.__type is not None:
             if not isinstance(data, self.__type):
-                raise InvalidTypeError(instance.dtsml.filename, instance.sourceline, self.__name)
+                raise InvalidTypeError(instance.ujml.filename, instance.sourceline, self.__name)
         if self.__shape is not None:
             # Data type must be numpy array if checking for type.
             if not isinstance(data, np.ndarray):
-                raise InvalidTypeError(instance.dtsml.filename, instance.sourceline, self.__name)
+                raise InvalidTypeError(instance.ujml.filename, instance.sourceline, self.__name)
             shape = data.shape
             if len(shape) != len(self.__shape):
-                raise InvalidShapeError(instance.dtsml.filename, instance.sourceline, self.__name)
+                raise InvalidShapeError(instance.ujml.filename, instance.sourceline, self.__name)
             else:
                 for s1, s2 in zip(shape, self.__shape):
                     if not np.isnan(s2):
                         if s1 != s2:
-                            raise InvalidShapeError(instance.dtsml.filename, instance.sourceline, self.__name)
+                            raise InvalidShapeError(instance.ujml.filename, instance.sourceline, self.__name)
         return data
 

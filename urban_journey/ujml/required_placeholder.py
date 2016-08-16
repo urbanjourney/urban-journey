@@ -1,4 +1,4 @@
-'''The Required variable in this module is used s a placeholder object in dtsml elements and attributes.'''
+'''The Required variable in this module is used s a placeholder object in ujml elements and attributes.'''
 
 
 class RequiredType:

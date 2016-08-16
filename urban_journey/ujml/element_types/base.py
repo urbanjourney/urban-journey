@@ -7,7 +7,7 @@ import inspect
 
 class BaseUJMLElement(etree.ElementBase):
     """
-        This is the base element type for all dtsml element. By default it already defines the following xml attributes.
+        This is the base element type for all ujml element. By default it already defines the following xml attributes.
 
 
         **UJML attributes**
@@ -16,10 +16,10 @@ class BaseUJMLElement(etree.ElementBase):
 
            **type:** string
 
-        .. attribute:: elem_class (class in dtsml)
+        .. attribute:: elem_class (class in ujml)
 
            **type:** string\n
-           The name of this attribute in dtsml is ``class``
+           The name of this attribute in ujml is ``class``
 
         **Members**
 
@@ -29,7 +29,7 @@ class BaseUJMLElement(etree.ElementBase):
     elem_class = attribute_types.string_t('class', optional_value="")
 
     def _init(self):
-        self._dtsml = None
+        self._ujml = None
         self._case = None
         self._phase = None
         self.current_states_repo = {}
@@ -53,11 +53,11 @@ class BaseUJMLElement(etree.ElementBase):
             state.restore(self)
 
     @property
-    def dtsml(self):
-        """The root dtsml element."""
-        if self._dtsml is None:
-            self._dtsml = self.getroottree().getroot()
-        return self._dtsml
+    def ujml(self):
+        """The root ujml element."""
+        if self._ujml is None:
+            self._ujml = self.getroottree().getroot()
+        return self._ujml
 
     @property
     def case(self):

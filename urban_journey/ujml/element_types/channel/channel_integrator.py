@@ -26,7 +26,7 @@ class IntegratorChannelElement(BaseUJMLElement, Channel):
 
     @property
     def name(self):
-        """The channel name. If it's not defined in the dtsml document, then the element id is used."""
+        """The channel name. If it's not defined in the ujml document, then the element id is used."""
         if self.name_xml_attr is None:
             return self.id
         else:

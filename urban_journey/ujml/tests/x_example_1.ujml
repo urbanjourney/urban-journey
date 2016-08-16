@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
-<dtsml version="1.2.3">
+<ujml version="1.2.3">
     <vehicle name="Stratos II+" version="1.0" OnStart="print('Simulation started')" OnEnd="print('Simulation ended')">
         Example dstml file for the Stratos II+ Rocket
     </vehicle>
 
     <?python
 import numpy as np
-import dtsml.Lib as lib
+import ujml.Lib as lib
 ?>
 
     <!-- DATCOM entry to estimate aerodynamic coefficients-->
@@ -109,4 +109,4 @@ import dtsml.Lib as lib
             </cd_table>
         </aero_simple_parachute>
     </phase>
-</dtsml>
+</ujml>

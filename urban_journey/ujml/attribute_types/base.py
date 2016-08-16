@@ -16,13 +16,13 @@ class AttributeBaseClass(object):
         pass
 
     def set(self, instance, value):
-        raise ModifyingReadOnlyUJMLAttributeError(instance.sourceline, instance.dtsml.filename)
+        raise ModifyingReadOnlyUJMLAttributeError(instance.sourceline, instance.ujml.filename)
 
     def get_optional(self, instance):
         if self.optional_value is not Required:
             return self.optional_value
         else:
-            raise MissingRequiredAttributeError(instance.dtsml.filename,
+            raise MissingRequiredAttributeError(instance.ujml.filename,
                                                 instance.sourceline,
                                                 instance.tag,
                                                 self.attrib_name)
@@ -32,7 +32,7 @@ class AttributeBaseClass(object):
             if self.optional_value is not Required:
                 return self.optional_value
             else:
-                raise MissingRequiredAttributeError(instance.dtsml.filename,
+                raise MissingRequiredAttributeError(instance.ujml.filename,
                                                     instance.sourceline,
                                                     instance.tag,
                                                     self.attrib_name)
@@ -52,6 +52,6 @@ class AttributeBaseClass(object):
         if self.attrib_name is None:
             self.get_attribute_name(instance)
         if self.read_only:
-            raise ModifyingReadOnlyUJMLAttributeError(instance.sourceline, instance.dtsml.filename)
+            raise ModifyingReadOnlyUJMLAttributeError(instance.sourceline, instance.ujml.filename)
         else:
             self.set(instance, value)

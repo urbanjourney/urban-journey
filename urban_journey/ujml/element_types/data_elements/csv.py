@@ -34,7 +34,7 @@ class CsvLoaderClass(DataBaseElement):
         except MissingRequiredAttributeError as e:
             raise e
         except:
-            raise DataLoadError(self.dtsml.filename, self.sourceline, "csv").with_traceback(sys.exc_info()[2])
+            raise DataLoadError(self.ujml.filename, self.sourceline, "csv").with_traceback(sys.exc_info()[2])
 
     @property
     def data(self):

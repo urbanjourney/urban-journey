@@ -26,7 +26,7 @@ class PickleLoaderClass(DataBaseElement):
         try:
             self.__data = pickle.load(open(self.file, "rb"))
         except Exception as e:
-            raise DataLoadError(self.dtsml.filename, self.sourceline, "pickle").with_traceback(sys.exc_info()[2])
+            raise DataLoadError(self.ujml.filename, self.sourceline, "pickle").with_traceback(sys.exc_info()[2])
 
     @property
     def data(self):

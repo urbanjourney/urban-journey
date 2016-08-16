@@ -5,7 +5,7 @@ from urban_journey.ujml.attribute_types.base import AttributeBaseClass
 
 class string_t(AttributeBaseClass):
     """
-    String dtsml attribute descriptor.
+    String ujml attribute descriptor.
     """
     def get(self, instance, owner):
         val_str = instance.get(self.attrib_name)
@@ -20,7 +20,7 @@ class string_t(AttributeBaseClass):
 
 class int_t(AttributeBaseClass):
     """
-    Integer dtsml attribute descriptor.
+    Integer ujml attribute descriptor.
     """
     def get(self, instance, owner):
         try:
@@ -32,7 +32,7 @@ class int_t(AttributeBaseClass):
         except Exception as e:
             import sys
             raise type(e)(builtins.str(e) +
-                          '\n    File {}, line {}'.format(instance.dtsml.filename,
+                          '\n    File {}, line {}'.format(instance.ujml.filename,
                                                         instance.sourceline)).with_traceback(sys.exc_info()[2])
 
     def set(self, instance, x):
@@ -41,13 +41,13 @@ class int_t(AttributeBaseClass):
         except Exception as e:
             import sys
             raise type(e)(builtins.str(e) +
-                          '\n    File {}, line {}'.format(instance.dtsml.filename,
+                          '\n    File {}, line {}'.format(instance.ujml.filename,
                                                         instance.sourceline)).with_traceback(sys.exc_info()[2])
 
 
 class bool_t(AttributeBaseClass):
     """
-    Boolean dtsml attribute descriptor.
+    Boolean ujml attribute descriptor.
     """
     def get(self, instance, owner):
         try:
@@ -59,7 +59,7 @@ class bool_t(AttributeBaseClass):
         except Exception as e:
             import sys
             raise type(e)(builtins.str(e) +
-                          '\n    File {}, line {}'.format(instance.dtsml.filename,
+                          '\n    File {}, line {}'.format(instance.ujml.filename,
                                                         instance.sourceline)).with_traceback(sys.exc_info()[2])
 
     def set(self, instance, x):
@@ -68,13 +68,13 @@ class bool_t(AttributeBaseClass):
         except Exception as e:
             import sys
             raise type(e)(builtins.str(e) +
-                          '\n    File {}, line {}'.format(instance.dtsml.filename,
+                          '\n    File {}, line {}'.format(instance.ujml.filename,
                                                         instance.sourceline)).with_traceback(sys.exc_info()[2])
 
 
 class float_t(AttributeBaseClass):
     """
-    Float dtsml attribute descriptor.
+    Float ujml attribute descriptor.
     """
     def get(self, instance, owner):
         try:
@@ -86,7 +86,7 @@ class float_t(AttributeBaseClass):
         except Exception as e:
             import sys
             raise type(e)(builtins.str(e) +
-                          '\n    File {}, line {}'.format(instance.dtsml.filename,
+                          '\n    File {}, line {}'.format(instance.ujml.filename,
                                                         instance.sourceline)).with_traceback(sys.exc_info()[2])
 
     def set(self, instance, x):
@@ -95,13 +95,13 @@ class float_t(AttributeBaseClass):
         except Exception as e:
             import sys
             raise type(e)(builtins.str(e) +
-                          '\n    File {}, line {}'.format(instance.dtsml.filename,
+                          '\n    File {}, line {}'.format(instance.ujml.filename,
                                                         instance.sourceline)).with_traceback(sys.exc_info()[2])
 
 
 class list_t(AttributeBaseClass):
     """
-    List dtsml attribute descriptor. The contents of the list are evaluated as python code.
+    List ujml attribute descriptor. The contents of the list are evaluated as python code.
     """
     def get(self, instance, owner):
         try:
@@ -113,7 +113,7 @@ class list_t(AttributeBaseClass):
         except Exception as e:
             import sys
             raise type(e)(builtins.str(e) +
-                          '\n    File {}, line {}'.format(instance.dtsml.filename,
+                          '\n    File {}, line {}'.format(instance.ujml.filename,
                                                         instance.sourceline)).with_traceback(sys.exc_info()[2])
 
     def set(self, instance, x):
@@ -122,5 +122,5 @@ class list_t(AttributeBaseClass):
         except Exception as e:
             import sys
             raise type(e)(builtins.str(e) +
-                          '\n    File {}, line {}'.format(instance.dtsml.filename,
+                          '\n    File {}, line {}'.format(instance.ujml.filename,
                                                         instance.sourceline)).with_traceback(sys.exc_info()[2])

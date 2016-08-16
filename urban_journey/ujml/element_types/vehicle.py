@@ -12,7 +12,7 @@ class VehicleElement(BaseUJMLElement):
     def _init(self):
         '''Checks whether the parent of this element is a case element. If not is raises an InvalidChildError.'''
         if not isinstance(self.getparent(), CaseElement):
-            raise InvalidChildError(self.dtsml.filename, self.sourceline, self.getparent().tag, self.tag)
+            raise InvalidChildError(self.ujml.filename, self.sourceline, self.getparent().tag, self.tag)
 
     @property
     def description(self):

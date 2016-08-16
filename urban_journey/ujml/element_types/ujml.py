@@ -9,13 +9,13 @@ from urban_journey.ujml.python_interpreter import UJMLPythonInterpreterClass
 
 
 class UJMLElement(BaseUJMLElement):
-    """The root element for all dtsml files.
+    """The root element for all ujml files.
 
     **UJML attribute**
-    .. attribute:: req_version (version in dtsml)
+    .. attribute:: req_version (version in ujml)
 
            **type:** string\n
-           The name of this attribute in dtsml is ``version``
+           The name of this attribute in ujml is ``version``
 
     **Members**
     """
@@ -23,7 +23,7 @@ class UJMLElement(BaseUJMLElement):
     req_version = attribute_types.string_t('version', True)
 
     def _init(self):
-        self.filename = "<dtsml_input>"
+        self.filename = "<ujml_input>"
         self.interpreter = UJMLPythonInterpreterClass()
 
         self.configure_interpreter()
@@ -44,7 +44,7 @@ class UJMLElement(BaseUJMLElement):
             raise UJMLTagMustBeRootError(self.filename, self.sourceline)
 
     def check_dtst_version(self):
-        """Check whether the currently installed version of dtst satisfies the requirements set in the dtsml file."""
+        """Check whether the currently installed version of dtst satisfies the requirements set in the ujml file."""
         if self.req_version:
             rv = [int(x) for x in self.req_version.split('.')]
             dv = [int(x) for x in dtst_version.split('.')]

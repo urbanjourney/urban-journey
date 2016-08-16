@@ -17,16 +17,16 @@ class InputElement(BaseUJMLElement):
                 return child.data
             else:
                 # Not a valid data element. raise error.
-                raise InvalidDataElement(self.dtsml.filename, self.sourceline, child.tag)
+                raise InvalidDataElement(self.ujml.filename, self.sourceline, child.tag)
         else:
             # There are no elements in here. So there is probably some text to evaluate as python code.
             code = self.text
             if code is not None:
                 # There is text in this element, lets evaluate it as python code.
-                return self.dtsml.interpreter.eval(python_pre_process(code),
-                                                   self.dtsml.filename,
+                return self.ujml.interpreter.eval(python_pre_process(code),
+                                                   self.ujml.filename,
                                                    self.sourceline)
             else:
                 # There is neither code nor a data element in this input. Raise an error.
-                raise UJMLError(self.dtsml.filename, self.sourceline,
+                raise UJMLError(self.ujml.filename, self.sourceline,
                                  "Input element '{}' is missing data".format(self.tag))

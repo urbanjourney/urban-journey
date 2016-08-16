@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<dtsml version="{version}">
+<ujml version="{version}">
     <case>
         <phase>
             <ExampleModule>
@@ -41,4 +41,4 @@
             </ExampleModule>
         </phase>
     </case>
-</dtsml>
+</ujml>

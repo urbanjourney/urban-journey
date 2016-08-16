@@ -4,22 +4,22 @@
 from lxml import etree
 
 
-def fromfile(f, filename="<dtsml_input>"):
+def fromfile(f, filename="<ujml_input>"):
     # TODO: test this function.
     if isinstance(filename, str):
-        dtsml_elem = etree.parse(f, lxml_parser(filename)).getroot()
-        dtsml_elem.filename = f
+        ujml_elem = etree.parse(f, lxml_parser(filename)).getroot()
+        ujml_elem.filename = f
     else:
-        dtsml_elem = etree.parse(f, lxml_parser(filename)).getroot()
-        dtsml_elem.filename = filename
+        ujml_elem = etree.parse(f, lxml_parser(filename)).getroot()
+        ujml_elem.filename = filename
 
-    return dtsml_elem
+    return ujml_elem
 
 
-def fromstring(dtsml_string, filename='<dtsml_input>'):
-    dtsml_elem = etree.fromstring(dtsml_string, lxml_parser(filename))
-    # dtsml_elem.filename = filename
-    return dtsml_elem
+def fromstring(ujml_string, filename='<ujml_input>'):
+    ujml_elem = etree.fromstring(ujml_string, lxml_parser(filename))
+    # ujml_elem.filename = filename
+    return ujml_elem
 
 
 def lxml_parser(filename):

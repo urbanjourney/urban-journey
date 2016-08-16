@@ -1,5 +1,5 @@
 """
-This is the base class that represent data in dtsml files.
+This is the base class that represent data in ujml files.
 """
 
 from urban_journey.ujml.element_types.base import BaseUJMLElement

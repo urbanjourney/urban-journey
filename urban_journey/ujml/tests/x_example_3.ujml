@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
-<dtsml version="{version}">
+<ujml version="{version}">
     <case>
         <channel id="ext_fm">
             <force type="numpy_array" required="True" shape="3,1"/>
             <moment type="numpy_array" required="True" shape="3,1"/>
         </channel>
     </case>
-</dtsml>
+</ujml>

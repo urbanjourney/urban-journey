@@ -3,20 +3,20 @@ from urban_journey.ujml.exceptions import IdNotFoundError
 
 
 class ReferenceElementClass(BaseUJMLElement):
-    """Reference element. It can be used to reference to an other element within the dtsml file."""
+    """Reference element. It can be used to reference to an other element within the ujml file."""
     # def __init__(self, elm):
     #     self._referenced_element = elm
 
     def _init(self):
-        dtsml = super().__getattribute__("getroottree")().getroot()
-        result = dtsml.get_by_id(super().__getattribute__("id"))
+        ujml = super().__getattribute__("getroottree")().getroot()
+        result = ujml.get_by_id(super().__getattribute__("id"))
         super().__setattr__("_referenced_element", None)
         for elem in result:
             if not isinstance(elem, ReferenceElementClass):
                 super().__setattr__("_referenced_element", elem)
                 break
         if super().__getattribute__("_referenced_element") is None:
-            raise IdNotFoundError(dtsml.filename,
+            raise IdNotFoundError(ujml.filename,
                                   super().__getattribute__("sourceline"),
                                   super().__getattribute__("id"))
 
