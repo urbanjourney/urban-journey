@@ -42,7 +42,6 @@ class AttributeBaseClass(object):
         for attr in dir(instance):
             if id(inspect.getattr_static(instance, attr)) == id(self):
                 self.attrib_name = attr
-        assert self.attrib_name
 
     def __get__(self, instance, owner):
         if self.attrib_name is None:
