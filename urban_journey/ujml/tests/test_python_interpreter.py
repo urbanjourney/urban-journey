@@ -38,6 +38,15 @@ class TestUJMLPythonInterpreter(unittest.TestCase):
         from urban_journey.ujml.python_interpreter import UJMLPythonInterpreterClass
         dpi = UJMLPythonInterpreterClass()
         res = dpi.eval('a=1234567890\na', 'asdf', 55)
+        try:
+            # a should only be available in the local scope of the code being evaluated.
+            a = dpi['a']
+            assert False
+        except KeyError:
+            pass
+        except:
+            assert False
+        print(res)
         self.assertEqual(res, 1234567890)
 
     def test_interpreter_multi_line_eval_exec_exception_handling(self):
