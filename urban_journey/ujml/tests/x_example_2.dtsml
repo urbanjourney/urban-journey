@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<dtsml version="{version}">
+    <case>
+        <phase>
+            <ExampleModule>
+                <eval_input>
+                    40+2
+                </eval_input>
+
+                <csv_input>
+                    <csv id="qwerty" file="csv_test.csv"/>
+                </csv_input>
+
+                <ref_input>
+                    <ref id="qwerty"/>
+                </ref_input>
+
+                <type_check_input>
+                    "This is a string"
+                </type_check_input>
+
+                <shape_check_1>
+                    <ref id="qwerty"/>
+                </shape_check_1>
+
+                <shape_check_2>
+                    <ref id="qwerty"/>
+                </shape_check_2>
+
+                <shape_check_3>
+                    <ref id="qwerty"/>
+                </shape_check_3>
+
+                <shape_check_4>
+                    <ref id="qwerty"/>
+                </shape_check_4>
+
+                <shape_check_5>
+                    "It's expecting a np.ndarray. So this one should fail the type check"
+                </shape_check_5>
+            </ExampleModule>
+        </phase>
+    </case>
+</dtsml>

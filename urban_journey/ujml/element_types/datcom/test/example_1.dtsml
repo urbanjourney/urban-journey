@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<dtsml version="{version}">
+    <datcom id="test_parametric_finset_number">
+        <finset1 class="test_parametric_finset_number">
+            <chord>[3, 4, 5]</chord>
+        </finset1>
+    </datcom>
+
+    <datcom id="test_wrong_list_size">
+        <protub>
+            <ptype>["VCYL", "HCYL", "LUG"]</ptype>
+            <nprot>4</nprot>
+        </protub>
+    </datcom>
+
+    <datcom id="test_wrong_types">
+        <protub class="test_wrong_types">
+            <nprot>"weifjiv"</nprot>
+            <ptype>234</ptype>
+        </protub>
+
+        <finset1>
+            <chord>[3.1, 2.5, 5.2]</chord>
+        </finset1>
+    </datcom>
+
+    <datcom id="test_wrong_types">
+        <protub>
+            <nprot>2</nprot>
+            <ptype>["VCYL", "HCYL"]</ptype>
+        </protub>
+        <finset1 class="">
+            <chord>2.4356</chord>
+        </finset1>
+    </datcom>
+
+    <datcom id="test_wrong_parents">
+        <finset1>
+            <nprot>2</nprot>
+        </finset1>
+        <whatever>
+            <ptype>["VCYL", "HCYL"]</ptype>
+        </whatever>
+        <protub>
+            <chord>[3.1, 2.5, 5.2]</chord>
+        </protub>
+    </datcom>
+
+    <datcom id="test_get_namesets">
+        <protub>
+            <nprot>2</nprot>
+            <ptype>["VCYL", "HCYL"]</ptype>
+        </protub>
+        <finset1>
+            <chord>[3.1, 2.5, 5.2]</chord>
+        </finset1>
+        <axibod>
+            <tnose>"POWER"</tnose>
+        </axibod>
+        <refq>
+            <lref>4.5</lref>
+        </refq>
+        <fltcon>
+            <alpha>[-3.0, -1.0, 0, 2.0, 5]</alpha>
+        </fltcon>
+
+    </datcom>
+
+    <datcom id=""
+
+
+
+
+    </a_module>
+</dtsml>
