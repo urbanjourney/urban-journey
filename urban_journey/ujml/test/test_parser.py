@@ -4,7 +4,6 @@ import inspect
 
 from urban_journey import __version__ as uj_version
 from urban_journey.ujml.register import node_register, update_node_register, extension_paths
-from urban_journey.ujml.exceptions import IncompatibleUJVersion, RequiredAttributeError
 from urban_journey.ujml.node_base import NodeBase
 from urban_journey.ujml.root_ujml_node import UjmlNode
 from ..loaders import from_string
@@ -14,6 +13,9 @@ from .test_extentions import stoffs
 from ..base_nodes import path as default_ext_path
 
 test_ext_path = test_ext_path[0]
+
+from urban_journey.ujml.exceptions import IncompatibleUJVersion, RequiredAttributeError, IdMustBeUniqueError, \
+    IdNotFoundError
 
 
 class TestParser(unittest.TestCase):
@@ -57,8 +59,6 @@ class TestParser(unittest.TestCase):
             assert False
         except IncompatibleUJVersion:
             assert True
-        except:
-            assert False
 
     def test_attributes(self):
         """Basic test to see if the basic attribute type are running fine."""
@@ -106,6 +106,47 @@ class TestParser(unittest.TestCase):
             assert False
         except RequiredAttributeError:
             assert True
-        except:
-            assert False
 
+    def test_find_node_by_id(self):
+        ujml_code = '<?xml version="1.0"?><ujml version="{}">'.format(uj_version) + '''
+                           <br_stoff id="foo"/>
+                           <br_stoff id="bar"/>
+                        </ujml>'''
+        ujml = from_string(ujml_code)
+
+        foo = ujml.find_node_by_id("foo")
+        bar = ujml.find_node_by_id("bar")
+
+        assert foo is ujml[0]
+        assert bar is ujml[1]
+
+    def test_find_node_by_id_duplicate_id(self):
+        ujml_code = '<?xml version="1.0"?><ujml version="{}">'.format(uj_version) + '''
+                                   <br_stoff id="foo"/>
+                                   <br_stoff id="foo"/>
+                                </ujml>'''
+        try:
+            from_string(ujml_code)
+            assert False
+        except IdMustBeUniqueError:
+            assert True
+
+    def test_ref(self):
+        ujml_code = '<?xml version="1.0"?><ujml version="{}">'.format(uj_version) + '''
+                                   <csv id="foo" file="csv_test.csv"/>
+                                   <data><ref id="foo"/></data>
+                                </ujml>'''
+        ujml = from_string(ujml_code)
+        # True if the first node in ujml is the same node as the first node in data.
+        assert ujml[0] is ujml[1][0]
+
+    def test_ref_id_not_found(self):
+        ujml_code = '<?xml version="1.0"?><ujml version="{}">'.format(uj_version) + '''
+                                           <csv id="foo" file="csv_test.csv"/>
+                                           <data><ref id="bar"/></data>
+                                        </ujml>'''
+        try:
+            from_string(ujml_code)[1][0]
+            assert False
+        except IdNotFoundError:
+            assert True

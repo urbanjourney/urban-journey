@@ -6,13 +6,14 @@ from .node_base import NodeBase
 from .interpreter import UJMLPythonInterpreter
 from .attributes import string_t
 from urban_journey import __version__ as uj_version
-from .exceptions import IncompatibleUJVersion
+from .exceptions import IncompatibleUJVersion, IdMustBeUniqueError
 
 
 class UjmlNode(NodeBase):
     req_version = string_t(name="version")
 
     def __init__(self, element: etree.ElementBase, file_name):
+        self.node_dict_by_id = {}
         super().__init__(element, None)
         self.interpreter = UJMLPythonInterpreter()
         self.__file_name = os.path.abspath(file_name)
@@ -30,6 +31,18 @@ class UjmlNode(NodeBase):
                 rv[1] == dv[1] and
                 rv[2] <= dv[2]):
             self.raise_exception(IncompatibleUJVersion, self.req_version, uj_version)
+
+    def register_node(self, node: NodeBase):
+        """Registers a node."""
+        # Register by id.
+        if node.id is not None:
+            if node.id in self.node_dict_by_id:
+                raise node.raise_exception(IdMustBeUniqueError, node.id)
+            else:
+                self.node_dict_by_id[node.id] = node
+
+    def deregister_node(self, node: NodeBase):
+        self.node_dict_by_id.pop(node.id, None)
 
     @property
     def root(self):

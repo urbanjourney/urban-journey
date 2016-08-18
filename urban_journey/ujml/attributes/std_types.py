@@ -1,20 +1,19 @@
 import builtins
 from urban_journey.ujml.attributes.base import AttributeBaseClass
-from urban_journey.ujml.node_base import NodeBase
 
 
 class string_t(AttributeBaseClass):
     """
     String ujml attribute descriptor.
     """
-    def get(self, instance: NodeBase, owner):
+    def get(self, instance, owner):
         val_str = instance.element.get(self.attrib_name)
         if val_str is None:
             return self.get_optional(instance)
         else:
             return val_str
 
-    def set(self, instance: NodeBase, x):
+    def set(self, instance, x):
         instance.element.set(self.attrib_name, x)
 
 
@@ -22,7 +21,7 @@ class int_t(AttributeBaseClass):
     """
     Integer ujml attribute descriptor.
     """
-    def get(self, instance: NodeBase, owner):
+    def get(self, instance, owner):
         try:
             val_str = instance.element.get(self.attrib_name)
             if val_str is None:
@@ -35,7 +34,7 @@ class int_t(AttributeBaseClass):
                           '\n    File {}, line {}'.format(instance.file_name,
                                                           instance.source_line)).with_traceback(sys.exc_info()[2])
 
-    def set(self, instance: NodeBase, x):
+    def set(self, instance, x):
         try:
             instance.element.set(self.attrib_name, builtins.str(builtins.int(x)))
         except Exception as e:
@@ -49,7 +48,7 @@ class bool_t(AttributeBaseClass):
     """
     Boolean ujml attribute descriptor.
     """
-    def get(self, instance: NodeBase, owner):
+    def get(self, instance, owner):
         try:
             val_str = instance.element.get(self.attrib_name)
             if val_str is None:
@@ -62,7 +61,7 @@ class bool_t(AttributeBaseClass):
                           '\n    File {}, line {}'.format(instance.file_name,
                                                           instance.source_line)).with_traceback(sys.exc_info()[2])
 
-    def set(self, instance: NodeBase, x):
+    def set(self, instance, x):
         try:
             instance.element.set(self.attrib_name, builtins.str(builtins.bool(x)))
         except Exception as e:
@@ -76,7 +75,7 @@ class float_t(AttributeBaseClass):
     """
     Float ujml attribute descriptor.
     """
-    def get(self, instance: NodeBase, owner):
+    def get(self, instance, owner):
         try:
             val_str = instance.element.get(self.attrib_name)
             if val_str is None:
@@ -89,7 +88,7 @@ class float_t(AttributeBaseClass):
                           '\n    File {}, line {}'.format(instance.file_name,
                                                           instance.source_line)).with_traceback(sys.exc_info()[2])
 
-    def set(self, instance: NodeBase, x):
+    def set(self, instance, x):
         try:
             instance.element.set(self.attrib_name, builtins.str(builtins.float(x)))
         except Exception as e:
@@ -103,7 +102,7 @@ class list_t(AttributeBaseClass):
     """
     List ujml attribute descriptor. The contents of the list are evaluated as python code.
     """
-    def get(self, instance: NodeBase, owner):
+    def get(self, instance, owner):
         try:
             val_str = instance.element.get(self.attrib_name)
             if val_str is None:
@@ -116,7 +115,7 @@ class list_t(AttributeBaseClass):
                           '\n    File {}, line {}'.format(instance.file_name,
                                                           instance.source_line)).with_traceback(sys.exc_info()[2])
 
-    def set(self, instance: NodeBase, x):
+    def set(self, instance, x):
         try:
             instance.element.set(self.attrib_name, builtins.str(builtins.float(x)))
         except Exception as e:

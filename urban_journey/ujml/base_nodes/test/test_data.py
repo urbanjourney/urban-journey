@@ -48,6 +48,5 @@ class TestData(unittest.TestCase):
                 </ujml>
                 '''
         ujml_elem = from_string(ujml_code, __file__)
-        print(ujml_elem[1].data)
         assert (correct1 == ujml_elem[0].data).all()
         assert (correct2 == ujml_elem[1].data).all()

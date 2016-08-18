@@ -1,7 +1,6 @@
 import builtins
 from urban_journey.ujml.interpreter import UJMLPythonSource
 from urban_journey.ujml.attributes.base import AttributeBaseClass
-from urban_journey.ujml.node_base import NodeBase
 
 
 class Exec(AttributeBaseClass):
@@ -13,7 +12,7 @@ class Exec(AttributeBaseClass):
         super().__init__(name, True)
         self.code = None
 
-    def get(self, instance: NodeBase, _):
+    def get(self, instance, _):
         if self.code is None:
             try:
                 self.code = UJMLPythonSource(instance.root.interpreter,
@@ -34,7 +33,7 @@ class Eval(AttributeBaseClass):
     def __init__(self, name=None):
         super().__init__(name, True)
 
-    def get(self, instance: NodeBase, owner):
+    def get(self, instance, owner):
         try:
             return instance.root.interpreter.eval(instance.element.get(self.attrib_name),
                                                   instance.file_name,

@@ -84,6 +84,16 @@ class InvalidElementInputError(BaseUJMLError):
             .format(self.elem_name)
 
 
+class IdMustBeUniqueError(BaseUJMLError):
+    def __init__(self, filename, lineno, id):
+        super().__init__(filename, lineno)
+        self.id = id
+
+    def _error_message(self):
+        return "Id '{}' already exists."\
+            .format(self.id)
+
+
 class InvalidChildError(BaseUJMLError):
     '''Raised when an element is not a valid child of the parent element.'''
     def __init__(self, filename, lineno, parent_name, child_name):
