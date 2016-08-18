@@ -36,4 +36,3 @@ class EmptyType:
 
 Required = RequiredType()
 Empty = EmptyType()
-

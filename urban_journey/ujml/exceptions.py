@@ -13,23 +13,27 @@ class BaseUJMLError(Exception):
         return '\n    File "{}", line {}\n        '.format(self.__filename, self.__lineno)+self._error_message()
 
 
-class ModifyingReadOnlyUJMLAttributeError(Exception):
-    '''Raised when a read-only attribute is being modified.'''
-    def __str__(self):
-        return "Read-only ujml attribute is being modified"
-
-
-class UJMLTagMustBeRootError(BaseUJMLError):
-    '''Raised when a required attributed is missing.'''
+class RootMustBeUJMLError(BaseUJMLError):
+    '''Raised when the root element is not a ujml element.'''
     def __init__(self, filename, lineno):
         super().__init__(filename, lineno)
 
     def _error_message(self):
-        return "Element 'ujml' must be root element."
+        return "The root element must a 'ujml' element."
+
+
+class ReadOnlyAttributeError(BaseUJMLError):
+    '''Raised when attempting to modify a readonly ujml attribute.'''
+    def __init__(self, filename, lineno, attr_name):
+        super().__init__(filename, lineno)
+        self.attr_name = attr_name
+
+    def _error_message(self):
+        return "Attempting to modify readonly attribute '{}'.".format(self.attr_name)
 
 
 class UnknownProcessingInstructionError(BaseUJMLError):
-    '''Raised when a required attributed is missing.'''
+    '''Raised when an unrecognized processing instruction is read.'''
     def __init__(self, filename, lineno, pi_name):
         super().__init__(filename, lineno)
         self.pi_name = pi_name
@@ -39,7 +43,7 @@ class UnknownProcessingInstructionError(BaseUJMLError):
 
 
 class UnknownElementError(BaseUJMLError):
-    '''Raised when a required attributed is missing.'''
+    '''Raised when an unknown element is read.'''
     def __init__(self, filename, lineno, elem_name):
         super().__init__(filename, lineno)
         self.elem_name = elem_name
@@ -48,15 +52,15 @@ class UnknownElementError(BaseUJMLError):
         return "Unknown element '{}'.".format(self.elem_name)
 
 
-class IncompatibleDTSTVersion(BaseUJMLError):
-    '''Raised when the required DTST version is incompatible with the one installed.'''
+class IncompatibleUJVersion(BaseUJMLError):
+    '''Raised when the required Urban Journey version is incompatible with the one installed.'''
     def __init__(self, filename, lineno, ver_required, ver_installed):
         super().__init__(filename, lineno)
         self.ver_required = ver_required
         self.ver_installed = ver_installed
 
     def _error_message(self):
-        return "DTST version '{}' was found but '{}' is required.".format(self.ver_installed, self.ver_required)
+        return "Urban Journey version '{}' was found but '{}' is required.".format(self.ver_installed, self.ver_required)
 
 
 class InvalidAttributeInputError(BaseUJMLError):
@@ -104,7 +108,6 @@ class UJMLError(BaseUJMLError):
 
 class DataLoadError(BaseUJMLError):
     """Error while loading data."""
-    # This exception exists only because I'm sometimes to lazy to create a new exception class.
     def __init__(self, filename, lineno, data_element_name):
         super().__init__(filename, lineno)
         self.data_element_name = data_element_name
@@ -113,7 +116,7 @@ class DataLoadError(BaseUJMLError):
         return "Error loading data at data element '{}'.".format(self.data_element_name)
 
 
-class MissingRequiredAttributeError(BaseUJMLError):
+class RequiredAttributeError(BaseUJMLError):
     """An ujml element is missing a required attribute."""
     def __init__(self, filename, lineno, element_name, attribute_name):
         super().__init__(filename, lineno)
@@ -162,6 +165,16 @@ class InvalidShapeError(BaseUJMLError):
 
     def _error_message(self):
         return "Element '{}' received data of invalid shape".format(self.element_name)
+
+
+class InvalidInputError(BaseUJMLError):
+    """Raised when invalid input was given."""
+    def __init__(self, filename, lineno, element_name):
+        super().__init__(filename, lineno)
+        self.element_name = element_name
+
+    def _error_message(self):
+        return "Invalid input at '{}'.".format(self.element_name)
 
 
 class MissingRequiredInput(BaseUJMLError):
