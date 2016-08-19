@@ -63,7 +63,7 @@ class IncompatibleUJVersion(BaseUJMLError):
         return "Urban Journey version '{}' was found but '{}' is required.".format(self.ver_installed, self.ver_required)
 
 
-class InvalidAttributeInputError(BaseUJMLError):
+class InvalidAttributeValueError(BaseUJMLError, ValueError):
     def __init__(self, filename, lineno, elem_name, attrib_name):
         super().__init__(filename, lineno)
         self.elem_name = elem_name
@@ -74,7 +74,7 @@ class InvalidAttributeInputError(BaseUJMLError):
             .format(self.atrib_name, self.elem_name)
 
 
-class InvalidElementInputError(BaseUJMLError):
+class InvalidElementValueError(BaseUJMLError, ValueError):
     def __init__(self, filename, lineno, elem_name):
         super().__init__(filename, lineno)
         self.elem_name = elem_name

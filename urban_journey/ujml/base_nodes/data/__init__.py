@@ -1,3 +1,3 @@
 from .csv import csv
 from .data import data
-from .pickle import pickle
+from .pickle_loader import pickle

@@ -1,6 +1,7 @@
 import os
 
 from lxml import etree
+import numpy as np
 
 from .node_base import NodeBase
 from .interpreter import UJMLPythonInterpreter
@@ -16,6 +17,7 @@ class UjmlNode(NodeBase):
         self.node_dict_by_id = {}
         super().__init__(element, None)
         self.interpreter = UJMLPythonInterpreter()
+        self.configure_interpreter()
         self.__file_name = os.path.abspath(file_name)
         self.check_version()
         self.update_children()
@@ -23,6 +25,7 @@ class UjmlNode(NodeBase):
     def configure_interpreter(self):
         """Configures the embedded interpreter, by adding default members."""
         self.interpreter['abs_path'] = self.abs_path
+        self.interpreter['np'] = np
 
     def check_version(self):
         rv = [int(x) for x in self.req_version.split('.')]

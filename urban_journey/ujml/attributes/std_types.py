@@ -1,5 +1,6 @@
 import builtins
 from urban_journey.ujml.attributes.base import AttributeBaseClass
+from urban_journey.ujml.exceptions import InvalidAttributeValueError
 
 
 class string_t(AttributeBaseClass):
@@ -54,7 +55,10 @@ class bool_t(AttributeBaseClass):
             if val_str is None:
                 return self.get_optional(instance)
             else:
-                return bool(val_str)
+                val_str = val_str.lower()
+                if val_str in ['true', 'false']:
+                    return val_str == "true" if val_str in ['true', 'false'] else \
+                        instance.raise_exception(InvalidAttributeValueError, instance.tag, self.attrib_name)
         except Exception as e:
             import sys
             raise type(e)(builtins.str(e) +
