@@ -3,6 +3,7 @@
 import numpy as np
 import math
 
+
 def q_to_euler(q):
     """Converts Quaternions to Euler angles.
     
@@ -26,6 +27,7 @@ def q_to_euler(q):
     psi = np.arctan2(2*(q[0]*q[3]+q[1]*q[2]),(q[0]**2+q[1]**2-q[2]**2-q[3]**2))
     
     return phi, theta, psi
+
 
 def dcm_to_q(DCM):
     """Converts Direction Cosine Matrix to Quaternions.
@@ -199,6 +201,7 @@ def dcm_to_euler(DCM, rtype='zyx', unit='rad'):
     else:
         return np.rad2deg(r0), np.rad2deg(r1), np.rad2deg(r2)
 
+
 def _threeaxisrot(r11,r12,r21,r31,r32):
     r0 = np.arctan2( r11, r12 );
     r1 = np.arcsin( r21 );
@@ -211,7 +214,8 @@ def _twoaxisrot(r11, r12, r21, r31, r32):
     r1 = np.arccos( r21 );
     r2 = np.arctan2( r31, r32 );
     return r0, r1, r2 
-    
+
+
 def euler_to_dcm(phi ,theta, psi, rtype = "zyx", unit='rad'):
     """Converts Euler angles to Direction Cosine Matrix.
     
@@ -323,20 +327,20 @@ def flat_to_lla(x, lla0):
     """
 
     # Data from WGS84
-    a =  6378137.0;
-    f  = 1/298.257223563;
+    a =  6378137.0
+    f  = 1/298.257223563
     
     # Some speed optimization
     F = (2*f-f*f)
     rlat = lla0[0,0]
     srlat2 = math.sin(rlat)
 
-    Rn = a/math.sqrt(1-F*srlat2);
-    Rm = Rn*((1-F)/(1-F*srlat2));
+    Rn = a/math.sqrt(1-F*srlat2)
+    Rm = Rn*((1-F)/(1-F*srlat2))
 
     # Change in lla 
-    dLat = x[0,0]*math.atan2(1,Rm);
-    dLon = x[1,0]*math.atan2(1,Rn*math.cos(rlat));
+    dLat = x[0,0]*math.atan2(1,Rm)
+    dLon = x[1,0]*math.atan2(1,Rn*math.cos(rlat))
     da = -x[2,0]
 
     return np.add(lla0, np.array([[dLat],[dLon],[da]]))
@@ -454,6 +458,7 @@ def wgs84_to_ecef(lla ,unit="rad"):
 
     return np.array([[x],[y],[z]])
 
+
 def ecef_to_spherical(Xc):
     x = Xc[0,0] ; y = Xc[1,0] ; z = Xc[2,0]
     r = math.sqrt(x**2+y**2+z**2)
@@ -481,6 +486,7 @@ def hgeo_to_hpot(h_geo, Re=6371000.0):
     
     return Re/(Re+h_geo)*h_geo
 
+
 def ft_to_m(feet):
     """Conversion from feet to meters.
     
@@ -497,6 +503,7 @@ def ft_to_m(feet):
 
     return 0.3048*feet
 
+
 def m_to_ft(meters):
     """Conversion from feet to meters.
 
@@ -512,6 +519,7 @@ def m_to_ft(meters):
     """
 
     return meters/0.3048
+
 
 def state_to_keplerian(Xi,Vi):
     """
@@ -578,6 +586,7 @@ def state_to_keplerian(Xi,Vi):
     TA = math.degrees(sign*math.acos(dotprod))
 
     return [a,e,i,RAAN,AOP,TA]
+
 
 def keplerian_to_state(a,e,inc,RAAN,AOP,TA):
     """Converts the keplerian orbital elements into a state vector in the ECI
@@ -646,4 +655,4 @@ def keplerian_to_state(a,e,inc,RAAN,AOP,TA):
     Xi = np.array([[x],[y],[z]])
     Vi = np.array([[Vx],[Vy],[Vz]])
 
-    return [Xi,Vi]
+    return [Xi, Vi]

@@ -157,7 +157,7 @@ class InvalidDataElement(BaseUJMLError):
         return "'{}' is not  valid data element.".format(self.element_name)
 
 
-class InvalidTypeError(BaseUJMLError):
+class UJMLTypeError(BaseUJMLError, TypeError):
     """This error is raised whenever a parameter of invalid type has been passed."""
     def __init__(self, filename, lineno, element_name):
         super().__init__(filename, lineno)

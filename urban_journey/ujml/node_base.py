@@ -1,11 +1,12 @@
 import os
+import inspect
 
 from lxml import etree
 
 from urban_journey.common.cached import cached
 from urban_journey.ujml.register import node_register, update_node_register
 from urban_journey.ujml.exceptions import UnknownElementError, IdNotFoundError
-from urban_journey.ujml.attributes import string_t
+from urban_journey.ujml.attributes import string_t, input
 
 
 class NodeBase:
@@ -95,7 +96,7 @@ class NodeBase:
     def update_children(self):
         self.__children = []
         for element in self.element:
-            self.__create_child(element)
+            self.create_child(element)
 
     def __getitem__(self, item):
         return self.children[item]
@@ -103,7 +104,7 @@ class NodeBase:
     def __len__(self):
         return len(self.children)
 
-    def __create_child(self, element: etree.ElementBase):
+    def create_child(self, element: etree.ElementBase):
         """This function looks for the type of a child node."""
         # If this is a ref element. Find the element it references and add it as a child.
         if element.tag == "ref":
@@ -112,19 +113,25 @@ class NodeBase:
             if child is None:
                 raise IdNotFoundError(self.file_name, element.sourceline, node_id)
         else:
-            # Check if parent element knows what type it is.
-            klass = self.child_lookup(element)
+            # Check if this is a data input element
+            if isinstance(inspect.getattr_static(self, element.tag, None), input):
+                from urban_journey.ujml.base_nodes.data import data
+                klass = data
+            else:
+                # Check if parent element knows what type it is.
+                klass = self.child_lookup(element)
 
             # Update the node_register if it's empty.
             if len(node_register) == 0:
                 update_node_register()
 
             # Look for node class in the register.
-            if klass is None and element.tag in node_register:
-                klass = node_register[element.tag]
-            else:
-                # Node type was not found.
-                raise UnknownElementError(self.file_name, element.sourceline, element.tag)
+            if klass is None:
+                if element.tag in node_register:
+                    klass = node_register[element.tag]
+                else:
+                    # Node type was not found.
+                    raise UnknownElementError(self.file_name, element.sourceline, element.tag)
             child = klass(element, self.root)
 
         # Add child

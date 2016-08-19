@@ -2,10 +2,13 @@ import unittest
 import os
 import inspect
 
+import numpy as np
+
 from urban_journey import __version__ as uj_version
 from urban_journey.ujml.register import node_register, update_node_register, extension_paths
 from urban_journey.ujml.node_base import NodeBase
 from urban_journey.ujml.root_ujml_node import UjmlNode
+from urban_journey.ujml.base_nodes.data import data
 from ..loaders import from_string
 
 from .test_extentions import __path__ as test_ext_path
@@ -15,7 +18,7 @@ from ..base_nodes import path as default_ext_path
 test_ext_path = test_ext_path[0]
 
 from urban_journey.ujml.exceptions import IncompatibleUJVersion, RequiredAttributeError, IdMustBeUniqueError, \
-    IdNotFoundError
+    IdNotFoundError, UJMLTypeError, MissingRequiredInput, InvalidShapeError
 
 
 class TestParser(unittest.TestCase):
@@ -105,6 +108,62 @@ class TestParser(unittest.TestCase):
             bn_stoff.a_required
             assert False
         except RequiredAttributeError:
+            assert True
+
+    def test_attribute_input_loading(self):
+        ujml = from_string(self.ujml_example_2)
+
+        correct = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+
+        eval_input = ujml[0][0]
+        csv_input = ujml[0][1]
+        ref_input = ujml[0][2]
+
+        assert isinstance(eval_input, data)
+        assert isinstance(csv_input, data)
+        assert isinstance(ref_input, data)
+        assert eval_input.data == 42
+        assert (correct == csv_input.data).all()
+        assert (correct == ref_input.data).all()
+
+    def test_module_input_attribute(self):
+        dtsml_elem = from_string(self.ujml_example_2)
+        c_stoff = dtsml_elem[0]
+
+        correct = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+
+        assert c_stoff.eval_input == 42
+        assert (correct == c_stoff.csv_input).all()
+        assert (correct == c_stoff.ref_input).all()
+
+        self.assertTrue((correct == c_stoff.optional_input).all())
+        try:
+            c_stoff.required_input
+            assert False
+        except MissingRequiredInput:
+            assert True
+
+        self.assertEqual(c_stoff.type_check_input, "This is a string")
+
+        self.assertTrue((correct == c_stoff.shape_check_1).all())
+        self.assertTrue((correct == c_stoff.shape_check_2).all())
+
+        try:
+            c_stoff.shape_check_3
+            assert False
+        except InvalidShapeError:
+            assert True
+
+        try:
+            c_stoff.shape_check_4
+            assert False
+        except InvalidShapeError:
+            assert True
+
+        try:
+            c_stoff.shape_check_5
+            assert False
+        except UJMLTypeError:
             assert True
 
     def test_find_node_by_id(self):

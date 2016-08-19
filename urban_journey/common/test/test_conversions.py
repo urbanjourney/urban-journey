@@ -1,6 +1,7 @@
 import unittest
 from ..conversions import *
 
+
 class Conversions(unittest.TestCase): 
     def test_dcm_to_euler(self):
         input =  [[0.4741598818, 0.7026971887, 0.5304611837, 0.2590347240, 0.4644898356, -0.8468472143, -0.8414709848, 0.5389488414, 0.0382194732],
