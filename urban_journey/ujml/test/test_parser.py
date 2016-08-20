@@ -201,9 +201,9 @@ class TestParser(unittest.TestCase):
 
     def test_ref_id_not_found(self):
         ujml_code = '<?xml version="1.0"?><ujml version="{}">'.format(uj_version) + '''
-                                           <csv id="foo" file="csv_test.csv"/>
-                                           <data><ref id="bar"/></data>
-                                        </ujml>'''
+                        <csv id="foo" file="csv_test.csv"/>
+                        <data><ref id="bar"/></data>
+                     </ujml>'''
         try:
             from_string(ujml_code)[1][0]
             assert False

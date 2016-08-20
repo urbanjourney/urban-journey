@@ -34,12 +34,4 @@ class Eval(AttributeBaseClass):
         super().__init__(name, True)
 
     def get(self, instance, owner):
-        try:
-            return instance.root.interpreter.eval(instance.element.get(self.attrib_name),
-                                                  instance.file_name,
-                                                  instance.source_line)
-        except Exception as e:
-            import sys
-            raise type(e)(builtins.str(e) +
-                          '    File {}, line {}'.format(instance.file_name,
-                                                        instance.source_line)).with_traceback(sys.exc_info()[2])
+        return instance.eval(instance.element.get(self.attrib_name))

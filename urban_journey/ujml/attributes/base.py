@@ -1,11 +1,11 @@
+import inspect
+from abc import ABCMeta, abstractmethod
+from collections import defaultdict
+
 from urban_journey.ujml.exceptions import ReadOnlyAttributeError
-from urban_journey.ujml.unique import Required
+from urban_journey.ujml.unique import Required, Empty
 
 from urban_journey.ujml.exceptions import RequiredAttributeError
-
-import inspect
-
-from abc import ABCMeta, abstractmethod
 
 
 class AttributeBaseClass(metaclass=ABCMeta):
@@ -13,6 +13,7 @@ class AttributeBaseClass(metaclass=ABCMeta):
         self.read_only = read_only
         self.attrib_name = name
         self.optional_value = optional_value
+        self.value = defaultdict(Empty)
 
     @abstractmethod
     def get(self, instance, owner):
@@ -36,9 +37,13 @@ class AttributeBaseClass(metaclass=ABCMeta):
                 self.attrib_name = attr
 
     def __get__(self, instance, owner):
-        if self.attrib_name is None:
-            self.get_attribute_name(instance)
-        return self.get(instance, owner)
+        if self.value[instance] is Empty:
+            if self.attrib_name is None:
+                self.get_attribute_name(instance)
+            self.value[instance] = self.get(instance, owner)
+            return self.value[instance]
+        else:
+            return self.value[instance]
 
     def __set__(self, instance, value):
         if self.attrib_name is None:
@@ -47,3 +52,4 @@ class AttributeBaseClass(metaclass=ABCMeta):
             instance.raise_exception(ReadOnlyAttributeError, self.attrib_name)
         else:
             self.set(instance, value)
+            self.value[instance] = value

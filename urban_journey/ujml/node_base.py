@@ -67,11 +67,17 @@ class NodeBase:
     def source_line(self):
         return self.element.sourceline
 
-    def exec(self, source, file_name, source_line, is_global=False, **kwargs):
-        return self.root.interpreter.exec(source, file_name, source_line, is_global, **kwargs)
+    def exec(self, source, file_name=None, source_line=None, is_global=False, **kwargs):
+        return self.root.interpreter.exec(source,
+                                          file_name or self.file_name,
+                                          source_line or self.source_line,
+                                          is_global, **kwargs)
 
-    def eval(self, source, file_name, source_line, is_global=False, **kwargs):
-        return self.root.interpreter.eval(source, file_name, source_line, is_global, **kwargs)
+    def eval(self, source, file_name=None, source_line=None, is_global=False, **kwargs):
+        return self.root.interpreter.eval(source,
+                                          file_name or self.file_name,
+                                          source_line or self.source_line,
+                                          is_global, **kwargs)
 
     def raise_exception(self, klass, *args, extra_traceback=None, **kwargs):
         if extra_traceback is not None:

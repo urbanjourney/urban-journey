@@ -18,6 +18,9 @@ class RequiredType:
     def __str__(self):
         return "Required"
 
+    def __call__(self, *args, **kwargs):
+        return self
+
 
 class EmptyType:
     val = None
@@ -33,6 +36,9 @@ class EmptyType:
 
     def __str__(self):
         return "Empty"
+
+    def __call__(self, *args, **kwargs):
+        return self
 
 Required = RequiredType()
 Empty = EmptyType()

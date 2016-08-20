@@ -1,13 +1,9 @@
 import re
-import numpy as np
 
 from urban_journey.ujml.data_base import DataNodeBase
 from urban_journey.ujml.exceptions import InvalidInputError
 from urban_journey.common.cached import cached
 from urban_journey.ujml.attributes import bool_t
-
-# Is list regex: (?:\[.*?\])|(?:\(.*?\))|(?:\{.*?\})|(,|;)
-# To 2d list: (?:^|; *)(.*?)(?:$|(?=;))
 
 is_list_regex = re.compile(r"(?:\[[\s\S]*?\])|(?:\([\s\S]*?\))|(?:\{[\s\S]*?\})|(,|;)")
 to_2d_list_regex = re.compile(r"(?:^|; *)([\s\S]*?)(?:$|(?=;))")
@@ -54,11 +50,9 @@ class data(DataNodeBase):
                 break
         if t == 0:
             return source
-        print(t)
 
         if t == 2:
             (source, n) = to_2d_list_regex.subn(r"[\1],", source)
-            print(n)
 
         if is_ndarray:
             source = "np.array([%s])" % (source,)
