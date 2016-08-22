@@ -11,6 +11,10 @@ class f_stoff(ModuleNodeBase):
     ip = Input(channel_name="foo")
     s = Eval()
 
+    def __init__(self, element, root):
+        super().__init__(element, root)
+        self.subscribe()
+
     async def transmit(self):
         await self.op.flush("Some data")
 

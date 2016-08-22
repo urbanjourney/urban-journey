@@ -18,6 +18,7 @@ class TestChannelAndPorts(unittest.TestCase):
 
             def __init__(self, channel_register):
                 super().__init__(channel_register)
+                self.op.subscribe()
 
             async def transmit(self):
                 print("transmitting:", self.op.channel_name)
@@ -29,6 +30,7 @@ class TestChannelAndPorts(unittest.TestCase):
             def __init__(self, channel_register, semaphore):
                 super().__init__(channel_register)
                 self.semaphore = semaphore
+                self.ip.subscribe()
 
             @activity(ip)
             async def foo(self, ip):

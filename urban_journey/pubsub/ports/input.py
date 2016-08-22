@@ -2,8 +2,8 @@
 
 """
 
-from urban_journey.pubsub.ports.base import PortBase
-from urban_journey.pubsub.trigger import DescriptorClassTriggerBase, Trigger
+from urban_journey.pubsub.ports.base import PortBase, PortDescriptorBase
+from urban_journey.pubsub.trigger import Trigger
 from urban_journey.pubsub.descriptor.instance import DescriptorInstance
 from urban_journey.pubsub.descriptor.static import DescriptorStatic
 
@@ -12,8 +12,8 @@ from asyncio import wait_for, wait, shield
 
 
 class InputPort(PortBase, DescriptorInstance, Trigger):
-    def __init__(self, parent_object, attribute_name, channel_name=None, auto_connect=True, time_out=5):
-        PortBase.__init__(self, parent_object, attribute_name, channel_name, auto_connect)
+    def __init__(self, parent_object, attribute_name, channel_name=None, time_out=5):
+        PortBase.__init__(self, parent_object.channel_register, attribute_name, channel_name)
         DescriptorInstance.__init__(self, parent_object, attribute_name)
         Trigger.__init__(self)
         self.time_out = time_out
@@ -29,7 +29,7 @@ class InputPort(PortBase, DescriptorInstance, Trigger):
         await wait_for(shield(wait(futures)), self.time_out)
 
 
-class InputPortStatic(DescriptorStatic, Trigger):
+class InputPortStatic(PortDescriptorBase, Trigger):
     def __init__(self, channel_name=None):
         DescriptorStatic.__init__(self, InputPort)
         Trigger.__init__(self)

@@ -1,20 +1,22 @@
 from urban_journey.common.cached import cached
+from urban_journey.pubsub.descriptor.static import DescriptorStatic
 
 
 class PortBase:
-    def __init__(self, parent_object, attribute_name, channel_name, auto_connect):
+    def __init__(self, channel_register, attribute_name, channel_name):
         self.channel = None
+        self.channel_register = channel_register
+        self.input_channel_name = channel_name
         self.__attribute_name = attribute_name
 
-        if auto_connect:
-            if parent_object.channel_register is not None:
-                if channel_name is None:
-                    channel = parent_object.channel_register.get_channel(attribute_name)
-                else:
-                    channel = parent_object.channel_register.get_channel(channel_name)
-                channel.add_port(self)
-            else:
-                raise ValueError("ModelBase object has no channel_register assigned to it.")
+    def subscribe(self, channel_name=None):
+        self.unsubscribe()
+        channel = self.channel_register.get_channel(channel_name or self.input_channel_name or self.attribute_name)
+        channel.add_port(self)
+
+    def unsubscribe(self):
+        # TODO: Implement port unsubscribe. Return without exceptions when not subscribed.
+        pass
 
     @cached
     def attribute_name(self):
@@ -26,3 +28,7 @@ class PortBase:
 
     def set_channel(self, channel):
         self.channel = channel
+
+
+class PortDescriptorBase(DescriptorStatic):
+    pass

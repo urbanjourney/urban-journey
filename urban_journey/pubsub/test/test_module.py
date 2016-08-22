@@ -1,8 +1,10 @@
 import unittest
 
 from urban_journey.pubsub.module_base import ModuleBase
+from urban_journey.pubsub.channels.channel_register import ChannelRegister
 from urban_journey.pubsub.activity import activity
 from urban_journey.pubsub.trigger import Trigger, DescriptorClassTrigger
+from urban_journey import Input, Output
 
 
 class TestModule(unittest.TestCase):
@@ -11,6 +13,9 @@ class TestModule(unittest.TestCase):
             trigger1 = DescriptorClassTrigger(Trigger)
             trigger2 = DescriptorClassTrigger(Trigger)
             trigger3 = DescriptorClassTrigger(Trigger)
+
+            ip = Input()
+            op = Output()
 
             not_trigger1 = None
             not_trigger2 = None
@@ -33,7 +38,8 @@ class TestModule(unittest.TestCase):
         trigger_list = [
             "trigger1",
             "trigger2",
-            "trigger3"
+            "trigger3",
+            "ip"
         ]
 
         activity_list = [
@@ -41,12 +47,18 @@ class TestModule(unittest.TestCase):
             "activity2"
         ]
 
-        foo = Foo()
-        self.assertEqual(len(trigger_list), len(foo.triggers))
-        self.assertEqual(len(activity_list), len(foo.activities))
+        port_list = ['ip', 'op']
+
+        foo = Foo(ChannelRegister())
+        assert len(trigger_list) == len(foo.triggers)
+        assert len(activity_list) == len(foo.activities)
+        assert len(port_list) == len(foo.ports)
 
         for name in Foo.triggers:
-            self.assertIn(name, trigger_list)
+            assert name in trigger_list
 
         for name in foo.activities:
-            self.assertIn(name, activity_list)
+            assert name in activity_list
+
+        for name in foo.ports:
+            assert name in port_list
