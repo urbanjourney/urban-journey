@@ -13,7 +13,6 @@ from asyncio import wait_for, wait, shield
 
 class InputPort(PortBase, DescriptorInstance, Trigger):
     def __init__(self, parent_object, attribute_name, channel_name=None, auto_connect=True, time_out=5):
-        print(parent_object, attribute_name, channel_name, auto_connect)
         PortBase.__init__(self, parent_object, attribute_name, channel_name, auto_connect)
         DescriptorInstance.__init__(self, parent_object, attribute_name)
         Trigger.__init__(self)
@@ -23,9 +22,8 @@ class InputPort(PortBase, DescriptorInstance, Trigger):
         await self.trigger(data)
 
     async def trigger(self, data, *args, **kwargs):
-        print("InputPort.trigger({})".format(data))
+        # print("InputPort.trigger({})".format(data))
         futures = [None] * len(self._activities)
-        print(self._activities)
         for i, activity in enumerate(self._activities):
             futures[i] = activity.trigger((self, {self.attribute_name: data}), self.parent_object, *args, **kwargs)
         await wait_for(shield(wait(futures)), self.time_out)

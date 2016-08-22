@@ -14,5 +14,5 @@ class ChannelRegister:
         return self._channels[channel_name]
 
     def create_channel(self, channel_name):
-        print("Creating channel:", channel_name)
+        # print("Creating channel:", channel_name)
         self._channels[channel_name] = Channel(channel_name)

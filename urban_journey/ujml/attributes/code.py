@@ -14,7 +14,7 @@ class Exec(AttributeBaseClass):
 
     def get(self, instance, _):
         return UJMLPythonSource(instance.root.interpreter,
-                                instance.element.get(self.attrib_name),
+                                instance.element.get(self.attrib_name) or self.get_optional(instance),
                                 instance.file_name,
                                 'exec',
                                 instance.source_line)
@@ -30,7 +30,7 @@ class Eval(AttributeBaseClass):
     def get(self, instance, owner):
         if self.code[instance] is None:
             self.code[instance] = UJMLPythonSource(instance.root.interpreter,
-                                                   instance.element.get(self.attrib_name),
+                                                   instance.element.get(self.attrib_name) or self.get_optional(instance),
                                                    instance.file_name,
                                                    'eval',
                                                    instance.source_line)

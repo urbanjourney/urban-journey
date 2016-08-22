@@ -29,5 +29,5 @@ class OutputPort(PortBase, DescriptorInstance):
         self.filters = []
 
     async def flush(self, data):
-        print("OutputPort.flush({})".format(data))
+        # print("OutputPort.flush({})".format(data))
         await self.channel.flush(data)

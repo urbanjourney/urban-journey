@@ -15,14 +15,12 @@ class TestPubSubNodes(unittest.TestCase):
 
     def test_simple_input_output_ports(self):
         ujml_code = '<?xml version="1.0"?><ujml version="{}">'.format(uj_version) + '''
-                       <f_stoff/>
+                       <f_stoff s="s"/>
                     </ujml>'''
         s = Semaphore(0)
         globs = {"s": s}
         ujml = from_string(ujml_code, globals=globs)
-        print(ujml)
+        # print(ujml)
         loop = get_event_loop()
         asyncio.run_coroutine_threadsafe(ujml[0].transmit(), loop=loop)
         assert s.acquire(timeout=0.1)
-
-

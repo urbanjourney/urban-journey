@@ -29,6 +29,6 @@ class Channel:
             raise TypeError()
 
     async def flush(self, data):
-        print("Channel.flush({})".format(data))
+        # print("Channel.flush({})".format(data))
         for i, port in enumerate(self.input_list):
             ensure_future(wait_for(port.flush(data), self.timeout), loop=self.loop)
