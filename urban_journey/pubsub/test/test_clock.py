@@ -5,7 +5,7 @@ from threading import Semaphore
 from urban_journey.clock import Clock
 from urban_journey.pubsub.activity import activity
 from urban_journey.pubsub.trigger import DescriptorClassTrigger
-from urban_journey.pubsub.module import ModuleBase
+from urban_journey.pubsub.module_base import ModuleBase
 
 
 class TestClock(unittest.TestCase):

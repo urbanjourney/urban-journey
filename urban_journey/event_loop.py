@@ -50,7 +50,3 @@ def event_loop_target(s):
     loop = None
     thread = None
 
-
-if __name__ == "__main__":
-    loop = get()
-

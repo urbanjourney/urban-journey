@@ -1,8 +1,5 @@
 <?xml version="1.0"?>
 <ujml version="{version}">
-    <case>
-
-    </case>
-
     <csv file="some_file.csv"/>
+    <pickle file="some_other_file.p"/>
 </ujml>

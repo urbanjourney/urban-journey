@@ -17,6 +17,9 @@ class ActivityBase:
 
 def activity(trigger: Trigger, *args, mode=ActivityMode.schedule, **kwargs):
     """Activity decorator factory. This function returns a function decorator class."""
+    if not isinstance(trigger, Trigger):
+        raise TypeError("trigger must inherit from Trigger")
+
     class ActivityDecorator(ActivityBase):
         def __init__(self, target):
             self.target = target
@@ -41,7 +44,7 @@ def activity(trigger: Trigger, *args, mode=ActivityMode.schedule, **kwargs):
                 if self.mode is ActivityMode.drop:
                     return
 
-            # TODO: Add a check to check senders[1] contains all parameters self.target needs.
+            # TODO: Add parameters check.
             with (await self.lock):
                 if senders[1] is None:
                     await self.target(*args, *self._args, **kwargs, **self._kwargs)

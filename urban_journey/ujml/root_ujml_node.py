@@ -5,22 +5,28 @@ import numpy as np
 
 from .node_base import NodeBase
 from .interpreter import UJMLPythonInterpreter
-from .attributes import string_t
+from .attributes import String
 from urban_journey import __version__ as uj_version
 from .exceptions import IncompatibleUJVersion, IdMustBeUniqueError
 
+from urban_journey.pubsub.channels.channel_register import ChannelRegister
+
 
 class UjmlNode(NodeBase):
-    req_version = string_t(name="version")
+    req_version = String(name="version")
 
-    def __init__(self, element: etree.ElementBase, file_name):
+    def __init__(self, element: etree.ElementBase, file_name, globals=None):
         self.node_dict_by_id = {}
+        self.interpreter = UJMLPythonInterpreter(globals or {})
+        self.channel_register = ChannelRegister()
         super().__init__(element, None)
-        self.interpreter = UJMLPythonInterpreter()
         self.configure_interpreter()
         self.__file_name = os.path.abspath(file_name)
         self.check_version()
         self.update_children()
+
+        # Pubsub specific members
+
 
     def configure_interpreter(self):
         """Configures the embedded interpreter, by adding default members."""

@@ -3,7 +3,6 @@ import inspect
 from urban_journey.pubsub.trigger import DescriptorClassTrigger
 from urban_journey.common.cached import cached_class
 from urban_journey.pubsub.activity import ActivityBase
-from urban_journey.pubsub.descriptor.static import DescriptorStatic
 
 
 class ModuleBase:
@@ -14,9 +13,7 @@ class ModuleBase:
     def initialize_descriptors(self):
         """Initializes the DescriptorInstance instances for this object."""
         for member_name in dir(self):
-            member = inspect.getattr_static(self, member_name)
-            if isinstance(member, DescriptorStatic):
-                getattr(self, member_name)
+            getattr(self, member_name)
 
     @cached_class
     def activities(cls):

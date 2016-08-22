@@ -5,7 +5,7 @@ from urban_journey.ujml.unique import Required
 from urban_journey.common.cached import cached
 
 
-class string_t(AttributeBaseClass):
+class String(AttributeBaseClass):
     """
     String ujml attribute descriptor.
     """
@@ -20,7 +20,7 @@ class string_t(AttributeBaseClass):
         instance.element.set(self.attrib_name, x)
 
 
-class int_t(AttributeBaseClass):
+class Int(AttributeBaseClass):
     """
     Integer ujml attribute descriptor.
     """
@@ -38,7 +38,7 @@ class int_t(AttributeBaseClass):
         instance.element.set(self.attrib_name, "%d" % (x, ))
 
 
-class bool_t(AttributeBaseClass):
+class Bool(AttributeBaseClass):
     """
     Boolean ujml attribute descriptor.
     """
@@ -57,7 +57,7 @@ class bool_t(AttributeBaseClass):
         instance.element.set(self.attrib_name, str(x))
 
 
-class float_t(AttributeBaseClass):
+class Float(AttributeBaseClass):
     """
     Float ujml attribute descriptor.
     """
@@ -75,7 +75,7 @@ class float_t(AttributeBaseClass):
         instance.element.set(self.attrib_name,  str(x))
 
 
-class list_t(AttributeBaseClass):
+class List(AttributeBaseClass):
     """
     List ujml attribute descriptor. The contents of the list are evaluated as python code.
     """

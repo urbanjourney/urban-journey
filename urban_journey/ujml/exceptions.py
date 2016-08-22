@@ -70,7 +70,7 @@ class InvalidAttributeValueError(BaseUJMLError, ValueError):
         self.atrib_name = attrib_name
 
     def _error_message(self):
-        return 'Attribute {} at element {} has invalid input. This may be a type or syntax error.'\
+        return 'Attribute {} at element {} has invalid Data. This may be a type or syntax error.'\
             .format(self.atrib_name, self.elem_name)
 
 
@@ -80,7 +80,7 @@ class InvalidElementValueError(BaseUJMLError, ValueError):
         self.elem_name = elem_name
 
     def _error_message(self):
-        return 'Element {} has invalid input. This may be a type, value or syntax error.'\
+        return 'Element {} has invalid Data. This may be a type, value or syntax error.'\
             .format(self.elem_name)
 
 
@@ -178,21 +178,21 @@ class InvalidShapeError(BaseUJMLError):
 
 
 class InvalidInputError(BaseUJMLError):
-    """Raised when invalid input was given."""
+    """Raised when invalid Data was given."""
     def __init__(self, filename, lineno, element_name):
         super().__init__(filename, lineno)
         self.element_name = element_name
 
     def _error_message(self):
-        return "Invalid input at '{}'.".format(self.element_name)
+        return "Invalid Data at '{}'.".format(self.element_name)
 
 
 class MissingRequiredInput(BaseUJMLError):
-    """This error is raised whenever a required input was not given to a module."""
+    """This error is raised whenever a required Data was not given to a module."""
     def __init__(self, filename, lineno, module_name, input_name):
         super().__init__(filename, lineno)
         self.module_name = module_name
         self.input_name = input_name
 
     def _error_message(self):
-        return "Module '{}' is missing required input '{}'.".format(self.module_name, self.input_name)
+        return "Module '{}' is missing required Data '{}'.".format(self.module_name, self.input_name)

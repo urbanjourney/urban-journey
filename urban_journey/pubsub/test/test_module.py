@@ -1,6 +1,6 @@
 import unittest
 
-from urban_journey.pubsub.module import ModuleBase
+from urban_journey.pubsub.module_base import ModuleBase
 from urban_journey.pubsub.activity import activity
 from urban_journey.pubsub.trigger import Trigger, DescriptorClassTrigger
 

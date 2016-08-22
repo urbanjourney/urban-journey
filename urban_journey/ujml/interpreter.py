@@ -42,8 +42,8 @@ def tidy_source(code):
 
 class UJMLPythonInterpreter:
     """Python embedded interpreter. All code executed here runs in it's own separate environment."""
-    def __init__(self):
-        self.globals = {}
+    def __init__(self, globals=None):
+        self.globals = globals or {}
 
     def __getitem__(self, key):
         """Dictionary like access to the interpreter globals"""
@@ -104,4 +104,4 @@ class UJMLPythonSource:
     def __call__(self, is_global=False, **kwargs):
         """Make this object callable."""
         locs = self.__interpreter.globals if is_global else kwargs
-        eval(self.__code, self.__interpreter.globals, locs)
+        return eval(self.__code, self.__interpreter.globals, locs)

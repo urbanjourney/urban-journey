@@ -5,7 +5,7 @@ import inspect
 import numpy as np
 
 from urban_journey import __version__ as uj_version
-from urban_journey.ujml.register import node_register, update_node_register, extension_paths
+from urban_journey.ujml.register import node_register, update_extensions, extension_paths
 from urban_journey.ujml.node_base import NodeBase
 from urban_journey.ujml.root_ujml_node import UjmlNode
 from urban_journey.ujml.base_nodes.data import data
@@ -37,7 +37,7 @@ class TestParser(unittest.TestCase):
         # Add the test extensions.
         if test_ext_path[0] not in extension_paths:
             extension_paths.append(test_ext_path)
-            update_node_register()
+            update_extensions()
 
     def tearDown(self):
         os.chdir(self.old_path)

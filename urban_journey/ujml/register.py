@@ -3,14 +3,14 @@ import pkgutil
 
 from .base_nodes import path as default_nodes_path
 
-__all__ = ['update_node_register', 'extension_paths', 'node_register']
+__all__ = ['update_extensions', 'extension_paths', 'node_register']
 
 extension_paths = [default_nodes_path]
 
 node_register = {}
 
 
-def update_node_register():
+def update_extensions():
     """Looks for nodes in the extension paths."""
     # This has to be imported here in order to avoid circular imports.
     from urban_journey.ujml.node_base import NodeBase

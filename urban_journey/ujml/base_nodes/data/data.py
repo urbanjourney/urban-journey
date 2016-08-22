@@ -1,16 +1,16 @@
 import re
 
-from urban_journey.ujml.data_base import DataNodeBase
+from urban_journey.ujml.data_node_base import DataNodeBase
 from urban_journey.ujml.exceptions import InvalidInputError
 from urban_journey.common.cached import cached
-from urban_journey.ujml.attributes import bool_t
+from urban_journey.ujml.attributes import Bool
 
 is_list_regex = re.compile(r"(?:\[[\s\S]*?\])|(?:\([\s\S]*?\))|(?:\{[\s\S]*?\})|(,|;)")
 to_2d_list_regex = re.compile(r"(?:^|; *)([\s\S]*?)(?:$|(?=;))")
 
 
 class data(DataNodeBase):
-    ndarray = bool_t(optional_value=True)
+    ndarray = Bool(optional_value=True)
 
     @cached
     def data(self):
@@ -35,7 +35,7 @@ class data(DataNodeBase):
                                                   self.file_name,
                                                   self.source_line)
             else:
-                # There is neither code nor a data element in this input. Raise an error.
+                # There is neither code nor a data element in this Input. Raise an error.
                 self.raise_exception(InvalidInputError, self.tag)
 
     @staticmethod

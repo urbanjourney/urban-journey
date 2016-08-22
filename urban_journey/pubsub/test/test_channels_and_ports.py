@@ -5,7 +5,7 @@ import asyncio
 from urban_journey.pubsub.ports.output import OutputPort
 from urban_journey.pubsub.ports.input import InputPortStatic
 from urban_journey.pubsub.descriptor.static import DescriptorStatic
-from urban_journey.pubsub.module import ModuleBase
+from urban_journey.pubsub.module_base import ModuleBase
 from urban_journey.pubsub.activity import activity
 from urban_journey.pubsub.channels.channel_register import ChannelRegister
 from urban_journey import event_loop

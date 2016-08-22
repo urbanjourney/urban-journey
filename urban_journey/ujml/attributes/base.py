@@ -14,6 +14,7 @@ class AttributeBaseClass(metaclass=ABCMeta):
         self.attrib_name = name
         self.optional_value = optional_value
         self.value = defaultdict(Empty)
+        self.uncached = True
 
     @abstractmethod
     def get(self, instance, owner):
@@ -37,7 +38,7 @@ class AttributeBaseClass(metaclass=ABCMeta):
                 self.attrib_name = attr
 
     def __get__(self, instance, owner):
-        if self.value[instance] is Empty:
+        if self.value[instance] is Empty or self.uncached:
             if self.attrib_name is None:
                 self.get_attribute_name(instance)
             self.value[instance] = self.get(instance, owner)

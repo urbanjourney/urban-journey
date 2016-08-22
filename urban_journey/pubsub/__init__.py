@@ -1,3 +1,3 @@
 from .activity import activity
 from .trigger import Trigger
-from .module import ModuleBase
+from .module_base import ModuleBase

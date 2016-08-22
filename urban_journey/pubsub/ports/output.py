@@ -1,5 +1,13 @@
 from urban_journey.pubsub.ports.base import PortBase
 from urban_journey.pubsub.descriptor.instance import DescriptorInstance
+from urban_journey.pubsub.descriptor.static import DescriptorStatic
+
+
+def Output(channel_name=None,
+           auto_connect=True):
+    return DescriptorStatic(OutputPort,
+                            channel_name=channel_name,
+                            auto_connect=auto_connect)
 
 
 class OutputPort(PortBase, DescriptorInstance):

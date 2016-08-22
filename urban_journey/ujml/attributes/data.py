@@ -5,7 +5,7 @@ from urban_journey.ujml.exceptions import UJMLTypeError, InvalidShapeError, Miss
 import numpy as np
 
 
-class input(object):
+class Data(object):
     def __init__(self, type=None, optional_value=Required, shape=None):
         self.type = type
         self.optional_value = optional_value
