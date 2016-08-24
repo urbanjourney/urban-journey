@@ -85,3 +85,21 @@ class List(AttributeBaseClass):
                 return self.get_optional(instance)
             else:
                 return instance.eval("[{}]".format(val_str))
+
+
+class FilePath(AttributeBaseClass):
+    """
+    FilePath ujml attribute descriptor.
+    """
+    def get(self, instance, owner):
+        val_str = instance.element.get(self.attrib_name)
+        if val_str is None:
+            val_str = self.get_optional(instance)
+
+        if val_str is None:
+            return None
+
+        return instance.abs_path(val_str)
+
+    def set(self, instance, x):
+        instance.element.set(self.attrib_name, x)

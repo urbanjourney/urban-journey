@@ -8,14 +8,15 @@ from urban_journey import __version__ as uj_version
 from urban_journey.ujml.register import node_register, update_extensions, extension_paths
 from urban_journey.ujml.node_base import NodeBase
 from urban_journey.ujml.root_ujml_node import UjmlNode
-from urban_journey.ujml.base_nodes.data import data
+from urban_journey.ujml.basic_nodes.data import data
 from ..loaders import from_string
 
 from .test_extentions import __path__ as test_ext_path
 from .test_extentions import stoffs
-from ..base_nodes import path as default_ext_path
+from ..basic_nodes import path as default_ext_path
 
 test_ext_path = test_ext_path[0]
+
 
 from urban_journey.ujml.exceptions import IncompatibleUJVersion, RequiredAttributeError, IdMustBeUniqueError, \
     IdNotFoundError, UJMLTypeError, MissingRequiredInput, InvalidShapeError
@@ -209,3 +210,11 @@ class TestParser(unittest.TestCase):
             assert False
         except IdNotFoundError:
             assert True
+
+    def test_script_node(self):
+        ujml_code = '<?xml version="1.0"?><ujml version="{}">'.format(uj_version) + '''
+                            <script>
+                                print("Heloo")
+                            </script>
+                        </ujml>'''
+        ujml = from_string(ujml_code)

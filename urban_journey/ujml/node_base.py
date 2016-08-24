@@ -91,7 +91,7 @@ class NodeBase:
         elif os.path.isabs(relative_path):
             return relative_path
         else:
-            return os.path.join(os.path.dirname(self.file_name), relative_path)
+            return os.path.normpath(os.path.join(os.path.dirname(self.file_name), relative_path))
 
     @property
     def children(self):
@@ -121,7 +121,7 @@ class NodeBase:
         else:
             # Check if this is a data Data element
             if isinstance(inspect.getattr_static(self, element.tag, None), Data):
-                from urban_journey.ujml.base_nodes.data import data
+                from urban_journey.ujml.basic_nodes.data import data
                 klass = data
             else:
                 # Check if parent element knows what type it is.
