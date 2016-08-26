@@ -4,10 +4,11 @@ from os.path import join, isdir, isabs, isfile
 from shutil import copyfile, move
 import subprocess
 import pickle
+from collections import defaultdict
+import pip
 
 from urban_journey import __version__ as uj_version
 from urban_journey.common.rm import rm
-
 
 # Check whether git is available and import gitpython if it is.
 try:
@@ -37,10 +38,11 @@ class UjProject:
         with open(join(self.path, "__init__.py")) as f:
             exec(f.read(), globs)
 
-        self.__dependencies = globs.pop('dependencies', {})
-        self.__python_dependencies = globs.pop('python_dependencies_dependencies', {})
+        self.__dependencies = None
+        self.__python_dependencies = None
         self.__version = globs.pop('__version__', None)
         self.__author = globs.pop('__author__', '')
+        self.__dependencies_satisfied = False
 
         self.update_handlers = {
             "git": self.update_git,
@@ -50,6 +52,8 @@ class UjProject:
             "copy": self.update_copy,
         }
 
+        self.load_dependency_list()
+
     @property
     def dependencies(self):
         return self.__dependencies
@@ -57,6 +61,10 @@ class UjProject:
     @property
     def python_dependencies(self):
         return self.__python_dependencies
+
+    @property
+    def dependencies_satisfied(self):
+        return self.__dependencies_satisfied
 
     def get_metadata(self):
         if isfile(join(self.path, ".uj", "dependency_metadata")):
@@ -116,11 +124,48 @@ class UjProject:
                 else:
                     print("WARNING: No dependency named '{}'".format(arg))
         else:
-            for name, sources in self.dependencies.items():
-                self.update_dependency(name, sources, force)
+            while True:
+                for name, sources in self.dependencies.items():
+                    self.update_dependency(name, sources, force)
+                if self.load_dependency_list():
+                    return
 
-        # Check if dependencies have unsatisfied dependencies.
+    def load_dependency_list(self):
+        """(Re)loads the list of dependencies. Returns True if all dependencies are satisfied."""
+        # Load in project __init__ file.
+        globs = {}
+        with open(join(self.path, "__init__.py")) as f:
+            exec(f.read(), globs)
 
+        self.__dependencies = defaultdict(list, globs.pop('dependencies', {}))
+        self.__python_dependencies = globs.pop('python_dependencies', [])
+
+        # Get dependencies from dependencies.
+        for entry in os.scandir(join(self.path, "dependencies")):
+            if entry.is_dir():
+                # Load in project __init__ file.
+                d_project = UjProject(entry.path)
+                for name, sources in d_project.dependencies.items():
+                    for source in sources:
+                        if source not in self.dependencies[name]:
+                            self.dependencies[name].append(source)
+                for pd in d_project.python_dependencies:
+                    if pd not in self.python_dependencies:
+                        self.python_dependencies.append(pd)
+
+        # Print warning for missing python dependencies
+        installed = [i.key for i in pip.get_installed_distributions()]
+        for package in self.python_dependencies:
+            if package not in installed:
+                print("WARNING: Python package dependency '{}' missing.".format(package))
+
+        # Check for unsatisfied dependencies.
+        for name in self.dependencies:
+            if not isdir(join(self.path, "dependencies", name)):
+                self.__dependencies_satisfied = False
+                return False
+        self.__dependencies_satisfied = True
+        return True
 
     def update_dependency(self, name, sources, force):
         dm = self.get_metadata()
@@ -156,6 +201,8 @@ class UjProject:
 
     @staticmethod
     def find_project_root(path):
+        if not isdir(path):
+            return None
         prev_path = None
         while path != prev_path:
             if os.path.isdir(os.path.join(path, ".uj")):

@@ -22,6 +22,7 @@ def main(args=sys.argv[1:]):
         if len(args) > 1:
             if args[1] in ['-h', '--help']:
                 print(cl_tools[args[0]].usage())
+                return
         cl_tools[args[0]].main(args[1:])
     else:
         print("uj: '{}' is not a uj command. See 'uj --help'.".format(args[0]))
@@ -30,9 +31,11 @@ def main(args=sys.argv[1:]):
 def display_help():
     msg = """Urban Journey command line interface
 
-usage: uj [--version] [--help] <command> [<args>]
+usage: uj [-v|--version] [-h|--help] <command> [<args>]
 
 {commands}
+
+for command help: uj <command> -h
 
 """
     commands = ""

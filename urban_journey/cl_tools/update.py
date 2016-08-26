@@ -29,5 +29,4 @@ class update(ClBase):
             print("error: Not a uj project (or any of the parent directories)")
             return
 
-        print(uj_project.dependencies, force)
         uj_project.update(*args, force=force)
