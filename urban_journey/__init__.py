@@ -16,7 +16,9 @@ from urban_journey.ujml.module_node_base import ModuleNodeBase
 from urban_journey.ujml.unique import Empty, Required
 from urban_journey.ujml.attributes import *
 from urban_journey.event_loop import get as get_event_loop
-from urban_journey.ujml.loaders import from_string
+from urban_journey.ujml.loaders import from_string, from_file
 from urban_journey.ujml.register import extension_paths, node_register, update_extensions
+
+from urban_journey.uj_project import UjProject
 
 

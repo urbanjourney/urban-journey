@@ -1,4 +1,6 @@
 <?xml version="1.0"?>
 <ujml version="{version}">
-
+    <script>
+        print("Hello world")
+    </script>
 </ujml>
