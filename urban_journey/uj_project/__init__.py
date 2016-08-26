@@ -1,13 +1,13 @@
 import os
-from os import symlink
-from os.path import join, isdir, isabs, isfile
+from os import symlink, mkdir
+from os.path import join, isdir, isabs, isfile, relpath
 from shutil import copyfile, move
 import subprocess
 import pickle
 from collections import defaultdict
 import pip
 
-from urban_journey import __version__ as uj_version
+from urban_journey import __version__ as uj_version, NodeBase
 from urban_journey.common.rm import rm
 
 # Check whether git is available and import gitpython if it is.
@@ -27,9 +27,11 @@ class InvalidUjProjectError(Exception):
 
 
 class UjProject:
-    def __init__(self, path=os.getcwd()):
+    def __init__(self, path=os.getcwd(), is_plugin=False):
         # Find project root folder
         self.path = self.find_project_root(os.path.abspath(path))
+        self.is_plugin = is_plugin
+
         if self.path is None:
             raise InvalidUjProjectError()
 
@@ -38,11 +40,12 @@ class UjProject:
         with open(join(self.path, "__init__.py")) as f:
             exec(f.read(), globs)
 
-        self.__dependencies = None
+        self.__plugins = None
         self.__python_dependencies = None
-        self.__version = globs.pop('__version__', None)
-        self.__author = globs.pop('__author__', '')
-        self.__dependencies_satisfied = False
+        self.__version = None
+        self.__author = ""
+        self.__plugins_satisfied = False
+        self.__nodes = None
 
         self.update_handlers = {
             "git": self.update_git,
@@ -52,28 +55,40 @@ class UjProject:
             "copy": self.update_copy,
         }
 
-        self.load_dependency_list()
+        # Create plugins folder if it doesn't exist.
+        if not isdir(join(self.path, "plugins")):
+            mkdir(join(self.path, "plugins"))
+
+        # Create plugins/.gitignore if it doesn't exist.
+        if not isfile(join(self.path, "plugins", ".gitignore")):
+            with open(join(self.path, "plugins", ".gitignore"), "w") as f:
+                f.write("*\n!.gitignore")
+
+        self.load_project()
 
     @property
-    def dependencies(self):
-        return self.__dependencies
+    def plugins(self):
+        return self.__plugins
 
     @property
     def python_dependencies(self):
         return self.__python_dependencies
 
     @property
-    def dependencies_satisfied(self):
-        return self.__dependencies_satisfied
+    def nodes(self):
+        return self.__nodes
+    @property
+    def plugins_satisfied(self):
+        return self.__plugins_satisfied
 
     def get_metadata(self):
-        if isfile(join(self.path, ".uj", "dependency_metadata")):
-            return pickle.load(open(join(self.path, ".uj", "dependency_metadata"), "rb"))
+        if isfile(join(self.path, ".uj", "plugin_metadata")):
+            return pickle.load(open(join(self.path, ".uj", "plugin_metadata"), "rb"))
         else:
             return {}
 
     def set_metadata(self, value):
-        pickle.dump(value, open(join(self.path, ".uj", "dependency_metadata"), "wb"))
+        pickle.dump(value, open(join(self.path, ".uj", "plugin_metadata"), "wb"))
 
     @property
     def version(self):
@@ -116,82 +131,87 @@ class UjProject:
             except InvalidGitRepositoryError:
                 Repo.init(target_directory)
 
-    def update(self, *args, force=False):
-        if len(args):
-            for arg in args:
-                if arg in self.dependencies:
-                    self.update_dependency(arg, self.dependencies[arg], force)
-                else:
-                    print("WARNING: No dependency named '{}'".format(arg))
-        else:
-            while True:
-                for name, sources in self.dependencies.items():
-                    self.update_dependency(name, sources, force)
-                if self.load_dependency_list():
-                    return
-
-    def load_dependency_list(self):
-        """(Re)loads the list of dependencies. Returns True if all dependencies are satisfied."""
+    def load_project(self):
+        """(Re)loads the project. Returns True if all plugins are satisfied."""
         # Load in project __init__ file.
         globs = {}
         with open(join(self.path, "__init__.py")) as f:
             exec(f.read(), globs)
 
-        self.__dependencies = defaultdict(list, globs.pop('dependencies', {}))
+        self.__plugins = defaultdict(list, globs.pop('plugins', {}))
         self.__python_dependencies = globs.pop('python_dependencies', [])
+        self.__version = globs.pop('__version__', None)
+        self.__author = globs.pop('__author__', '')
 
-        # Get dependencies from dependencies.
-        for entry in os.scandir(join(self.path, "dependencies")):
-            if entry.is_dir():
-                # Load in project __init__ file.
-                d_project = UjProject(entry.path)
-                for name, sources in d_project.dependencies.items():
-                    for source in sources:
-                        if source not in self.dependencies[name]:
-                            self.dependencies[name].append(source)
-                for pd in d_project.python_dependencies:
-                    if pd not in self.python_dependencies:
-                        self.python_dependencies.append(pd)
+        self.__nodes = {}
+        for name, obj in globs.items():
+            if isinstance(obj, type):
+                if issubclass(obj, NodeBase):
+                    self.__nodes[name] = obj
 
-        # Print warning for missing python dependencies
+        if not self.is_plugin:
+            # Get plugins from plugins.
+            for entry in os.scandir(join(self.path, "plugins")):
+                if entry.is_dir():
+                    # Load in project __init__ file.
+                    d_project = UjProject(entry.path, True)
+                    for name, sources in d_project.plugins.items():
+                        for source in sources:
+                            if source not in self.plugins[name]:
+                                self.plugins[name].append(source)
+                    for pd in d_project.python_dependencies:
+                        if pd not in self.python_dependencies:
+                            self.python_dependencies.append(pd)
+                    for name, node in d_project.nodes.items():
+                        if name not in self.nodes:
+                            self.nodes[name] = node
+
+        # Print warning for missing python plugins
         installed = [i.key for i in pip.get_installed_distributions()]
         for package in self.python_dependencies:
             if package not in installed:
                 print("WARNING: Python package dependency '{}' missing.".format(package))
 
-        # Check for unsatisfied dependencies.
-        for name in self.dependencies:
-            if not isdir(join(self.path, "dependencies", name)):
-                self.__dependencies_satisfied = False
+        # Check for unsatisfied plugins.
+        for name in self.plugins:
+            if not isdir(join(self.path, "plugins", name)):
+                self.__plugins_satisfied = False
                 return False
-        self.__dependencies_satisfied = True
+        self.__plugins_satisfied = True
         return True
 
-    def update_dependency(self, name, sources, force):
+    def update(self, *args, force=False):
+        if len(args):
+            for arg in args:
+                if arg in self.plugins:
+                    self.update_plugin(arg, self.plugins[arg], force)
+                else:
+                    print("WARNING: No plugin named '{}'".format(arg))
+        else:
+            while True:
+                for name, sources in self.plugins.items():
+                    self.update_plugin(name, sources, force)
+                if self.load_project():
+                    return
+
+    def update_plugin(self, name, sources, force):
         dm = self.get_metadata()
-        target_dir = join(self.path, "dependencies", name)
+        target_dir = join(self.path, "plugins", name)
 
         # Try to use last used source.
         if name in dm and isdir(target_dir):
-            if __name__ == '__main__':
-                if self.update_handlers[dm[name][0]](name, dm[1]):
-                    return True
+            if self.update_handlers[dm[name][0]](name, dm[name][1], force):
+                return True
 
-        used_source = None
         # Last used source failed, try other sources
         for method, source in sources:
             if self.update_handlers[method](name, source, force):
-                used_source = (method, source)
-                break
+                dm[name] = (method, source)
+                self.set_metadata(dm)
+                return True
 
-        if used_source is None:
-            print("Unable to update dependency '{}'.".format(name))
-            return False
-
-        # Working source found, saving source in dependancy metadata file.
-        dm[name] = used_source
-        self.set_metadata(dm)
-        return True
+        print("Unable to update plugin '{}'.".format(name))
+        return False
 
     def run(self):
         pass
@@ -210,25 +230,25 @@ class UjProject:
             prev_path = path
             path = os.path.normpath(os.path.join(path, '..'))
 
-    def find_local_extension_nodes(self):
+    def find_local_plugin_nodes(self):
         pass
 
-    def find_external_extension_nodes(self):
+    def find_external_plugin_nodes(self):
         pass
 
-    def check_dependencies(self):
+    def check_plugins(self):
         pass
 
     def is_valid(self):
         pass
 
-    # Loads dependencies into project.
+    # Loads plugins into project.
     def update_git(self, name, source, force):
-        """Clone dependency from a git repository"""
+        """Clone plugin from a git repository"""
         if git_available:
-            target_dir = join(self.path, "dependencies", name)
+            target_dir = join(self.path, "plugins", name)
 
-            # Clone if the dependency doesn't exist or is being forced. Otherwise try pulling
+            # Clone if the plugin doesn't exist or is being forced. Otherwise try pulling
             if not isdir(target_dir) or force:
                 return self.git_clone(name, source)
             else:
@@ -239,18 +259,19 @@ class UjProject:
 
     def git_clone(self, name, source):
         if git_available:
-            target_dir = join(self.path, "dependencies", name)
-            temp_dir = join(self.path, "dependencies", "temp_" + name)
+            target_dir = join(self.path, "plugins", name)
+            temp_dir = join(self.path, "plugins", "temp_" + name)
 
             try:
                 # Clone repository to temporary folder
                 repo = Repo.clone_from(source, temp_dir)
+                print("cloned '{}' from '{}'".format(name, source))
             except:
                 return False
 
             # Check if valid uj project.
             try:
-                UjProject(temp_dir)
+                UjProject(temp_dir, True)
             except InvalidUjProjectError:
                 return False
 
@@ -265,27 +286,28 @@ class UjProject:
             return False
 
     def git_pull(self, name, source):
-        target_dir = join(self.path, "dependencies", name)
+        target_dir = join(self.path, "plugins", name)
         try:
             repo = Repo(target_dir)
             try:
                 repo.remote().pull()
+                print("pulled '{}' from '{}'".format(name, source))
                 return True
             except RepositoryDirtyError:
-                print("WARNING: Repository for dependency '{}' is dirty.".format(name))
+                print("WARNING: Repository for plugin '{}' is dirty.".format(name))
                 return True
             except UnmergedEntriesError:
-                print("WARNING: Repository for dependency '{}' has unmerged changes.".format(name))
+                print("WARNING: Repository for plugin '{}' has unmerged changes.".format(name))
                 return True
         except InvalidGitRepositoryError:
             # This is an invalid git repository. Clone it.
             return self.git_clone(name, source)
 
     def update_symlink(self, name, source, force):
-        """Create symlink to dependency"""
-        target_dir = join(self.path, "dependencies", name)
+        """Create symlink to plugin"""
+        target_dir = join(self.path, "plugins", name)
 
-        # Only update if the dependency doesn't exist or is being forced.
+        # Only update if the plugin doesn't exist or is being forced.
         if not force and isdir(target_dir):
             return True
 
@@ -299,12 +321,14 @@ class UjProject:
 
         # Check if source dir is a valid uj project.
         try:
-            UjProject(source)
+            UjProject(source, True)
         except InvalidUjProjectError:
             return False
 
         rm(target_dir)
-        symlink(source, target_dir, target_is_directory=True)
+
+        symlink(relpath(source, join(self.path, "plugins")), target_dir, target_is_directory=True)
+        print("created symlink '{}' with source '{}'".format(name, target_dir))
         return True
 
     def update_web(self, name, source, force):
@@ -316,5 +340,5 @@ class UjProject:
         raise NotImplementedError()
 
     def update_copy(self, name, source, force):
-        """Copy dependency from local folder."""
+        """Copy plugin from local folder."""
         raise NotImplementedError()

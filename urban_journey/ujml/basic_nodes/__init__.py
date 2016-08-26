@@ -1,6 +1,6 @@
 """
-Base node extension.
-This is a ujml extension containing the nodes for basic ujml functionality.
+Base node plugin.
+This is a ujml plugin containing the nodes for basic ujml functionality.
 """
 
 import os

@@ -1,3 +1,0 @@
-# This folder contains the external dependencies of this project, everything in this folder should be ignores by git.
-*
-!.gitignore

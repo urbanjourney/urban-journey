@@ -5,7 +5,7 @@ from urban_journey import UjProject
 class run(ClBase):
     @staticmethod
     def description():
-        return "Load uj extensions and execute src/main.py:main(args)"
+        return "Load uj plugins and execute src/main.py:main(args)"
 
     @staticmethod
     def usage():
@@ -17,9 +17,9 @@ class run(ClBase):
         project = UjProject()
 
 
-def check_dependencies():
+def check_plugins():
     pass
 
 
-def load_dependencies():
+def load_plugins():
     pass

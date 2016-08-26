@@ -1,7 +1,13 @@
 <?xml version="1.0"?>
 <ujml version="1.2.3">
+    <!--
+    IMPORTANT
+    =========
+    This is an example file closely based on the old DARE simulation (DTST v1). It is not a ujml example and ujml shall
+    never be able to read in this file. It's here as just a reference.
+    -->
     <vehicle name="Stratos II+" version="1.0" OnStart="print('Simulation started')" OnEnd="print('Simulation ended')">
-        Example dstml file for the Stratos II+ Rocket
+        Example ujml file for the Stratos II+ Rocket
     </vehicle>
 
     <?python

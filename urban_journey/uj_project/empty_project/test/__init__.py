@@ -1,3 +1,3 @@
 """
-This package contains unit test for the extensions in this project.
+This package contains unit test for the plugins in this project.
 """

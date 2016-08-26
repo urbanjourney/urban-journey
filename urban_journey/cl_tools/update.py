@@ -6,11 +6,11 @@ from urban_journey.uj_project import InvalidUjProjectError
 class update(ClBase):
     @staticmethod
     def description():
-        return "Update dependencies to latest version."
+        return "Update plugins to latest version."
 
     @staticmethod
     def usage():
-        return "usage: uj update [-f | --force] [<dependency>]"
+        return "usage: uj update [-f|--force] [<plugins>]"
 
     @staticmethod
     def main(args: list):

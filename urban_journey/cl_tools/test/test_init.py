@@ -6,7 +6,7 @@ import shutil
 import errno
 
 from urban_journey.__main__ import main as uj_main
-from urban_journey.cl_tools.init import empty_project_dir
+from urban_journey.uj_project import empty_project_dir
 
 # Check whether git is available and import git python if it is.
 try:

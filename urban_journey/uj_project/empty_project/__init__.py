@@ -5,7 +5,7 @@ This file should import all nodes in order to expose them to the ujml parser.
 __version__ = "0.0.0"
 __author__ = ""
 
-dependencies = {
+plugins = {
     # Example
     # "example_name": [ # At least 1 source is required.
     #      ("git", "git@example.com:/path/to/example.git"),

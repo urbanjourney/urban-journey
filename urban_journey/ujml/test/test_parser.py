@@ -5,14 +5,14 @@ import inspect
 import numpy as np
 
 from urban_journey import __version__ as uj_version
-from urban_journey.ujml.register import node_register, update_extensions, extension_paths
+from urban_journey.ujml.plugin_register import node_register, update_plugins, plugin_paths
 from urban_journey.ujml.node_base import NodeBase
 from urban_journey.ujml.root_ujml_node import UjmlNode
 from urban_journey.ujml.basic_nodes.data import data
 from ..loaders import from_string
 
-from .test_extentions import __path__ as test_ext_path
-from .test_extentions import stoffs
+from .test_plugins import __path__ as test_ext_path
+from .test_plugins import stoffs
 from ..basic_nodes import path as default_ext_path
 
 test_ext_path = test_ext_path[0]
@@ -35,17 +35,17 @@ class TestParser(unittest.TestCase):
         with open("x_example_4.ujml") as f:
             self.ujml_example_4 = f.read().format(version=uj_version)
 
-        # Add the test extensions.
-        if test_ext_path[0] not in extension_paths:
-            extension_paths.append(test_ext_path)
-            update_extensions()
+        # Add the test plugins.
+        if test_ext_path[0] not in plugin_paths:
+            plugin_paths.append(test_ext_path)
+            update_plugins()
 
     def tearDown(self):
         os.chdir(self.old_path)
 
     def test_register(self):
-        assert test_ext_path in extension_paths
-        assert default_ext_path in extension_paths
+        assert test_ext_path in plugin_paths
+        assert default_ext_path in plugin_paths
         for member_name, member in inspect.getmembers(stoffs):
             if isinstance(member, type):
                 if issubclass(member, NodeBase):

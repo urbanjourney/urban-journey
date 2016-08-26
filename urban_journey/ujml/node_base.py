@@ -4,7 +4,7 @@ import inspect
 from lxml import etree
 
 from urban_journey.common.cached import cached
-from urban_journey.ujml.register import node_register, update_extensions
+from urban_journey.ujml.plugin_register import node_register, update_plugins
 from urban_journey.ujml.exceptions import UnknownElementError, IdNotFoundError
 from urban_journey.ujml.attributes import String, Data
 
@@ -129,7 +129,7 @@ class NodeBase:
 
             # Update the node_register if it's empty.
             if len(node_register) == 0:
-                update_extensions()
+                update_plugins()
 
             # Look for node class in the register.
             if klass is None:
