@@ -1,14 +1,20 @@
 import os
 from os import symlink, mkdir
-from os.path import join, isdir, isabs, isfile, relpath
+from os.path import join, isdir, isabs, isfile, relpath, basename, normpath, islink
 from shutil import copyfile, move
 import subprocess
-import pickle
 from collections import defaultdict
 import pip
+import importlib.util
+import importlib.machinery
+import inspect
 
-from urban_journey import __version__ as uj_version, NodeBase
+import yaml  # PyYAML
+
+from urban_journey import __version__ as uj_version, node_register, update_plugins, NodeBase
 from urban_journey.common.rm import rm
+from urban_journey import plugins as plugins_module
+
 
 # Check whether git is available and import gitpython if it is.
 try:
@@ -26,25 +32,27 @@ class InvalidUjProjectError(Exception):
     pass
 
 
+class PluginsMissingError(Exception):
+    pass
+
+
 class UjProject:
-    def __init__(self, path=os.getcwd(), is_plugin=False):
+    def __init__(self, path=os.getcwd(), parent_project=None):
         # Find project root folder
         self.path = self.find_project_root(os.path.abspath(path))
-        self.is_plugin = is_plugin
+        self.parent_project = parent_project
 
         if self.path is None:
-            raise InvalidUjProjectError()
+            raise InvalidUjProjectError("error: Not a uj project (or any of the parent directories)")
 
-        # Load in project __init__ file.
-        globs = {}
-        with open(join(self.path, "__init__.py")) as f:
-            exec(f.read(), globs)
+        self.check_validity()
 
+        self.__name = None
         self.__plugins = None
         self.__python_dependencies = None
         self.__version = None
         self.__author = ""
-        self.__plugins_satisfied = False
+        self.__plugins_updated = False
         self.__nodes = None
 
         self.update_handlers = {
@@ -66,6 +74,25 @@ class UjProject:
 
         self.load_project()
 
+    def check_validity(self):
+        """Checks whether this is a valid uj project."""
+        if not isdir(join(self.path, ".uj")):
+            raise InvalidUjProjectError("error: Missing '.uj' directory.")
+
+        if not isdir(join(self.path, "src")):
+            raise InvalidUjProjectError("error: Missing 'src' directory")
+
+        if not isfile(join(self.path, "config.yaml")):
+            raise InvalidUjProjectError("error: Missing 'config.yaml'")
+
+        if not isfile(join(self.path, "src", "__init__.py")):
+            raise InvalidUjProjectError("error: Missing 'src/__init.py'")
+
+        if not isfile(join(self.path, "src", "main.py")):
+            raise InvalidUjProjectError("error: Missing 'src/main.py'")
+
+        return True
+
     @property
     def plugins(self):
         return self.__plugins
@@ -77,18 +104,23 @@ class UjProject:
     @property
     def nodes(self):
         return self.__nodes
+
     @property
-    def plugins_satisfied(self):
-        return self.__plugins_satisfied
+    def name(self):
+        return self.__name
+
+    @property
+    def plugins_updated(self):
+        return self.__plugins_updated
 
     def get_metadata(self):
-        if isfile(join(self.path, ".uj", "plugin_metadata")):
-            return pickle.load(open(join(self.path, ".uj", "plugin_metadata"), "rb"))
+        if isfile(join(self.path, ".uj", "plugin_metadata.yaml")):
+            return yaml.load(open(join(self.path, ".uj", "plugin_metadata.yaml"), "r")) or {}
         else:
             return {}
 
     def set_metadata(self, value):
-        pickle.dump(value, open(join(self.path, ".uj", "plugin_metadata"), "wb"))
+        yaml.dump(value, open(join(self.path, ".uj", "plugin_metadata.yaml"), "w"))
 
     @property
     def version(self):
@@ -131,40 +163,41 @@ class UjProject:
             except InvalidGitRepositoryError:
                 Repo.init(target_directory)
 
+    def plugin_projects(self):
+        for entry in os.scandir(join(self.path, "plugins")):
+            if entry.is_dir:
+                try:
+                    yield UjProject(entry.path, self)
+                except InvalidUjProjectError:
+                    continue
+
     def load_project(self):
         """(Re)loads the project. Returns True if all plugins are satisfied."""
-        # Load in project __init__ file.
-        globs = {}
-        with open(join(self.path, "__init__.py")) as f:
-            exec(f.read(), globs)
 
-        self.__plugins = defaultdict(list, globs.pop('plugins', {}))
-        self.__python_dependencies = globs.pop('python_dependencies', [])
-        self.__version = globs.pop('__version__', None)
-        self.__author = globs.pop('__author__', '')
+        config = yaml.load(open(join(self.path, "config.yaml"), "rb"))
 
-        self.__nodes = {}
-        for name, obj in globs.items():
-            if isinstance(obj, type):
-                if issubclass(obj, NodeBase):
-                    self.__nodes[name] = obj
+        self.__plugins = defaultdict(list, config.pop('plugins', {}) or {})
+        self.__python_dependencies = config.pop('dependencies', []) or []
+        self.__version = config.pop('version', None)
+        self.__author = config.pop('author', '')
+        self.__name = config.pop('name', None) or basename(normpath(self.path))
 
-        if not self.is_plugin:
+        if self.parent_project is None:
             # Get plugins from plugins.
             for entry in os.scandir(join(self.path, "plugins")):
                 if entry.is_dir():
-                    # Load in project __init__ file.
-                    d_project = UjProject(entry.path, True)
-                    for name, sources in d_project.plugins.items():
-                        for source in sources:
-                            if source not in self.plugins[name]:
-                                self.plugins[name].append(source)
-                    for pd in d_project.python_dependencies:
-                        if pd not in self.python_dependencies:
-                            self.python_dependencies.append(pd)
-                    for name, node in d_project.nodes.items():
-                        if name not in self.nodes:
-                            self.nodes[name] = node
+                    try:
+                        # Load in plugin project
+                        d_project = UjProject(entry.path, self)
+                        for name, sources in d_project.plugins.items():
+                            for source in sources:
+                                if source not in self.plugins[name]:
+                                    self.plugins[name].append(source)
+                        for pd in d_project.python_dependencies:
+                            if pd not in self.python_dependencies:
+                                self.python_dependencies.append(pd)
+                    except InvalidUjProjectError:
+                        pass
 
         # Print warning for missing python plugins
         installed = [i.key for i in pip.get_installed_distributions()]
@@ -172,13 +205,68 @@ class UjProject:
             if package not in installed:
                 print("WARNING: Python package dependency '{}' missing.".format(package))
 
-        # Check for unsatisfied plugins.
+        # Check for missing plugins
+        self.create_symlinks()
+        if self.parent_project is None:
+            plugin_symlinks = join(self.path, '.uj', 'plugin_symlinks')
+        else:
+            plugin_symlinks = join(self.parent_project.path, '.uj', 'plugin_symlinks')
+
         for name in self.plugins:
-            if not isdir(join(self.path, "plugins", name)):
-                self.__plugins_satisfied = False
+            if not islink(join(plugin_symlinks, name)):
+                self.__plugins_updated = False
                 return False
-        self.__plugins_satisfied = True
+
+        self.__plugins_updated = True
         return True
+
+    def load_nodes(self):
+        self.load_project()
+        if not self.plugins_updated:
+            raise PluginsMissingError("error: Plugin(s) missing. Run 'uj list' to see which plugins are missing and "\
+                                      "'uj update' to fetch missing plugins.")
+        self.__nodes = {}
+        if isfile(join(self.path, "src", "nodes.py")):
+            # Import nodes module and scan it for nodes
+            nodes_module = importlib.import_module("urban_journey.plugins.{}.nodes".format(self.name))
+            for member_name, member in inspect.getmembers(nodes_module):
+                # Ignore all private members
+                if member_name.startswith('__'):
+                    continue
+                # Add the member to the node register if it's a node.
+                if isinstance(member, type):
+                    if issubclass(member, NodeBase):
+                        self.__nodes[member_name] = member
+
+        if self.parent_project is None:
+            for plugin in self.plugin_projects():
+                plugin.load_nodes()
+                for name, node in plugin.nodes.items():
+                    self.__nodes[name] = node
+
+    def create_symlinks(self):
+        # Make sure '.uj/plugin_symlinks' directory exists
+        # Make sure that the project src is symlinked in '.uj/plugin_symlinks'
+        # Make sure that '.uj/plugin_symlinks' is in the plugin_module path.
+        # Make sure that plugins src is symlinked in '.uj/plugin_symlinks'.
+        if self.parent_project is None:
+            plugin_symlinks = join(self.path, '.uj', 'plugin_symlinks')
+        else:
+            plugin_symlinks = join(self.parent_project.path, '.uj', 'plugin_symlinks')
+
+        if not isdir(plugin_symlinks):
+            os.mkdir(plugin_symlinks)
+
+        rm(join(plugin_symlinks, self.name))
+        symlink(relpath(join(self.path, 'src'), plugin_symlinks), join(plugin_symlinks, self.name))
+
+        if self.parent_project is None:
+            if plugin_symlinks not in plugins_module.__path__:
+                plugins_module.__path__.append(join(self.path, '.uj', 'plugin_symlinks'))
+
+            for plugin in self.plugin_projects():
+                rm(join(plugin_symlinks, plugin.name))
+                symlink(relpath(join(plugin.path, 'src'), plugin_symlinks), join(plugin_symlinks, plugin.name))
 
     def update(self, *args, force=False):
         if len(args):
@@ -206,7 +294,7 @@ class UjProject:
         # Last used source failed, try other sources
         for method, source in sources:
             if self.update_handlers[method](name, source, force):
-                dm[name] = (method, source)
+                dm[name] = [method, source]
                 self.set_metadata(dm)
                 return True
 
@@ -214,7 +302,20 @@ class UjProject:
         return False
 
     def run(self):
-        pass
+        if not self.plugins_updated:
+            raise PluginsMissingError("error: Plugin(s) missing. Run 'uj list' to see which plugins are missing and "\
+                                      "'uj update' to fetch missing plugins.")
+
+        update_plugins()
+        # Add plugin nodes to node register.
+        for name, node in self.nodes.items():
+            if node not in node_register.values():
+                node_register[name] = node
+
+
+        # Import main function
+        main = importlib.import_module("urban_journey.plugins.{}.main".format(self.name)).main
+        main([])
 
     def test(self):
         pass
@@ -229,18 +330,6 @@ class UjProject:
                 return path
             prev_path = path
             path = os.path.normpath(os.path.join(path, '..'))
-
-    def find_local_plugin_nodes(self):
-        pass
-
-    def find_external_plugin_nodes(self):
-        pass
-
-    def check_plugins(self):
-        pass
-
-    def is_valid(self):
-        pass
 
     # Loads plugins into project.
     def update_git(self, name, source, force):
@@ -271,7 +360,7 @@ class UjProject:
 
             # Check if valid uj project.
             try:
-                UjProject(temp_dir, True)
+                UjProject(temp_dir, self)
             except InvalidUjProjectError:
                 return False
 
@@ -321,7 +410,7 @@ class UjProject:
 
         # Check if source dir is a valid uj project.
         try:
-            UjProject(source, True)
+            UjProject(source, self)
         except InvalidUjProjectError:
             return False
 

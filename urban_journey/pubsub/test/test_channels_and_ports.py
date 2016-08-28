@@ -49,4 +49,3 @@ class TestChannelAndPorts(unittest.TestCase):
         loop.set_debug(True)
         asyncio.run_coroutine_threadsafe(a.transmit(), loop=loop)
         assert semaphore.acquire(timeout=0.1)
-

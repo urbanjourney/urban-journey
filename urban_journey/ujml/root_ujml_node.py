@@ -5,6 +5,7 @@ import numpy as np
 
 from .node_base import NodeBase
 from .interpreter import UJMLPythonInterpreter
+from .data_container import DataContainer
 from .attributes import String
 from urban_journey import __version__ as uj_version
 from .exceptions import IncompatibleUJVersion, IdMustBeUniqueError
@@ -17,6 +18,7 @@ class UjmlNode(NodeBase):
 
     def __init__(self, element: etree.ElementBase, file_name, globals=None):
         self.node_dict_by_id = {}
+        self.__data_container = DataContainer()
         self.interpreter = UJMLPythonInterpreter(globals or {})
         self.channel_register = ChannelRegister()
         super().__init__(element, None)
@@ -25,13 +27,11 @@ class UjmlNode(NodeBase):
         self.check_version()
         self.update_children()
 
-        # Pubsub specific members
-
-
     def configure_interpreter(self):
         """Configures the embedded interpreter, by adding default members."""
         self.interpreter['abs_path'] = self.abs_path
         self.interpreter['np'] = np
+        self.interpreter['data'] = self.data
 
     def check_version(self):
         rv = [int(x) for x in self.req_version.split('.')]
@@ -60,3 +60,7 @@ class UjmlNode(NodeBase):
     @property
     def file_name(self):
         return self.__file_name
+
+    @property
+    def data(self):
+        return self.__data_container

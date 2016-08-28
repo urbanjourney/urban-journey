@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<ujml version="0.0.0">
+    <script>b = a
+            print(b)
+            print(b)</script>
+</ujml>

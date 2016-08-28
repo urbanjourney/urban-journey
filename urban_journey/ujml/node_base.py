@@ -112,6 +112,12 @@ class NodeBase:
 
     def create_child(self, element: etree.ElementBase):
         """This function looks for the type of a child node."""
+        if element.tag is etree.Comment:
+            return
+
+        if element.tag is etree.PI:
+            return
+
         # If this is a ref element. Find the element it references and add it as a child.
         if element.tag == "ref":
             node_id = element.get("id")

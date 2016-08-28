@@ -1,5 +1,8 @@
+import sys
+
 from urban_journey.cl_tools.cl_base import ClBase
 from urban_journey import UjProject
+from urban_journey.uj_project import InvalidUjProjectError
 
 
 class run(ClBase):
@@ -13,8 +16,13 @@ class run(ClBase):
 
     @staticmethod
     def main(args):
-        print("Running run")
-        project = UjProject()
+        try:
+            uj_project = UjProject()
+        except InvalidUjProjectError as e:
+            sys.exit(e.args[0])
+
+        uj_project.load_nodes()
+        uj_project.run()
 
 
 def check_plugins():

@@ -1,3 +1,4 @@
+import sys
 from .cl_base import ClBase
 from urban_journey import UjProject
 from urban_journey.uj_project import InvalidUjProjectError
@@ -25,8 +26,7 @@ class update(ClBase):
 
         try:
             uj_project = UjProject()
-        except InvalidUjProjectError:
-            print("error: Not a uj project (or any of the parent directories)")
-            return
+        except InvalidUjProjectError as e:
+            sys.exit(e.args[0])
 
         uj_project.update(*args, force=force)

@@ -9,7 +9,7 @@ from urban_journey.ujml.plugin_register import node_register, update_plugins, pl
 from urban_journey.ujml.node_base import NodeBase
 from urban_journey.ujml.root_ujml_node import UjmlNode
 from urban_journey.ujml.basic_nodes.data import data
-from ..loaders import from_string
+from ..loaders import from_string, from_file
 
 from .test_plugins import __path__ as test_ext_path
 from .test_plugins import stoffs
@@ -42,6 +42,11 @@ class TestParser(unittest.TestCase):
 
     def tearDown(self):
         os.chdir(self.old_path)
+
+    def test_from_file(self):
+        g = {'a': 123456789}
+        from_file("x_example_5.ujml", globals=g)
+        print("b" in g)
 
     def test_register(self):
         assert test_ext_path in plugin_paths

@@ -26,7 +26,7 @@ setup(
     author_email='',
     url='https://github.com/aarondewindt/urban-journey',
 
-    install_requires=['numpy', 'scipy', 'lxml', 'gitpython', 'pip'],
+    install_requires=['numpy', 'scipy', 'lxml', 'gitpython', 'pip', 'PyYAML'],
     packages=find_packages('.', exclude=["test"]),
 
     entry_points={
