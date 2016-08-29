@@ -4,14 +4,18 @@ author: Someone
 dependencies:
 plugins:
 
+
 # Example
 # dependencies:
 #   - some_python_package
 #   - other_python_package
 # plugins:
-#   example_plugin_name:  # Must have one or more sources.
-#     - [git, "git@example.tk/repo.git"]
+#   plugin_name:  # Must have one or more sources.
+#     - [git, "git@example.tk/plugin_name.git"]
 #     - [symlink, "./local/path"]
 #     - [web, "http://example.com/plugin.zip"]
 #     - [zip, "/local/path/to.zip"]
 #     - [copy, "/local/path"]
+#   other_plugin_name:
+#     - [git, "git@example.tk/other.git"]
+

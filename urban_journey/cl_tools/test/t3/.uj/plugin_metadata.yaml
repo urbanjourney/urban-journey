@@ -1,0 +1,2 @@
+t1: [symlink, ../t1]
+t2: [symlink, ../t2]

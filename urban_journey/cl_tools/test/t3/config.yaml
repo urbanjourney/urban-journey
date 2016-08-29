@@ -1,0 +1,7 @@
+name: t3
+version: 0.0.0
+author: Aaron
+dependencies:
+plugins:
+  t2:
+    - [symlink, ../t2]

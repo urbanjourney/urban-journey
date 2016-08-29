@@ -37,9 +37,9 @@ class PluginsMissingError(Exception):
 
 
 class UjProject:
-    def __init__(self, path=os.getcwd(), parent_project=None):
+    def __init__(self, path=None, parent_project=None, verbosity=0):
         # Find project root folder
-        self.path = self.find_project_root(os.path.abspath(path))
+        self.path = self.find_project_root(os.path.abspath(path or os.getcwd()))
         self.parent_project = parent_project
 
         if self.path is None:
@@ -47,6 +47,7 @@ class UjProject:
 
         self.check_validity()
 
+        self.verbosity = verbosity
         self.__name = None
         self.__plugins = None
         self.__python_dependencies = None
@@ -73,6 +74,10 @@ class UjProject:
                 f.write("*\n!.gitignore")
 
         self.load_project()
+
+    def print(self, *args):
+        if self.verbosity:
+            print(*args)
 
     def check_validity(self):
         """Checks whether this is a valid uj project."""
@@ -165,7 +170,7 @@ class UjProject:
 
     def plugin_projects(self):
         for entry in os.scandir(join(self.path, "plugins")):
-            if entry.is_dir:
+            if entry.is_dir():
                 try:
                     yield UjProject(entry.path, self)
                 except InvalidUjProjectError:
@@ -203,7 +208,7 @@ class UjProject:
         installed = [i.key for i in pip.get_installed_distributions()]
         for package in self.python_dependencies:
             if package not in installed:
-                print("WARNING: Python package dependency '{}' missing.".format(package))
+                self.print("WARNING: Python package dependency '{}' missing.".format(package))
 
         # Check for missing plugins
         self.create_symlinks()
@@ -274,7 +279,7 @@ class UjProject:
                 if arg in self.plugins:
                     self.update_plugin(arg, self.plugins[arg], force)
                 else:
-                    print("WARNING: No plugin named '{}'".format(arg))
+                    self.print("WARNING: No plugin named '{}'".format(arg))
         else:
             while True:
                 for name, sources in self.plugins.items():
@@ -298,7 +303,7 @@ class UjProject:
                 self.set_metadata(dm)
                 return True
 
-        print("Unable to update plugin '{}'.".format(name))
+        self.print("Unable to update plugin '{}'.".format(name))
         return False
 
     def run(self):
@@ -307,18 +312,28 @@ class UjProject:
                                       "'uj update' to fetch missing plugins.")
 
         update_plugins()
+        self.load_nodes()
         # Add plugin nodes to node register.
         for name, node in self.nodes.items():
             if node not in node_register.values():
                 node_register[name] = node
 
-
         # Import main function
         main = importlib.import_module("urban_journey.plugins.{}.main".format(self.name)).main
+        old_cwd = os.getcwd()
+        os.chdir(join(self.path, "src"))
         main([])
+        os.chdir(old_cwd)
 
     def test(self):
         pass
+
+    def clear(self):
+        rm(join(self.path, '.uj', 'plugin_metadata.yaml'))
+        rm(join(self.path, '.uj', 'plugin_symlinks'))
+        for name in self.plugins:
+            rm(join(self.path, 'plugins', name))
+
 
     @staticmethod
     def find_project_root(path):
@@ -354,7 +369,7 @@ class UjProject:
             try:
                 # Clone repository to temporary folder
                 repo = Repo.clone_from(source, temp_dir)
-                print("cloned '{}' from '{}'".format(name, source))
+                self.print("cloned '{}' from '{}'".format(name, source))
             except:
                 return False
 
@@ -380,13 +395,13 @@ class UjProject:
             repo = Repo(target_dir)
             try:
                 repo.remote().pull()
-                print("pulled '{}' from '{}'".format(name, source))
+                self.print("pulled '{}' from '{}'".format(name, source))
                 return True
             except RepositoryDirtyError:
-                print("WARNING: Repository for plugin '{}' is dirty.".format(name))
+                self.print("WARNING: Repository for plugin '{}' is dirty.".format(name))
                 return True
             except UnmergedEntriesError:
-                print("WARNING: Repository for plugin '{}' has unmerged changes.".format(name))
+                self.print("WARNING: Repository for plugin '{}' has unmerged changes.".format(name))
                 return True
         except InvalidGitRepositoryError:
             # This is an invalid git repository. Clone it.
@@ -417,7 +432,7 @@ class UjProject:
         rm(target_dir)
 
         symlink(relpath(source, join(self.path, "plugins")), target_dir, target_is_directory=True)
-        print("created symlink '{}' with source '{}'".format(name, target_dir))
+        self.print("created symlink '{}' with source '{}'".format(name, target_dir))
         return True
 
     def update_web(self, name, source, force):

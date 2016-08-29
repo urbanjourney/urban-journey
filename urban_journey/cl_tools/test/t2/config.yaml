@@ -1,0 +1,8 @@
+name: t2
+version: 0.0.0
+author: Aaron
+dependencies:
+plugins:
+  t1:
+    - [symlink, "../t1"]
+    - [git, "ssh://git@simvps.tk/git/trepo"]

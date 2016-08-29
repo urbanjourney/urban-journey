@@ -17,7 +17,7 @@ class run(ClBase):
     @staticmethod
     def main(args):
         try:
-            uj_project = UjProject()
+            uj_project = UjProject(verbosity=1)
         except InvalidUjProjectError as e:
             sys.exit(e.args[0])
 

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<ujml version="0.0.1">
+    <script>
+        with open("../.uj/plugin_symlinks/works", "w") as f:
+            f.write("hello world")
+    </script>
+</ujml>
