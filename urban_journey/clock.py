@@ -1,7 +1,12 @@
 import asyncio
 
 from urban_journey.pubsub.trigger import Trigger
+from urban_journey.pubsub.trigger.descriptor_class_trigger import DescriptorClassTrigger
 from urban_journey import event_loop
+
+
+def clock_descriptor_factory():
+    return DescriptorClassTrigger(Clock)
 
 
 class Clock(Trigger):

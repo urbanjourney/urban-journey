@@ -2,7 +2,9 @@
 
 from urban_journey.pubsub.activity import activity
 from urban_journey.pubsub.trigger import Trigger
-from urban_journey import event_loop
+from urban_journey.pubsub.module_base import ModuleBase
+from urban_journey.pubsub.channels.channel_register import ChannelRegister
+from urban_journey import event_loop, Output, Clock, Input
 
 import unittest
 import asyncio
@@ -29,7 +31,7 @@ class TestActivity(unittest.TestCase):
             s.release()
 
         asyncio.run_coroutine_threadsafe(foo.trigger(), self.loop)
-        s.acquire()
+        assert s.acquire(timeout=0.1)
 
         self.assertEqual(bas[0], "Triggered")
 
@@ -63,7 +65,7 @@ class TestActivity(unittest.TestCase):
             s.release()
 
         asyncio.run_coroutine_threadsafe(foo.trigger(), self.loop)
-        s.acquire()
+        assert s.acquire(timeout=0.1)
 
         self.assertEqual(bas[0], "argkwarg")
 
@@ -84,7 +86,37 @@ class TestActivity(unittest.TestCase):
             s.release()
 
         asyncio.run_coroutine_threadsafe(foo.trigger(), self.loop)
-        assert s.acquire(timeout=0.1)
+        assert s.acquire(timeout=1)
 
         self.assertEqual(bas[0], "bar1")
         self.assertEqual(bas[1], "bar2")
+
+    def test_output_handling(self):
+        class Foo(ModuleBase):
+            out = Output(channel_name="foo")
+            inp = Input(channel_name="foo")
+            clk = Clock()
+
+            def __init__(self, cr, s):
+                super().__init__(cr)
+                self.s = s
+                self.subscribe()
+
+            def start(self):
+                self.clk.frequency = 100
+                self.clk.start()
+
+            @activity(clk, out)
+            async def tick(self, out):
+                out["qwerty"] = "hello, is it me you're looking for."
+
+            @activity(inp)
+            async def qwerty(self, inp):
+                assert inp["qwerty"] == "hello, is it me you're looking for."
+                self.s.release()
+
+        cr = ChannelRegister()
+        s = Semaphore(0)
+        foo = Foo(cr, s)
+        foo.start()
+        assert s.acquire(timeout=0.1)

@@ -21,4 +21,4 @@ class script(NodeBase):
             loop = get_event_loop()
             loop.call_soon(self.exec, source)
         else:
-            self.exec(source)
+            self.exec(source, is_global=True)

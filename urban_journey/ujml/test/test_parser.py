@@ -46,7 +46,7 @@ class TestParser(unittest.TestCase):
     def test_from_file(self):
         g = {'a': 123456789}
         from_file("x_example_5.ujml", globals=g)
-        print("b" in g)
+        assert g['b'] == 123456789
 
     def test_register(self):
         assert test_ext_path in plugin_paths

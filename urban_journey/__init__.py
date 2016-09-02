@@ -20,6 +20,6 @@ from urban_journey.ujml.plugin_register import plugin_paths, node_register, upda
 
 
 # General stuff
-from urban_journey.event_loop import get as get_event_loop
+from urban_journey.event_loop import get as get_event_loop, get_thread as get_event_thread
 from urban_journey.uj_project import UjProject
-from urban_journey.clock import Clock
+from urban_journey.clock import clock_descriptor_factory as Clock

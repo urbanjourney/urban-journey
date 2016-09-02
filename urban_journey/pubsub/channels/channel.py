@@ -5,6 +5,7 @@ Handles and retransmits data in between ports.
 
 from asyncio import shield, wait, wait_for, ensure_future
 
+from urban_journey.debug import print_channel_transmit
 from urban_journey.pubsub.ports.output import OutputPort
 from urban_journey.pubsub.ports.input import InputPort
 from urban_journey import event_loop
@@ -29,6 +30,6 @@ class Channel:
             raise TypeError()
 
     async def flush(self, data):
-        # print("Channel.flush({})".format(data))
+        print_channel_transmit("Channel.flush({})".format(data))
         for i, port in enumerate(self.input_list):
             ensure_future(wait_for(port.flush(data), self.timeout), loop=self.loop)

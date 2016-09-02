@@ -1,7 +1,7 @@
 """
 
 """
-
+from urban_journey.debug import print_channel_transmit
 from urban_journey.pubsub.ports.base import PortBase, PortDescriptorBase
 from urban_journey.pubsub.trigger import Trigger
 from urban_journey.pubsub.descriptor.instance import DescriptorInstance
@@ -22,7 +22,7 @@ class InputPort(PortBase, DescriptorInstance, Trigger):
         await self.trigger(data)
 
     async def trigger(self, data, *args, **kwargs):
-        # print("InputPort.trigger({})".format(data))
+        print_channel_transmit("InputPort.trigger({})".format(data))
         futures = [None] * len(self._activities)
         for i, activity in enumerate(self._activities):
             futures[i] = activity.trigger((self, {self.attribute_name: data}), self.parent_object, *args, **kwargs)

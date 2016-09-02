@@ -13,4 +13,4 @@ class Trigger:
     async def trigger(self, *args, **kwargs):
         """Trigger all activities subscribed to this trigger."""
         for activity in self._activities:
-            await activity.trigger((self, None), *args, **kwargs)
+            await activity.trigger((self, None), None, *args, **kwargs)

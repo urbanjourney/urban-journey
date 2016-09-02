@@ -21,8 +21,9 @@ class TestChannelAndPorts(unittest.TestCase):
                 self.op.subscribe()
 
             async def transmit(self):
-                print("transmitting:", self.op.channel_name)
-                await self.op.flush("Some Data")
+                # print("transmitting:", self.op.channel_name)
+                self.op.data[0] = "Some Data"
+                await self.op.flush()
 
         class B(ModuleBase):
             ip = InputPortStatic(channel_name="op")
@@ -34,7 +35,7 @@ class TestChannelAndPorts(unittest.TestCase):
 
             @activity(ip)
             async def foo(self, ip):
-                print("foo triggered:", ip)
+                assert ip[0] == "Some Data"
                 self.semaphore.release()
 
         semaphore = Semaphore(0)
@@ -44,7 +45,6 @@ class TestChannelAndPorts(unittest.TestCase):
         a = A(channel_register)
         b = B(channel_register, semaphore)
 
-        print("starting")
         loop = event_loop.get()
         loop.set_debug(True)
         asyncio.run_coroutine_threadsafe(a.transmit(), loop=loop)

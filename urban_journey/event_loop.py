@@ -18,7 +18,7 @@ def get(debug_enabled=False) -> asyncio.BaseEventLoop:
     return loop
 
 
-def get_thread():
+def get_thread() -> Thread:
     """Returns the thread object running the secondary event loop."""
     global thread
     return thread
