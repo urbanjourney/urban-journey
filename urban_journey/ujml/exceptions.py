@@ -196,3 +196,15 @@ class MissingRequiredInput(BaseUJMLError):
 
     def _error_message(self):
         return "Module '{}' is missing required Data '{}'.".format(self.module_name, self.input_name)
+
+
+class PyQt4NotEnabledError(BaseUJMLError):
+    """
+    This error is raised when trying to start PyQt4 without enabling it first. Try adding pyqt="true" to the root
+    ujml element.
+    """
+    def __init__(self, filename, lineno):
+        super().__init__(filename, lineno)
+
+    def _error_message(self):
+        return "Starting PyQt without enabling it first. Try adding pyqt=true' to the root ujml element."

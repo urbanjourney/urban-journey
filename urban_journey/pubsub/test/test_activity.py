@@ -102,6 +102,9 @@ class TestActivity(unittest.TestCase):
                 self.s = s
                 self.subscribe()
 
+            def stop(self):
+                self.clk.stop()
+
             def start(self):
                 self.clk.frequency = 100
                 self.clk.start()
@@ -120,3 +123,4 @@ class TestActivity(unittest.TestCase):
         foo = Foo(cr, s)
         foo.start()
         assert s.acquire(timeout=0.1)
+        foo.stop()

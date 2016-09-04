@@ -1,6 +1,7 @@
 import unittest
 import os
 import inspect
+import sys
 
 import numpy as np
 
@@ -223,3 +224,5 @@ class TestParser(unittest.TestCase):
                             </script>
                         </ujml>'''
         ujml = from_string(ujml_code)
+
+

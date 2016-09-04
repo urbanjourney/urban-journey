@@ -8,7 +8,7 @@ loop = None
 thread = None
 
 
-def get(debug_enabled=False) -> asyncio.BaseEventLoop:
+def get(debug_enabled=True) -> asyncio.BaseEventLoop:
     """Returns the event secondary event loop."""
     global loop
     if loop is None:
@@ -46,7 +46,7 @@ def event_loop_target(s):
     s.release()
     # print(4)
     loop.run_forever()
-    # print(999999)
+    print(999999)
     loop = None
     thread = None
 

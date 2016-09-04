@@ -17,6 +17,7 @@ from urban_journey.ujml.unique import Empty, Required
 from urban_journey.ujml.attributes import *
 from urban_journey.ujml.loaders import from_string, from_file
 from urban_journey.ujml.plugin_register import plugin_paths, node_register, update_plugins
+from urban_journey.ujml.widget_node_base import WidgetNodeBase, UjQtSignal
 
 
 # General stuff

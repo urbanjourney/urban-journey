@@ -1,5 +1,7 @@
+import asyncio
 from collections import OrderedDict
 
+from urban_journey.event_loop import get as get_event_loop
 from urban_journey.debug import print_channel_transmit
 from urban_journey.pubsub.ports.base import PortBase, PortDescriptorBase
 from urban_journey.pubsub.descriptor.instance import DescriptorInstance
@@ -26,10 +28,19 @@ class OutputPort(PortBase, DescriptorInstance):
 
         self.data = OutputDataHolder(self)
 
+    def clear(self):
+        self.data.data = OrderedDict()
+
     async def flush(self):
         print_channel_transmit("OutputPort.flush({})".format(self.data.data))
         if self.channel is not None:
             await self.channel.flush(self.data.data)
+
+    def flush_threadsafe(self):
+        print_channel_transmit("OutputPort.flush_threadsafe({})".format(self.data.data))
+        if self.channel is not None:
+            loop = get_event_loop()
+            asyncio.run_coroutine_threadsafe(self.channel.flush(self.data.data), loop)
 
 
 class OutputDataHolder:
@@ -50,3 +61,12 @@ class OutputDataHolder:
             await self.__port.flush()
             self.data = OrderedDict()
             self.__flushed = True
+
+    def flush_threadsafe(self):
+        if not self.__flushed:
+            self.__port.flush_threadsafe()
+            self.data = OrderedDict()
+            self.__flushed = True
+
+    def clear(self):
+        self.data.data = OrderedDict()

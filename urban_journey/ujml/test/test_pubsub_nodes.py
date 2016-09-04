@@ -20,7 +20,6 @@ class TestPubSubNodes(unittest.TestCase):
         s = Semaphore(0)
         globs = {"s": s}
         ujml = from_string(ujml_code, globals=globs)
-        # print(ujml)
         loop = get_event_loop()
         asyncio.run_coroutine_threadsafe(ujml[0].transmit(), loop=loop)
         assert s.acquire(timeout=0.1)
@@ -32,9 +31,21 @@ class TestPubSubNodes(unittest.TestCase):
         s = Semaphore(0)
         globs = {"s": s}
         ujml = from_string(ujml_code, globals=globs)
-        # print(ujml)
         loop = get_event_loop()
         asyncio.run_coroutine_threadsafe(ujml[0].transmit(), loop=loop)
         assert s.acquire(timeout=0.1)
         assert ujml[0].op.channel.name == "bar"
         assert ujml[0].ip.channel.name == "bar"
+
+    def test_widget_node(self):
+        # Warning: This test may potentially lock forever if failing. To fix this timeout param has to be implemented
+        # for 'UjmlNode.pyqt_start()'
+        ujml_code = '''<?xml version="1.0"?>
+        <ujml pyqt="true" version="{uj_version}">
+            <k_stoff out="foo"/>
+            <m_stoff inp="foo"/>
+        </ujml>
+        '''.format(uj_version=uj_version)
+        ujml = from_string(ujml_code)
+        assert ujml.start(timeout=0.1)
+

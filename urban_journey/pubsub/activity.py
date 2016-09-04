@@ -5,6 +5,7 @@ from copy import copy
 from collections import defaultdict
 import sys
 from traceback import print_tb, print_exception
+from abc import ABCMeta, abstractmethod
 
 from .trigger import Trigger
 from urban_journey.pubsub.ports.output import OutputPort
@@ -16,9 +17,9 @@ class ActivityMode(Enum):
     schedule = 2
 
 
-class ActivityBase:
+class ActivityBase():
     """This is the base class for all activities."""
-    def trigger(self, *args, **kwargs):
+    async def trigger(self, senders, instance, *args, **kwargs):
         pass
 
 
@@ -29,6 +30,7 @@ def activity(trigger: Trigger, *args, mode=ActivityMode.schedule, **kwargs):
 
     class ActivityDecorator(ActivityBase):
         def __init__(self, target):
+            # TODO: Check if target is a coroutine.
             self.target = target
 
             self.trigger_obj = trigger
@@ -103,9 +105,9 @@ def activity(trigger: Trigger, *args, mode=ActivityMode.schedule, **kwargs):
                             await value.flush()
 
             except Exception as e:
-                # print_tb(sys.exc_info()[2])
+                # TODO: Add something here to either call an error handler, stop execution or just ignore based on some
+                # setting somewhere.
                 print_exception(*sys.exc_info())
-                # print(sys.exc_info())
 
         def __call__(self, *args, **kwargs):
             return self.target(*args, **kwargs)
