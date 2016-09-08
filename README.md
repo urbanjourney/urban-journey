@@ -1,2 +1,2 @@
 # urban-journey
-Publisher subscriber framework experiments
+Publisher subscriber framework
