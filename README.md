@@ -1,2 +1,5 @@
-# urban-journey
-Publisher subscriber framework experiments
+# Urban Journey
+Publisher subscriber framework for python.
+
+Documentation: http://www.simvps.tk/docs
+
