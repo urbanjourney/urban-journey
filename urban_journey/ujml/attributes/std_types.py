@@ -7,7 +7,11 @@ from urban_journey.common.cached import cached
 
 class String(AttributeBaseClass):
     """
-    String ujml attribute descriptor.
+    String ujml attribute.
+
+    :param name: Name of the attribute in ujml. Default is same as the class attribute.
+    :param read_only: Mark attribute as read only.
+    :param optional_value: Optional value in case the attribute wasn't given.
     """
     def get(self, instance, owner):
         val_str = instance.element.get(self.attrib_name)
@@ -22,7 +26,11 @@ class String(AttributeBaseClass):
 
 class Int(AttributeBaseClass):
     """
-    Integer ujml attribute descriptor.
+    Integer ujml attribute.
+
+    :param name: Name of the attribute in ujml. Default is same as the class attribute.
+    :param read_only: Mark attribute as read only.
+    :param optional_value: Optional value in case the attribute wasn't given.
     """
     def get(self, instance, owner):
         val_str = instance.element.get(self.attrib_name)
@@ -40,7 +48,11 @@ class Int(AttributeBaseClass):
 
 class Bool(AttributeBaseClass):
     """
-    Boolean ujml attribute descriptor.
+    Boolean ujml attribute.
+
+    :param name: Name of the attribute in ujml. Default is same as the class attribute.
+    :param read_only: Mark attribute as read only.
+    :param optional_value: Optional value in case the attribute wasn't given.
     """
     def get(self, instance, owner):
         val_str = instance.element.get(self.attrib_name)
@@ -59,7 +71,11 @@ class Bool(AttributeBaseClass):
 
 class Float(AttributeBaseClass):
     """
-    Float ujml attribute descriptor.
+    Float ujml attribute.
+
+    :param name: Name of the attribute in ujml. Default is same as the class attribute.
+    :param read_only: Mark attribute as read only.
+    :param optional_value: Optional value in case the attribute wasn't given.
     """
     def get(self, instance, owner):
         val_str = instance.element.get(self.attrib_name)
@@ -77,7 +93,12 @@ class Float(AttributeBaseClass):
 
 class List(AttributeBaseClass):
     """
-    List ujml attribute descriptor. The contents of the list are evaluated as python code.
+    Comma separated list ujml attribute. The contents of the list are evaluated as python code.
+
+    :param name: Name of the attribute in ujml. Default is same as the class attribute.
+    :param read_only: Mark attribute as read only.
+    :param optional_value: Optional value in case the attribute wasn't given.
+
     """
     def get(self, instance, owner):
             val_str = instance.element.get(self.attrib_name)
@@ -89,8 +110,14 @@ class List(AttributeBaseClass):
 
 class FilePath(AttributeBaseClass):
     """
-    FilePath ujml attribute descriptor.
+    File path ujml attribute. If a relative path was given by the user, this attribute will return an
+    absolute path for a file relative to the ujml file.
+
+    :param name: Name of the attribute in ujml. Default is same as the class attribute.
+    :param read_only: Mark attribute as read only.
+    :param optional_value: Optional value in case the attribute wasn't given.
     """
+
     def get(self, instance, owner):
         val_str = instance.element.get(self.attrib_name)
         if val_str is None:

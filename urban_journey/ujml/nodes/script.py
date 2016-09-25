@@ -5,6 +5,9 @@ from lxml import etree
 
 
 class script(NodeBase):
+    """
+    Bases: urban_journey.NodeBase
+    """
     src = FilePath(optional_value=None)
     async = Bool(optional_value=False)
 

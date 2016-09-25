@@ -7,7 +7,7 @@ import sys
 from traceback import print_tb, print_exception
 from abc import ABCMeta, abstractmethod
 
-from .trigger import Trigger
+from .trigger import TriggerBase
 from urban_journey.pubsub.ports.output import OutputPort
 from urban_journey.pubsub.ports.base import PortDescriptorBase
 
@@ -17,16 +17,17 @@ class ActivityMode(Enum):
     schedule = 2
 
 
-class ActivityBase():
+class ActivityBase:
     """This is the base class for all activities."""
     async def trigger(self, senders, instance, *args, **kwargs):
+        """TriggerBase handler"""
         pass
 
 
-def activity(trigger: Trigger, *args, mode=ActivityMode.schedule, **kwargs):
+def activity(trigger: TriggerBase, *args, mode=ActivityMode.schedule, **kwargs):
     """Activity decorator factory. This function returns a function decorator class."""
-    if not isinstance(trigger, Trigger):
-        raise TypeError("trigger must inherit from Trigger")
+    if not isinstance(trigger, TriggerBase):
+        raise TypeError("trigger must inherit from TriggerBase")
 
     class ActivityDecorator(ActivityBase):
         def __init__(self, target):

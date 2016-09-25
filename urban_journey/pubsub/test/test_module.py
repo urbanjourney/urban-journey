@@ -3,16 +3,16 @@ import unittest
 from urban_journey.pubsub.module_base import ModuleBase
 from urban_journey.pubsub.channels.channel_register import ChannelRegister
 from urban_journey.pubsub.activity import activity
-from urban_journey.pubsub.trigger import Trigger, DescriptorClassTrigger
+from urban_journey.pubsub.trigger import TriggerBase, DescriptorClassTrigger
 from urban_journey import Input, Output
 
 
 class TestModule(unittest.TestCase):
     def test_activities_triggers_properties(self):
         class Foo(ModuleBase):
-            trigger1 = DescriptorClassTrigger(Trigger)
-            trigger2 = DescriptorClassTrigger(Trigger)
-            trigger3 = DescriptorClassTrigger(Trigger)
+            trigger1 = DescriptorClassTrigger(TriggerBase)
+            trigger2 = DescriptorClassTrigger(TriggerBase)
+            trigger3 = DescriptorClassTrigger(TriggerBase)
 
             ip = Input()
             op = Output()

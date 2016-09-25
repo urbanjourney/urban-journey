@@ -120,12 +120,15 @@ class UjProject:
 
     def get_metadata(self):
         if isfile(join(self.path, ".uj", "plugin_metadata.yaml")):
-            return yaml.load(open(join(self.path, ".uj", "plugin_metadata.yaml"), "r")) or {}
+            with open(join(self.path, ".uj", "plugin_metadata.yaml"), "r") as f:
+                data = yaml.load(f) or {}
+            return data
         else:
             return {}
 
     def set_metadata(self, value):
-        yaml.dump(value, open(join(self.path, ".uj", "plugin_metadata.yaml"), "w"))
+        with open(join(self.path, ".uj", "plugin_metadata.yaml"), "w") as f:
+            yaml.dump(value, f)
 
     @property
     def version(self):
@@ -179,7 +182,8 @@ class UjProject:
     def load_project(self):
         """(Re)loads the project. Returns True if all plugins are satisfied."""
 
-        config = yaml.load(open(join(self.path, "config.yaml"), "rb"))
+        with open(join(self.path, "config.yaml"), "rb") as f:
+            config = yaml.load(f)
 
         self.__plugins = defaultdict(list, config.pop('plugins', {}) or {})
         self.__python_dependencies = config.pop('dependencies', []) or []

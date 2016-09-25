@@ -1,7 +1,7 @@
 """These tests are here to test the functions and classes in 'activity.py'"""
 
 from urban_journey.pubsub.activity import activity
-from urban_journey.pubsub.trigger import Trigger
+from urban_journey.pubsub.trigger import TriggerBase
 from urban_journey.pubsub.module_base import ModuleBase
 from urban_journey.pubsub.channels.channel_register import ChannelRegister
 from urban_journey import event_loop, Output, Clock, Input
@@ -21,7 +21,7 @@ class TestActivity(unittest.TestCase):
 
     def test_simple_trigger(self):
         """Creates one trigger and an activity and triggers it."""
-        foo = Trigger()
+        foo = TriggerBase()
         bas = [None]
         s = Semaphore(0)
 
@@ -38,7 +38,7 @@ class TestActivity(unittest.TestCase):
     def test_direct_call(self):
         """Calls the activity directly."""
         """Creates one trigger and an activity and triggers it."""
-        foo = Trigger()
+        foo = TriggerBase()
         bas = [None]
         s = Semaphore(0)
 
@@ -55,7 +55,7 @@ class TestActivity(unittest.TestCase):
     def test_parameters(self):
         """Triggers an activity and passes extra parameters."""
         bas = [None]
-        foo = Trigger()
+        foo = TriggerBase()
 
         s = Semaphore(0)
 
@@ -71,7 +71,7 @@ class TestActivity(unittest.TestCase):
 
     def test_multiple_activity(self):
         bas = [None, None]
-        foo = Trigger()
+        foo = TriggerBase()
 
         s = Semaphore(0)
 

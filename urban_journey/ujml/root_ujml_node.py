@@ -17,6 +17,11 @@ from urban_journey.pubsub.channels.channel_register import ChannelRegister
 
 
 class UjmlNode(NodeBase):
+    """
+    Bases: :class:`urban_journey.NodeBase`
+
+    Root node for ujml documents.
+    """
     req_version = String(name="version")
     pyqt = Bool(optional_value=False)
     pyqt_quit_on_last_window_closed = Bool(optional_value=True)
@@ -24,27 +29,47 @@ class UjmlNode(NodeBase):
     def __init__(self, element: etree.ElementBase, file_name, globals=None):
         super().__init__(element, None)
         self.pyqt_app = None
+        """If PyQt4 is enabled, it contains the :class:`PyQt4.QtGui.QApplication` instance. """
         if self.pyqt:
             self.pyqt_enable()
         self.__semaphore = Semaphore(0)
 
         self.node_dict_by_id = {}
-        self.__data_container = DataContainer()
-        self.interpreter = UJMLPythonInterpreter(globals or {})
-        self.channel_register = ChannelRegister()
+        """A dictionary containing all already read nodes by id."""
 
-        self.configure_interpreter()
+        self.__data_container = DataContainer()
+
+        self.interpreter = UJMLPythonInterpreter(globals or {})
+        """
+        Instance of :class:`urban_journey.UJMLPythonInterpreter` used as the embedded python interpreter to run the
+        python code in the ujml file.
+        """
+
+        self.channel_register = ChannelRegister()
+        """Instance of :class:`urban_journey.ChannelRegister` used as the main channel register."""
+
+        self.__configure_interpreter()
         self.__file_name = os.path.abspath(file_name)
-        self.check_version()
+        self.__check_version()
         self.update_children()
 
     def pyqt_enable(self):
+        """Enable the use of PyQt4."""
         print("sdfsdf")
         if self.pyqt_app is None:
             self.pyqt_app = QtGui.QApplication(sys.argv)
             self.pyqt_app.setQuitOnLastWindowClosed(self.pyqt_quit_on_last_window_closed)
 
     def pyqt_start(self, *, timeout=None):
+        """
+        .. warning:: Don't call this function directly, instead make sure PyQt4 is enabled and
+           :func:`urban_journey.UjmlNode.start` will call this function.
+
+           Timeout not implemented yet.
+
+        Sends the start event and waits for the PyQt4 event loop to terminate. Returns ``False`` if timed out,
+        otherwise ``True``.
+        """
         # TODO: Implement timeout for pyqt_start. It should return False in case of timeout
         # The timeout is usefull tests.
         if self.pyqt_app is None:
@@ -53,20 +78,30 @@ class UjmlNode(NodeBase):
         return True
 
     def pyqt_stop(self):
+        """
+        .. warning:: Don't call this function directly, instead make sure PyQt4 is enabled and
+           :func:`urban_journey.UjmlNode.stop` will call this function.
+
+        Sends the stop event and stops the PyQt4 event loop.
+        """
         if self.pyqt_app is not None:
             self.pyqt_app.quit()
 
     def start(self, *, timeout=None, blocking=True):
         """
-        Sends the start event. If blocking is True, then the function will block until UjmlNode.stop() is called. If
-        PyQt4 is enabled it will always be blocking."""
+        Sends the start event. If blocking is True, the function will block until
+        :func:`urban_journey.UjmlNode.stop` is called. If PyQt4 is enabled it will always be blocking.
+        """
         if self.pyqt:
             return self.pyqt_start(timeout=timeout)
         elif blocking:
             return self.__semaphore.acquire(timeout=timeout)
 
     def stop(self):
-        """Sends a stop event to all modules subscribed to it, and releases the semaphore."""
+        """
+        Sends a stop event to all modules subscribed to it, and releases :func:`urban_journey.UjmlNode.start` if it's
+        blocking.
+        """
         # For now this also kills.
         # TODO: Implement uj_start and uj_stop signals.
         if self.pyqt:
@@ -74,16 +109,25 @@ class UjmlNode(NodeBase):
         self.__semaphore.release()
 
     def kill(self):
-        """Sends stop event to all modules, stops PyQT4 if enabled and stops the main event loop."""
+        """
+        .. warning:: Not implemented.
+
+        Same as :func:`urban_journey.UjmlNode.stop` but it also stop the asyncio event loop.
+        """
         pass
 
-    def configure_interpreter(self):
-        """Configures the embedded interpreter, by adding default members."""
+    def __configure_interpreter(self):
+        """
+        Configures the embedded interpreter, by adding default members.
+        """
         self.interpreter['abs_path'] = self.abs_path
         self.interpreter['np'] = np
         self.interpreter['data'] = self.data
 
-    def check_version(self):
+    def __check_version(self):
+        """
+        Check if the required |name| version is satisfied.
+        """
         rv = [int(x) for x in self.req_version.split('.')]
         dv = [int(x) for x in uj_version.split('.')]
         if not (rv[0] == dv[0] and
@@ -92,7 +136,12 @@ class UjmlNode(NodeBase):
             self.raise_exception(IncompatibleUJVersion, self.req_version, uj_version)
 
     def register_node(self, node: NodeBase):
-        """Registers a node."""
+        """
+        Registers a node, by adding it to the :attr:`urban_journey.UjmlNode.node_dict_by_id list` if it has an id.
+
+        :param node: The new node to register.
+        :type node: urban_journey.NodeBase
+        """
         # Register by id.
         if node.id is not None:
             if node.id in self.node_dict_by_id:
@@ -101,6 +150,12 @@ class UjmlNode(NodeBase):
                 self.node_dict_by_id[node.id] = node
 
     def deregister_node(self, node: NodeBase):
+        """
+        Deregisters a node.
+
+        :param node: Node to deregister.
+        :type node: urban_journey.NodeBase
+        """
         self.node_dict_by_id.pop(node.id, None)
 
     @property
@@ -113,4 +168,7 @@ class UjmlNode(NodeBase):
 
     @property
     def data(self):
+        """
+        Instance of :class:`urban_journey.DataContainer` holding the data that has been loaded in by data nodes.
+        """
         return self.__data_container

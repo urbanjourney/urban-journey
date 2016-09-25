@@ -1,7 +1,7 @@
 import inspect
 import pkgutil
 
-from .basic_nodes import path as default_nodes_path
+from .nodes import path as default_nodes_path
 
 __all__ = ['update_plugins', 'plugin_paths', 'node_register']
 

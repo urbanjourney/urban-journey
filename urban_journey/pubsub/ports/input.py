@@ -3,7 +3,7 @@
 """
 from urban_journey.debug import print_channel_transmit
 from urban_journey.pubsub.ports.base import PortBase, PortDescriptorBase
-from urban_journey.pubsub.trigger import Trigger
+from urban_journey.pubsub.trigger import TriggerBase
 from urban_journey.pubsub.descriptor.instance import DescriptorInstance
 from urban_journey.pubsub.descriptor.static import DescriptorStatic
 
@@ -11,11 +11,11 @@ from urban_journey.pubsub.descriptor.static import DescriptorStatic
 from asyncio import wait_for, wait, shield
 
 
-class InputPort(PortBase, DescriptorInstance, Trigger):
+class InputPort(PortBase, DescriptorInstance, TriggerBase):
     def __init__(self, parent_object, attribute_name, channel_name=None, time_out=5):
         PortBase.__init__(self, parent_object.channel_register, attribute_name, channel_name)
         DescriptorInstance.__init__(self, parent_object, attribute_name)
-        Trigger.__init__(self)
+        TriggerBase.__init__(self)
         self.time_out = time_out
 
     async def flush(self, data):
@@ -29,10 +29,10 @@ class InputPort(PortBase, DescriptorInstance, Trigger):
         await wait_for(shield(wait(futures)), self.time_out)
 
 
-class InputPortStatic(PortDescriptorBase, Trigger):
+class InputPortStatic(PortDescriptorBase, TriggerBase):
     def __init__(self, channel_name=None):
         DescriptorStatic.__init__(self, InputPort)
-        Trigger.__init__(self)
+        TriggerBase.__init__(self)
         self.channel_name = channel_name
 
     def add_obj(self, obj):

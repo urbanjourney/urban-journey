@@ -10,6 +10,9 @@ to_2d_list_regex = re.compile(r"(?:^|; *)([\s\S]*?)(?:$|(?=;))")
 
 
 class data(DataNodeBase):
+    """
+    Bases: :class:`urban_journey.DataNodeBase`
+    """
     ndarray = Bool(optional_value=True)
 
     @cached
@@ -60,3 +63,18 @@ class data(DataNodeBase):
             source = "[%s]" % (source,)
 
         return source
+
+
+if __name__ == "__main__":
+    import numpy as np
+    a = data.process_if_array("""
+            15, 14, 13;
+            12, 11, 10;
+             9,  8,  7;
+             4,  5,  6;
+             1,  2,  3
+        """, True)
+
+    print(a)
+    print(eval(a))
+

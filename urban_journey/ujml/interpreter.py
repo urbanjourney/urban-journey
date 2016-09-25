@@ -64,13 +64,16 @@ class UJMLPythonInterpreter:
     def eval(self, source, file_name, source_line=1, is_global=False, **kwargs):
         """Evaluates python source code. Kwargs will be made available in the local scope."""
         source = tidy_source(source)
-        lines = source.strip().splitlines()
         locs = self.globals if is_global else kwargs
-        if len(lines) > 1:
-            exec(compile('\n' * (source_line - 1) + '\n'.join(lines[:-1]), file_name, 'exec'),
-                 self.globals, locs)
-        return eval(compile('\n' * (source_line - 1 + len(lines) - 1) + lines[-1], file_name, 'eval'),
-                    self.globals, locs)
+        return eval(compile('\n' * (source_line - 1) + source, file_name, 'eval'), self.globals, locs)
+
+        # TODO: allow multiline evals
+        # lines = source.strip().splitlines()
+        # if len(lines) > 1:
+        #     exec(compile('\n' * (source_line - 1) + '\n'.join(lines[:-1]), file_name, 'exec'),
+        #          self.globals, locs)
+        # return eval(compile('\n' * (source_line - 1 + len(lines) - 1) + lines[-1], file_name, 'eval'),
+        #             self.globals, locs)
 
 
 class UJMLPythonSource:

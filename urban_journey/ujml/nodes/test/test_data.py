@@ -33,7 +33,8 @@ class TestData(unittest.TestCase):
     def test_pickle(self):
         """Test to see if the pickle element can load in pickle data correctly."""
         correct = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-        pickle.dump(correct, open(abs_path("pickle_test_1.i.p"), "wb"))
+        with open(abs_path("pickle_test_1.i.p"), "wb") as f:
+            pickle.dump(correct, f)
         ujml_code = '<?xml version="1.0"?><ujml version="{}">'.format(uj_version) + '''
             <pickle file="pickle_test_1.i.p"/>
         </ujml>
@@ -44,10 +45,11 @@ class TestData(unittest.TestCase):
     def test_data(self):
         correct1 = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
         correct2 = np.array([[9, 8, 7], [6, 5, 4], [3, 2, 1]])
-        pickle.dump(correct2, open(abs_path("pickle_test_2.i.p"), "wb"))
+        with open(abs_path("pickle_test_2.i.p"), "wb") as f:
+            pickle.dump(correct2, f)
         ujml_code = '<?xml version="1.0"?><ujml version="{}">'.format(uj_version) + '''
-                    <data>import numpy as np
-                          np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+                    <data>
+                        np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
                     </data>
                     <data>
                         <pickle file="pickle_test_2.i.p"/>
@@ -61,7 +63,8 @@ class TestData(unittest.TestCase):
     def test_data_array_preprocessor(self):
         correct1 = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
         correct2 = np.array([[9, 8, 7], [6, 5, 4], [3, 2, 1]])
-        pickle.dump(correct2, open(abs_path("pickle_test_2.i.p"), "wb"))
+        with open(abs_path("pickle_test_2.i.p"), "wb") as f:
+            pickle.dump(correct2, f)
         ujml_code = '<?xml version="1.0"?><ujml version="{}">'.format(uj_version) + '''
                             <data>
                                 1, 2, 3; 4, 5, 6; 7, 8, 9

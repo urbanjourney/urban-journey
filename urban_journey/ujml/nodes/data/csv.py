@@ -9,6 +9,9 @@ from urban_journey.ujml.exceptions import RequiredAttributeError, DataLoadError
 
 
 class csv(DataNodeBase):
+    """
+    Bases: :class:`urban_journey.DataNodeBase`
+    """
     file = String()
     delimiter = String(optional_value=",")
 

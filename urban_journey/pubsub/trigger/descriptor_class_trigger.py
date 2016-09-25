@@ -4,10 +4,10 @@ WARNING: I don't know exactly how to explain how these work.Before continuing ma
 in python. Then continue on reading the rest of the documentation here.
 """
 from urban_journey.common.cached import cached
-from urban_journey.pubsub.trigger import Trigger
+from urban_journey.pubsub.trigger import TriggerBase
 
 
-class DescriptorClassTrigger(Trigger):
+class DescriptorClassTrigger(TriggerBase):
     """
     Descriptor holding a trigger instance for each instance of a model class that uses a descriptor trigger. When called
     it returns the trigger instance corresponding to the model instance that requested it.
@@ -101,7 +101,7 @@ def trigger_factory(klass):
     return DescriptorInstanceTrigger
 
 
-DescriptorClassTriggerBase = trigger_factory(Trigger)
+DescriptorClassTriggerBase = trigger_factory(TriggerBase)
 
 
 if __name__ == "__main__":

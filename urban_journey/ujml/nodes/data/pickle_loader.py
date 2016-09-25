@@ -13,7 +13,8 @@ class pickle(DataNodeBase):
     @cached
     def data(self):
         try:
-            return pck.load(open(self.abs_path(self.file), "rb"))
+            with open(self.abs_path(self.file), "rb") as f:
+                return pck.load(f)
         except RequiredAttributeError as e:
             raise e
         except Exception as e:

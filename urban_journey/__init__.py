@@ -6,18 +6,23 @@ __version__ = "0.0.1"
 from urban_journey.pubsub.activity import activity, ActivityBase, ActivityMode
 from urban_journey.pubsub.ports.input import InputPortStatic as Input
 from urban_journey.pubsub.ports.output import Output
-from urban_journey.pubsub.trigger import Trigger
+from urban_journey.pubsub.trigger import TriggerBase
+from urban_journey.pubsub.module_base import ModuleBase
+from urban_journey.pubsub.channels.channel_register import ChannelRegister
 
 
 # Urban Journey Markup Language (UJML)
 from urban_journey.ujml.node_base import NodeBase
 from urban_journey.ujml.data_node_base import DataNodeBase
 from urban_journey.ujml.module_node_base import ModuleNodeBase
+from urban_journey.ujml.root_ujml_node import UjmlNode
 from urban_journey.ujml.unique import Empty, Required
 from urban_journey.ujml.attributes import *
 from urban_journey.ujml.loaders import from_string, from_file
 from urban_journey.ujml.plugin_register import plugin_paths, node_register, update_plugins
-from urban_journey.ujml.widget_node_base import WidgetNodeBase, UjQtSignal
+from urban_journey.ujml.widget_node_base import QWidgetNodeBase, UjQtSignal
+from urban_journey.ujml.interpreter import UJMLPythonInterpreter
+from urban_journey.ujml.data_container import DataContainer
 
 
 # General stuff

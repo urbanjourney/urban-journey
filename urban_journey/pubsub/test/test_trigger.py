@@ -6,7 +6,7 @@ import asyncio
 from urban_journey.pubsub.module_base import ModuleBase
 from urban_journey.pubsub.activity import activity
 from urban_journey.pubsub.trigger import DescriptorClassTrigger
-from urban_journey.pubsub.trigger import Trigger
+from urban_journey.pubsub.trigger import TriggerBase
 from urban_journey.clock import Clock
 from urban_journey import event_loop
 
@@ -23,7 +23,7 @@ class TestTrigger(unittest.TestCase):
                 self.bar = None
                 self.s = s
 
-            trigger = DescriptorClassTrigger(Trigger)
+            trigger = DescriptorClassTrigger(TriggerBase)
 
             @activity(trigger)
             async def activity(self):
@@ -40,7 +40,7 @@ class TestTrigger(unittest.TestCase):
     def test_multiple_module_instances(self):
 
         class Foo(ModuleBase):
-            trigger = DescriptorClassTrigger(Trigger)
+            trigger = DescriptorClassTrigger(TriggerBase)
 
             def __init__(self, s, bar):
                 super().__init__()
@@ -52,7 +52,7 @@ class TestTrigger(unittest.TestCase):
                 self.bar.append(self)
                 self.s.release()
 
-        # Trigger each instance individually
+        # TriggerBase each instance individually
         foo = []
         bar = []
         s = Semaphore(0)
@@ -63,7 +63,7 @@ class TestTrigger(unittest.TestCase):
         self.assertListSameContent(bar, foo)
 
         # TODO: Do this test on it's own. This setup doesn't work since I changed all activities to coroutines.
-        # Trigger all instances of the Foo module class
+        # TriggerBase all instances of the Foo module class
         # bar = []
         # asyncio.run_coroutine_threadsafe(Foo.trigger.trigger(), self.loop)
         # self.assertListSameContent(foo, bar)

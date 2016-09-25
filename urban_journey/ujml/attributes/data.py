@@ -6,6 +6,15 @@ import numpy as np
 
 
 class Data(object):
+    """Used to declare a data input child nodes. The child nodes will be of type
+       :class:`urban_journey.ujml.nodes.data.data.data` and will thus behave the same as a :ref:`data_node_section` node.
+
+       :param type: Required data type.
+       :param optional_value: Optional value to return in case the node was not given in the ujml file.
+       :param shape: Check the shape of an array. The data must be a numpy.ndarray. Pass 'nan' to skip checking a dimension.
+    """
+
+    # TODO: Add name as a parameter.
     def __init__(self, type=None, optional_value=Required, shape=None):
         self.type = type
         self.optional_value = optional_value

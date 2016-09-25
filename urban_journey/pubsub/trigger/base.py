@@ -1,6 +1,6 @@
 
 
-class Trigger:
+class TriggerBase:
     """Base class for all triggers"""
     def __init__(self):
         super().__init__()
@@ -11,6 +11,6 @@ class Trigger:
         self._activities.append(activity)
 
     async def trigger(self, *args, **kwargs):
-        """Trigger all activities subscribed to this trigger."""
+        """TriggerBase all activities subscribed to this trigger."""
         for activity in self._activities:
             await activity.trigger((self, None), None, *args, **kwargs)

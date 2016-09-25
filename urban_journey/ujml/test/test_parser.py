@@ -9,12 +9,12 @@ from urban_journey import __version__ as uj_version
 from urban_journey.ujml.plugin_register import node_register, update_plugins, plugin_paths
 from urban_journey.ujml.node_base import NodeBase
 from urban_journey.ujml.root_ujml_node import UjmlNode
-from urban_journey.ujml.basic_nodes.data import data
+from urban_journey.ujml.nodes.data import data
 from ..loaders import from_string, from_file
 
 from .test_plugins import __path__ as test_ext_path
 from .test_plugins import stoffs
-from ..basic_nodes import path as default_ext_path
+from ..nodes import path as default_ext_path
 
 test_ext_path = test_ext_path[0]
 

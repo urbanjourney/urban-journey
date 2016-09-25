@@ -9,8 +9,14 @@ from PyQt4 import QtGui, QtCore, uic
 
 
 # Can't inherit from pyqtSignal. Will have to find some other way to do this.
+# Update: Found it.
 class UjQtSignal(QtCore.QObject, ActivityBase):
-    """Redirects uj triggers to qt signals"""
+    """
+    Bases: :class:`urban_journey.ActivityBase`, :class:`PyQt4.QtCore.QObject`
+
+    Qt signal like uj activity. It makes sure that the handler is called on the thread running the Qt event loop
+    instead of the asyncio event loop.
+    """
     signal = QtCore.pyqtSignal(object, object)
 
     def __init__(self, trigger):
@@ -34,21 +40,26 @@ class UjQtSignal(QtCore.QObject, ActivityBase):
             print_exception(*sys.exc_info())
 
 
-class WidgetNodeBase(ModuleNodeBase, QtGui.QWidget):
+class QWidgetNodeBase(ModuleNodeBase, QtGui.QWidget):
+    """
+    Bases: :class:`urban_journey.ModuleNodeBase`, :class:`PyQt4.QtGui.QWidget`
+
+    Same as :class:`urban_journey.ModuleNodeBase`, but for modules with GUI's created with PyQt4. To connect uj triggers
+    to QtSignals you can use a :class:`urban_journey.UjQtSignal`
+
+    :param element: Lxml element in the ujml document
+    :type element: etree.ElementBase
+    :param root: Root ujml element
+    :type root: :class: `urban_journey.UjmlNode`
+    """
     def __init__(self, element, root):
         QtGui.QWidget.__init__(self)
         ModuleNodeBase.__init__(self, element, root)
         self.show()
 
     def load_ui(self, path: str):
+        """Load in .ui file created by Qt Designer."""
         if not isabs(path):
-            # If path is relative find ui file relative to file containing WidgetNodeBase child class.
+            # If path is relative find ui file relative to file containing QWidgetNodeBase child class.
             path = join(dirname(inspect.getfile(sys._getframe(1))), path)
         uic.loadUi(path, self)
-
-
-
-
-
-
-

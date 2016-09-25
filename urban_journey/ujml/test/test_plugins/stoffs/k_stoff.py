@@ -1,9 +1,9 @@
 from threading import current_thread
 
-from urban_journey import WidgetNodeBase, Clock, UjQtSignal, get_event_thread, Output
+from urban_journey import QWidgetNodeBase, Clock, UjQtSignal, get_event_thread, Output
 
 
-class k_stoff(WidgetNodeBase):
+class k_stoff(QWidgetNodeBase):
     clk = Clock()
     signal = UjQtSignal(clk)
     out = Output()

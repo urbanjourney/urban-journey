@@ -10,7 +10,7 @@ if __name__ == "__main__":
     sys.path.append(os.path.abspath("../.."))
 
 from urban_journey.common.load_ui import load_ui
-from urban_journey.pubsub.trigger import Trigger
+from urban_journey.pubsub.trigger import TriggerBase
 
 
 class ButtonWindow(QtGui.QWidget):
@@ -21,11 +21,11 @@ class ButtonWindow(QtGui.QWidget):
         self.t = None
         self.loop = loop
 
-        self.trigger_1 = Trigger()
-        self.trigger_2 = Trigger()
-        self.trigger_3 = Trigger()
-        self.trigger_4 = Trigger()
-        self.trigger_5 = Trigger()
+        self.trigger_1 = TriggerBase()
+        self.trigger_2 = TriggerBase()
+        self.trigger_3 = TriggerBase()
+        self.trigger_4 = TriggerBase()
+        self.trigger_5 = TriggerBase()
 
         self.triggers = [self.trigger_1,
                          self.trigger_2,

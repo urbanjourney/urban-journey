@@ -1,6 +1,6 @@
 import inspect
 
-from urban_journey.pubsub.trigger import Trigger
+from urban_journey.pubsub.trigger import TriggerBase
 from urban_journey.common.cached import cached_class
 from urban_journey.pubsub.activity import ActivityBase
 from urban_journey.pubsub.ports.base import PortDescriptorBase
@@ -9,20 +9,30 @@ from urban_journey.pubsub.ports.base import PortDescriptorBase
 class ModuleBase:
     def __init__(self, channel_register=None):
         self.channel_register = channel_register
-        self.initialize_descriptors()
+        """
+        Variable holding an :class:`urban_journey.ChannelRegister` object. The ports will look in this channel register
+        for channels when subscribing
+        """
+        self.__initialize_descriptors()
         self.channel_names = {}
+        """
+        Dictionary containing alternative channel names for the ports to subscribe to. It can be used to
+        programmatically change the channel name before calling :func:`subscribe`
+        """
 
     def subscribe(self):
+        """Subscribes all ports to the channels."""
         for port_name in self.ports:
             getattr(self, port_name).subscribe(
                 self.channel_names[port_name] if port_name in self.channel_names else None)
 
     def unsubscribe(self):
+        """Unsubscribes all ports."""
         for port_name in self.ports:
             getattr(self, port_name).unsubscribe()
 
-    def initialize_descriptors(self):
-        """Initializes the DescriptorInstance instances for this object."""
+    def __initialize_descriptors(self):
+        """Initializes the DescriptorInstance instances in this object."""
         for member_name in dir(self):
             getattr(self, member_name)
 
@@ -42,7 +52,7 @@ class ModuleBase:
         tl = {}
         for member_name in dir(cls):
             member = inspect.getattr_static(cls, member_name)
-            if isinstance(member, Trigger):
+            if isinstance(member, TriggerBase):
                 tl[member_name] = member
         return tl
 
