@@ -52,6 +52,9 @@ class TestActivity(unittest.TestCase):
 
         self.assertEqual(bas[0], "Triggered")
 
+    # Activities outside of modules where only meant to be used during early stages of development. The are officially
+    # not supported.
+    @unittest.skip
     def test_parameters(self):
         """Triggers an activity and passes extra parameters."""
         bas = [None]

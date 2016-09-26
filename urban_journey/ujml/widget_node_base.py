@@ -33,11 +33,8 @@ class UjQtSignal(QtCore.QObject, ActivityBase):
     def signal_handler(self, instance, data):
         self.handles[instance](data)
 
-    async def trigger(self, senders, instance, *args, **kwargs):
-        try:
-            self.signal.emit(instance, senders[1])
-        except Exception as e:
-            print_exception(*sys.exc_info())
+    async def trigger(self, senders, sender_parameters, instance, *args, **kwargs):
+        self.signal.emit(instance, sender_parameters)
 
 
 class QWidgetNodeBase(ModuleNodeBase, QtGui.QWidget):

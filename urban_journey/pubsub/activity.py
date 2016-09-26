@@ -19,7 +19,7 @@ class ActivityMode(Enum):
 
 class ActivityBase:
     """This is the base class for all activities."""
-    async def trigger(self, senders, instance, *args, **kwargs):
+    async def trigger(self, senders, sender_parameters, instance, *args, **kwargs):
         """TriggerBase handler"""
         pass
 
@@ -64,43 +64,52 @@ def activity(trigger: TriggerBase, *args, mode=ActivityMode.schedule, **kwargs):
                     self._args.append(arg)
 
         def get_output_data_holders(self, obj):
+            """
+            The variable name of descriptor object cannot be known without either having the instance of the parent
+            object or it's class. That is why we have to wait until we receive a trigger to get the name of the output
+            ports.
+            :param obj: Module object with output port descriptors.
+            :return:
+            """
+            # This dictionary should not change during the run. So just cache it and always return the same dictionary.
             if self._output_data_holders[obj] is None:
                 d = {}
+                # Loop through all members of the object.
                 for member_name in dir(obj):
+                    # check whether they are output ports.
                     if inspect.getattr_static(obj, member_name) in self._output_static_ports:
+                        # Add them to the list and remove them from the empty parameters dictionary.
                         d[member_name] = getattr(obj, member_name).data
+                        self.empty_param_dict.pop(member_name, None)
                 self._output_data_holders[obj] = d
             return self._output_data_holders[obj]
 
-        async def trigger(self, senders, instance, *args, **kwargs):
-            """Called by the trigger."""
+        async def trigger(self, senders, sender_parameters, instance, *args, **kwargs):
+            """
+            Called by the trigger.
+
+            :param senders: Dictionary with string typed key containing
+            """
             try:
                 if self.lock.locked():
                     if self.mode is ActivityMode.drop:
                         return
                 with (await self.lock):
-
+                    # TODO: Remove support for "instance is None". This is currently only meant to be used in unittests.
                     if instance is None:
-                        if senders[1] is None:
-                            await self.target(*args, *self._args, **kwargs, **self._kwargs)
-                        else:
-                            params = copy(self.empty_param_dict)
-                            for param in params:
-                                if param in senders[1]:
-                                    params[param] = senders[1][param]
-                            await self.target(*args, *self._args, **kwargs, **self._kwargs, **params)
+                        params = copy(self.empty_param_dict)
+                        for param in params:
+                            if param in sender_parameters:
+                                params[param] = sender_parameters[param]
+                        await self.target(*args, *self._args, **kwargs, **self._kwargs, **params)
                     else:
                         ouput_data_holders = self.get_output_data_holders(instance)
-                        if senders[1] is None:
-                            await self.target(instance, *args, *self._args, **kwargs, **self._kwargs,
-                                              **ouput_data_holders)
-                        else:
-                            params = copy(self.empty_param_dict)
-                            for param in params:
-                                if param in senders[1]:
-                                    params[param] = senders[1][param]
-                            await self.target(instance, *args, *self._args, **kwargs, **self._kwargs, **params,
-                                              **ouput_data_holders)
+                        params = copy(self.empty_param_dict)
+                        for param in params:
+                            if param in sender_parameters:
+                                params[param] = sender_parameters[param]
+                        await self.target(instance, *args, *self._args, **kwargs, **self._kwargs, **params,
+                                          **ouput_data_holders)
 
                         for key, value in ouput_data_holders.items():
                             await value.flush()
@@ -109,6 +118,7 @@ def activity(trigger: TriggerBase, *args, mode=ActivityMode.schedule, **kwargs):
                 # TODO: Add something here to either call an error handler, stop execution or just ignore based on some
                 # setting somewhere.
                 print_exception(*sys.exc_info())
+                assert False
 
         def __call__(self, *args, **kwargs):
             return self.target(*args, **kwargs)

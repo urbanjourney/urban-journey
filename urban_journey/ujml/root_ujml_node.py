@@ -55,7 +55,6 @@ class UjmlNode(NodeBase):
 
     def pyqt_enable(self):
         """Enable the use of PyQt4."""
-        print("sdfsdf")
         if self.pyqt_app is None:
             self.pyqt_app = QtGui.QApplication(sys.argv)
             self.pyqt_app.setQuitOnLastWindowClosed(self.pyqt_quit_on_last_window_closed)

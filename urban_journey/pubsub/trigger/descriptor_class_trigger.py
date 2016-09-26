@@ -3,6 +3,9 @@ Base classes for triggers.
 WARNING: I don't know exactly how to explain how these work.Before continuing make sure you know what a descriptor is \
 in python. Then continue on reading the rest of the documentation here.
 """
+from traceback import print_exception
+import sys
+
 from urban_journey.common.cached import cached
 from urban_journey.pubsub.trigger import TriggerBase
 
@@ -97,9 +100,14 @@ def trigger_factory(klass):
 
         async def trigger(self, *args, **kwargs):
             for activity in self._activities:
-                await activity.trigger((self, None), self.__obj, *args, **kwargs)
-    return DescriptorInstanceTrigger
+                print(activity)
+                try:
+                    await activity.trigger([self], {}, self.__obj, *args, **kwargs)
+                except:
+                    print_exception(*sys.exc_info())
+                    assert False
 
+    return DescriptorInstanceTrigger
 
 DescriptorClassTriggerBase = trigger_factory(TriggerBase)
 

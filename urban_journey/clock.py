@@ -1,4 +1,6 @@
 import asyncio
+from traceback import print_exception
+import sys
 
 from urban_journey.pubsub.trigger import TriggerBase
 from urban_journey.pubsub.trigger.descriptor_class_trigger import DescriptorClassTrigger
@@ -26,10 +28,13 @@ class Clock(TriggerBase):
         self.period = 1 / value
 
     def start(self):
+        """
+        Starts the clock
+        :return: Returns an Asyncio.Future object.
+        """
         self.running = True
         self.trigger_time = self.loop.time() + self.period
-        # There isn't a thread safe option for call_at, so the first clock trigger will happen immediately after start()
-        asyncio.run_coroutine_threadsafe(self.timer_callback(), loop=self.loop)
+        return asyncio.run_coroutine_threadsafe(self.timer_callback(), loop=self.loop)
 
     def stop(self):
         self.running = False

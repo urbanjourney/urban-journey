@@ -9,6 +9,7 @@ from urban_journey.pubsub.ports.output import Output
 from urban_journey.pubsub.trigger import TriggerBase
 from urban_journey.pubsub.module_base import ModuleBase
 from urban_journey.pubsub.channels.channel_register import ChannelRegister
+from urban_journey.pubsub.trigger.condition_and import ConditionAnd
 
 
 # Urban Journey Markup Language (UJML)
@@ -28,4 +29,6 @@ from urban_journey.ujml.data_container import DataContainer
 # General stuff
 from urban_journey.event_loop import get as get_event_loop, get_thread as get_event_thread
 from urban_journey.uj_project import UjProject
-from urban_journey.clock import clock_descriptor_factory as Clock
+# from urban_journey.clock import clock_descriptor_factory as Clock
+
+from urban_journey.new_clock import ClockStatic as Clock

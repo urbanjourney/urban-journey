@@ -43,6 +43,7 @@ class DescriptorStatic:
     def add_obj(self, obj):
         self.instances[id(obj)] = self.instances_base_class(obj,
                                                             self._attribute_name,
+                                                            self,
                                                             *self._instance_args,
                                                             **self._instance_kwargs)
 

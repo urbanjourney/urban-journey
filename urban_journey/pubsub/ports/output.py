@@ -16,6 +16,7 @@ class OutputPort(PortBase, DescriptorInstance):
     def __init__(self,
                  parent_object,
                  attribute_name,
+                 static_descriptor,
                  channel_name=None):
         """
         :param parent_object: ModelBase instance that owns this port
@@ -24,7 +25,7 @@ class OutputPort(PortBase, DescriptorInstance):
         """
 
         PortBase.__init__(self, parent_object.channel_register, attribute_name, channel_name)
-        DescriptorInstance.__init__(self, parent_object, attribute_name)
+        DescriptorInstance.__init__(self, parent_object, attribute_name, static_descriptor)
 
         self.data = OutputDataHolder(self)
 

@@ -39,13 +39,40 @@ class TestPubSubNodes(unittest.TestCase):
 
     def test_widget_node(self):
         # Warning: This test may potentially lock forever if failing. To fix this timeout param has to be implemented
-        # for 'UjmlNode.pyqt_start()'
+        #          for 'UjmlNode.pyqt_start()'
+
+        # Warning: This warning applies to all tests running coroutines. So all tests in the pubsub section.
+        #
+        #          It's for now impossible to handle exceptions occurring inside the event loop. So it is possible for a
+        #          test to pass while an exception has occurred.
+        #
+        #          Most tests will timeout in case an exception occurs, but some test won't timeout or won't give a
+        #          timeout warning (e.g. those doing stuff with PyQt like this one).
+
         ujml_code = '''<?xml version="1.0"?>
         <ujml pyqt="true" version="{uj_version}">
             <k_stoff out="foo"/>
             <m_stoff inp="foo"/>
         </ujml>
         '''.format(uj_version=uj_version)
+        ujml = from_string(ujml_code)
+        assert ujml.start(timeout=0.1)
+
+    def test_condition_and(self):
+        ujml_code = '''<?xml version="1.0"?>
+                <ujml version="{uj_version}">
+                    <n_stoff/>
+                </ujml>
+                '''.format(uj_version=uj_version)
+        ujml = from_string(ujml_code)
+        assert ujml.start(timeout=0.1)
+
+    def test_condition_and_with_parameters(self):
+        ujml_code = '''<?xml version="1.0"?>
+                <ujml version="{uj_version}">
+                    <r_stoff/>
+                </ujml>
+                '''.format(uj_version=uj_version)
         ujml = from_string(ujml_code)
         assert ujml.start(timeout=0.1)
 

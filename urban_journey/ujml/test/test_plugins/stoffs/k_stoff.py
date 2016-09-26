@@ -16,6 +16,9 @@ class k_stoff(QWidgetNodeBase):
         self.clk.start()
         self.subscribe()
 
+    def __del__(self):
+        self.clk.stop()
+
     def handle_signal(self, obj):
         assert current_thread() is not get_event_thread()
         self.out.clear()
