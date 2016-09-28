@@ -6,14 +6,17 @@ from lxml import etree
 import numpy as np
 from PyQt4 import QtGui
 
-from .node_base import NodeBase
+from .module_node_base import NodeBase
 from .interpreter import UJMLPythonInterpreter
 from .data_container import DataContainer
 from .attributes import String, Bool
 from urban_journey import __version__ as uj_version
 from .exceptions import IncompatibleUJVersion, IdMustBeUniqueError, PyQt4NotEnabledError
 
+from urban_journey.pubsub.module_base import ModuleBase
 from urban_journey.pubsub.channels.channel_register import ChannelRegister
+from urban_journey.pubsub.ports.output import Output
+from urban_journey.event_loop import get as get_event_loop
 
 
 class UjmlNode(NodeBase):
@@ -26,16 +29,8 @@ class UjmlNode(NodeBase):
     pyqt = Bool(optional_value=False)
     pyqt_quit_on_last_window_closed = Bool(optional_value=True)
 
-    def __init__(self, element: etree.ElementBase, file_name, globals=None):
-        super().__init__(element, None)
-        self.pyqt_app = None
-        """If PyQt4 is enabled, it contains the :class:`PyQt4.QtGui.QApplication` instance. """
-        if self.pyqt:
-            self.pyqt_enable()
-        self.__semaphore = Semaphore(0)
 
-        self.node_dict_by_id = {}
-        """A dictionary containing all already read nodes by id."""
+    def __init__(self, element: etree.ElementBase, file_name, globals=None):
 
         self.__data_container = DataContainer()
 
@@ -49,8 +44,24 @@ class UjmlNode(NodeBase):
         """Instance of :class:`urban_journey.ChannelRegister` used as the main channel register."""
 
         self.__configure_interpreter()
+
         self.__file_name = os.path.abspath(file_name)
+
+        self.node_dict_by_id = {}
+        """A dictionary containing all already read nodes by id."""
+
+        super().__init__(element, None)
+
+        self.pyqt_app = None
+        """If PyQt4 is enabled, it contains the :class:`PyQt4.QtGui.QApplication` instance. """
+        if self.pyqt:
+            self.pyqt_enable()
+        self.__semaphore = Semaphore(0)
+
+        self.ujml_module = UjmlModule(self.channel_register)
+
         self.__check_version()
+
         self.update_children()
 
     def pyqt_enable(self):
@@ -91,6 +102,7 @@ class UjmlNode(NodeBase):
         Sends the start event. If blocking is True, the function will block until
         :func:`urban_journey.UjmlNode.stop` is called. If PyQt4 is enabled it will always be blocking.
         """
+        self.ujml_module.uj_start.flush_threadsafe()
         if self.pyqt:
             return self.pyqt_start(timeout=timeout)
         elif blocking:
@@ -101,19 +113,18 @@ class UjmlNode(NodeBase):
         Sends a stop event to all modules subscribed to it, and releases :func:`urban_journey.UjmlNode.start` if it's
         blocking.
         """
-        # For now this also kills.
-        # TODO: Implement uj_start and uj_stop signals.
+        self.ujml_module.uj_stop.flush_threadsafe()
         if self.pyqt:
             self.pyqt_stop()
         self.__semaphore.release()
 
     def kill(self):
         """
-        .. warning:: Not implemented.
-
         Same as :func:`urban_journey.UjmlNode.stop` but it also stop the asyncio event loop.
         """
-        pass
+        self.stop()
+        loop = get_event_loop()
+        loop.stop()
 
     def __configure_interpreter(self):
         """
@@ -144,7 +155,7 @@ class UjmlNode(NodeBase):
         # Register by id.
         if node.id is not None:
             if node.id in self.node_dict_by_id:
-                raise node.raise_exception(IdMustBeUniqueError, node.id)
+                node.raise_exception(IdMustBeUniqueError, node.id)
             else:
                 self.node_dict_by_id[node.id] = node
 
@@ -171,3 +182,16 @@ class UjmlNode(NodeBase):
         Instance of :class:`urban_journey.DataContainer` holding the data that has been loaded in by data nodes.
         """
         return self.__data_container
+
+
+class UjmlModule(ModuleBase):
+    # Ujml events
+    uj_start = Output()
+    """Event channel that transmits when :func:`UjmlNode.start` is called."""
+
+    uj_stop = Output()
+    """Event channel that transmits when :func:`UjmlNode.stop` is called."""
+
+    def __init__(self, channel_register):
+        super().__init__(channel_register)
+        self.subscribe()
