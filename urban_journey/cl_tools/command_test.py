@@ -19,11 +19,13 @@ class test(ClBase):
 
     @staticmethod
     def main(args):
-        # try:
-        #     uj_project = UjProject(verbosity=1)
-        # except InvalidUjProjectError as e:
-        #     sys.exit(e.args[0])
-        #
-        # uj_project.load_nodes()
-        # uj_project.test()
+        verbosity = 2 if "-v" in args else 1
+
+        try:
+            uj_project = UjProject(verbosity=1)
+        except InvalidUjProjectError as e:
+            sys.exit(e.args[0])
+
+        uj_project.load_nodes()
+        uj_project.test(verbosity=verbosity)
         pass

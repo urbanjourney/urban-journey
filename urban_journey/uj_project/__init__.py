@@ -16,6 +16,7 @@ import yaml  # PyYAML
 from urban_journey import __version__ as uj_version, node_register, update_plugins, NodeBase
 from urban_journey.common.rm import rm
 from urban_journey import plugins as plugins_module
+from urban_journey import plugin_tests as plugin_tests_module
 
 
 # Check whether git is available and import gitpython if it is.
@@ -286,8 +287,8 @@ class UjProject:
             if plugin_symlinks not in plugins_module.__path__:
                 plugins_module.__path__.append(plugin_symlinks)
 
-            if plugin_tests_symlinks not in plugins_module.__path__:
-                plugins_module.__path__.append(plugin_tests_symlinks)
+            if plugin_tests_symlinks not in plugin_tests_module.__path__:
+                plugin_tests_module.__path__.append(plugin_tests_symlinks)
 
             for plugin in self.plugin_projects():
                 rm(join(plugin_symlinks, plugin.name))
@@ -352,7 +353,7 @@ class UjProject:
         main([])
         os.chdir(old_cwd)
 
-    def test(self, debug=False):
+    def test(self, verbosity):
         if not self.plugins_updated:
             raise PluginsMissingError("error: Plugin(s) missing. Run 'uj list' to see which plugins are missing and "
                                       "'uj update' to fetch missing plugins.")
@@ -370,22 +371,12 @@ class UjProject:
 
         # Find all unittests
         test_package = importlib.import_module("urban_journey.plugin_tests.{}".format(self.name))
+        test_suit = unittest.defaultTestLoader.discover(test_package.__path__[0])
 
-        result_obj = unittest.TestResult()
-        test_suit = unittest.TestSuite()
+        # TODO: Run plugin unit tests.
 
-        test_suit = unittest.defaultTestLoader.discover(test_package.__path__)
-
-        # for module_name, module in inspect.getmembers(test_package):
-        #     # Ignore all private members
-        #     if module_name.startswith('test_'):
-        #         for member_name, member in inspect.getmembers(module):
-        #             # Add the member to the node register if it's a node.
-        #             if isinstance(member, type):
-        #                 if issubclass(member, unittest.TestCase):
-        #                     test_suit.addTest(member(result_obj))
-
-        test_suit.run(result_obj, debug)
+        test_runner = unittest.TextTestRunner(verbosity=verbosity)
+        test_runner.run(test_suit)
 
     def clear(self):
         rm(join(self.path, '.uj', 'plugin_metadata.yaml'))

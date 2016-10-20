@@ -9,7 +9,7 @@ from urban_journey.uj_project import InvalidUjProjectError, PluginsMissingError
 class list(ClBase):
     @staticmethod
     def description():
-        return "Prints the list of plugins and plugins in this project."
+        return "Prints the list of plugins and nodes in this project."
 
     @staticmethod
     def usage():

@@ -4,6 +4,7 @@ from urban_journey.pubsub.trigger import TriggerBase
 from urban_journey.common.cached import cached_class
 from urban_journey.pubsub.activity import ActivityBase
 from urban_journey.pubsub.ports.base import PortDescriptorBase
+from urban_journey.pubsub.descriptor.static import DescriptorStatic
 
 
 class ModuleBase:
@@ -33,8 +34,17 @@ class ModuleBase:
 
     def __initialize_descriptors(self):
         """Initializes the DescriptorInstance instances in this object."""
-        for member_name in dir(self):
-            getattr(self, member_name)
+        # I'm not sure whether this function has an effect. Descriptors are initialized when they are first requested
+        # anyways. I probably had a reason why some descriptors has to be initialized during initialization back when I
+        # made this function. - Aaron
+        klass = type(self)
+        for member_name in dir(klass):
+            member = inspect.getattr_static(klass, member_name)
+            if isinstance(member, DescriptorStatic):
+                getattr(self, member_name)
+
+        # for member_name in dir(self):
+        #     getattr(self, member_name)
 
     @cached_class
     def activities(cls):
