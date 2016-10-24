@@ -40,7 +40,7 @@ class PluginsMissingError(Exception):
 
 
 class UjProject:
-    def __init__(self, path=None, parent_project=None, verbosity=0):
+    def __init__(self, path=None, parent_project=None, verbosity=0, istest=False):
         # Find project root folder
         self.path = self.find_project_root(os.path.abspath(path or os.getcwd()))
         self.parent_project = parent_project
@@ -58,6 +58,8 @@ class UjProject:
         self.__author = ""
         self.__plugins_updated = False
         self.__nodes = None
+
+        self.is_test = istest
 
         self.update_handlers = {
             "git": self.update_git,
@@ -237,10 +239,26 @@ class UjProject:
         if not self.plugins_updated:
             raise PluginsMissingError("error: Plugin(s) missing. Run 'uj list' to see which plugins are missing and "\
                                       "'uj update' to fetch missing plugins.")
+
+        # Loads in project nodes.
         self.__nodes = {}
         if isfile(join(self.path, "src", "nodes.py")):
             # Import nodes module and scan it for nodes
             nodes_module = importlib.import_module("urban_journey.plugins.{}.nodes".format(self.name))
+            for member_name, member in inspect.getmembers(nodes_module):
+                # Ignore all private members
+                if member_name.startswith('__'):
+                    continue
+                # Add the member to the node register if it's a node.
+                if isinstance(member, type):
+                    if issubclass(member, NodeBase):
+                        self.__nodes[member_name] = member
+
+        # Loads in test nodes
+        if isfile(join(self.path, "test", "nodes.py")) and self.is_test:
+            print("!!!!! IS TEST !!!!!")
+            # Import nodes module and scan it for nodes
+            nodes_module = importlib.import_module("urban_journey.plugin_tests.{}.nodes".format(self.name))
             for member_name, member in inspect.getmembers(nodes_module):
                 # Ignore all private members
                 if member_name.startswith('__'):

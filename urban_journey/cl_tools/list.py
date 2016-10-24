@@ -13,21 +13,24 @@ class list(ClBase):
 
     @staticmethod
     def usage():
-        return "usage: uj list"
+        return "usage: uj list [-t|--include-tests]"
 
     @staticmethod
     def main(args):
+        include_tests = ('-t' in args) or ("--test" in args)
+
         try:
-            uj_project = UjProject(verbosity=1)
+            uj_project = UjProject(verbosity=1,
+                                   istest=include_tests)
         except InvalidUjProjectError as e:
             sys.exit(e.args[0])
 
         print("Project path: {}\n".format(uj_project.path))
-
         print("plugins:")
         for name in uj_project.plugins:
             try:
-                UjProject(join(uj_project.path, "plugins", name))
+                UjProject(join(uj_project.path, "plugins", name),
+                          istest=include_tests)
                 if name in uj_project.get_metadata():
                     source = uj_project.get_metadata()[name]
                 else:
@@ -41,7 +44,7 @@ class list(ClBase):
 
         try:
             uj_project.load_nodes()
-            print("\nnodes:")
+            print("\nnodes (including tests)" if include_tests else "\nnodes:")
             for name in uj_project.nodes:
                 print(" ", name)
         except PluginsMissingError:
