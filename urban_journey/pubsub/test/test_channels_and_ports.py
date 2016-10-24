@@ -22,8 +22,7 @@ class TestChannelAndPorts(unittest.TestCase):
 
             async def transmit(self):
                 # print("transmitting:", self.op.channel_name)
-                self.op.data[0] = "Some Data"
-                await self.op.flush()
+                await self.op.flush("Some Data")
 
         class B(ModuleBase):
             ip = InputPortStatic(channel_name="op")
@@ -35,7 +34,7 @@ class TestChannelAndPorts(unittest.TestCase):
 
             @activity(ip)
             async def foo(self, ip):
-                assert ip[0] == "Some Data"
+                assert ip == "Some Data"
                 self.semaphore.release()
 
         semaphore = Semaphore(0)

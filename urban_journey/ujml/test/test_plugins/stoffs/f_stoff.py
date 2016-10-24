@@ -14,11 +14,10 @@ class f_stoff(ModuleNodeBase):
         self.subscribe()
 
     async def transmit(self):
-        self.op.data[0] = "Some data"
-        await self.op.flush()
+        await self.op.flush("Some data")
 
     @activity(ip)
     async def op_handler(self, ip):
-        assert ip[0] == "Some data"
+        assert ip == "Some data"
         s = self.eval('s')
         s.release()

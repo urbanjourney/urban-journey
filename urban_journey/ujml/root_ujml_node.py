@@ -102,7 +102,7 @@ class UjmlNode(NodeBase):
         Sends the start event. If blocking is True, the function will block until
         :func:`urban_journey.UjmlNode.stop` is called. If PyQt4 is enabled it will always be blocking.
         """
-        self.ujml_module.uj_start.flush_threadsafe()
+        self.ujml_module.uj_start.flush_threadsafe(None)
         if self.pyqt:
             return self.pyqt_start(timeout=timeout)
         elif blocking:
@@ -113,7 +113,7 @@ class UjmlNode(NodeBase):
         Sends a stop event to all modules subscribed to it, and releases :func:`urban_journey.UjmlNode.start` if it's
         blocking.
         """
-        self.ujml_module.uj_stop.flush_threadsafe()
+        self.ujml_module.uj_stop.flush_threadsafe(None)
         if self.pyqt:
             self.pyqt_stop()
         self.__semaphore.release()

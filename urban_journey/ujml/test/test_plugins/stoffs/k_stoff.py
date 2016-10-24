@@ -22,5 +22,4 @@ class k_stoff(QWidgetNodeBase):
     def handle_signal(self, obj):
         assert current_thread() is not get_event_thread()
         self.out.clear()
-        self.out.data[0] = "qwertyuiop"
-        self.out.flush_threadsafe()
+        self.out.flush_threadsafe("qwertyuiop")
