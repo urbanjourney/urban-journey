@@ -256,7 +256,6 @@ class UjProject:
 
         # Loads in test nodes
         if isfile(join(self.path, "test", "nodes.py")) and self.is_test:
-            print("!!!!! IS TEST !!!!!")
             # Import nodes module and scan it for nodes
             nodes_module = importlib.import_module("urban_journey.plugin_tests.{}.nodes".format(self.name))
             for member_name, member in inspect.getmembers(nodes_module):

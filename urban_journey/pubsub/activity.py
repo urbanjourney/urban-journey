@@ -2,14 +2,10 @@ from enum import Enum
 from asyncio import Lock
 import inspect
 from copy import copy
-from collections import defaultdict
 import sys
-from traceback import print_tb, print_exception
-from abc import ABCMeta, abstractmethod
+from traceback import print_exception
 
 from .trigger import TriggerBase
-from urban_journey.pubsub.ports.output import OutputPort
-from urban_journey.pubsub.ports.base import PortDescriptorBase
 
 
 class ActivityMode(Enum):
@@ -48,41 +44,8 @@ def activity(trigger: TriggerBase, *args, mode=ActivityMode.schedule, **kwargs):
                 if param != "self":
                     self.empty_param_dict[param] = None
 
-            # self._output_static_ports = []
-            # self._output_data_holders = defaultdict(type(None))
-            self._args = args  # changed [] to args
+            self._args = args
             self._kwargs = kwargs
-
-            # Sort args and output ports.
-            # for arg in args:
-            #     if isinstance(arg, PortDescriptorBase):
-            #         if issubclass(arg.instances_base_class, OutputPort):
-            #             self._output_static_ports.append(arg)
-            #         else:
-            #             self._args.append(arg)
-            #     else:
-            #         self._args.append(arg)
-
-        # def get_output_data_holders(self, obj):
-        #     """
-        #     The variable name of descriptor object cannot be known without either having the instance of the parent
-        #     object or it's class. That is why we have to wait until we receive a trigger to get the name of the output
-        #     ports.
-        #     :param obj: Module object with output port descriptors.
-        #     :return:
-        #     """
-        #     # This dictionary should not change during the run. So just cache it and always return the same dictionary.
-        #     if self._output_data_holders[obj] is None:
-        #         d = {}
-        #         # Loop through all members of the object.
-        #         for member_name in dir(obj):
-        #             # check whether they are output ports.
-        #             if inspect.getattr_static(obj, member_name) in self._output_static_ports:
-        #                 # Add them to the list and remove them from the empty parameters dictionary.
-        #                 d[member_name] = getattr(obj, member_name).data
-        #                 self.empty_param_dict.pop(member_name, None)
-        #         self._output_data_holders[obj] = d
-        #     return self._output_data_holders[obj]
 
         async def trigger(self, senders, sender_parameters, instance, *args, **kwargs):
             """
@@ -103,22 +66,20 @@ def activity(trigger: TriggerBase, *args, mode=ActivityMode.schedule, **kwargs):
                                 params[param] = sender_parameters[param]
                         await self.target(*args, *self._args, **kwargs, **self._kwargs, **params)
                     else:
-                        # ouput_data_holders = self.get_output_data_holders(instance)
                         params = copy(self.empty_param_dict)
                         for param in params:
                             if param in sender_parameters:
                                 params[param] = sender_parameters[param]
                         await self.target(instance, *args, *self._args, **kwargs, **self._kwargs, **params)
-                                          # **ouput_data_holders)
-
-                        # for key, value in ouput_data_holders.items():
-                        #     await value.flush()
 
             except Exception as e:
                 # TODO: Add something here to either call an error handler, stop execution or just ignore based on some
                 # setting somewhere.
-                print_exception(*sys.exc_info())
-                assert False
+                if instance is None:
+                    print_exception(*sys.exc_info())
+                    raise e
+                else:
+                    instance.root.handle_exception(sys.exc_info())
 
         def __call__(self, *args, **kwargs):
             return self.target(*args, **kwargs)

@@ -2,6 +2,10 @@ from urban_journey import Input, Output, activity, Clock, ModuleNodeBase
 
 
 class r_stoff(ModuleNodeBase):
+    """
+    Module node that uses a ConditionAnd to trigger one of it's activities.
+    """
+
     clk1 = Clock()
     clk2 = Clock()
     out = Output(channel_name="foo")

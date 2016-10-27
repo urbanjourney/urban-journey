@@ -1,6 +1,7 @@
 import os
 import sys
 from threading import Semaphore
+from traceback import print_exception
 
 from lxml import etree
 import numpy as np
@@ -26,12 +27,14 @@ class UjmlNode(NodeBase):
     Root node for ujml documents.
     """
     req_version = String(name="version")
+
     pyqt = Bool(optional_value=False)
     pyqt_quit_on_last_window_closed = Bool(optional_value=True)
 
+    stop_on_exception = Bool(optional_value=False)
+    stop_on_assertion_error = Bool(optional_value=False)
 
     def __init__(self, element: etree.ElementBase, file_name, globals=None):
-
         self.__data_container = DataContainer()
 
         self.interpreter = UJMLPythonInterpreter(globals or {})
@@ -63,6 +66,8 @@ class UjmlNode(NodeBase):
         self.__check_version()
 
         self.update_children()
+
+        self.__exc_info = None
 
     def pyqt_enable(self):
         """Enable the use of PyQt4."""
@@ -102,11 +107,26 @@ class UjmlNode(NodeBase):
         Sends the start event. If blocking is True, the function will block until
         :func:`urban_journey.UjmlNode.stop` is called. If PyQt4 is enabled it will always be blocking.
         """
+        # Reset exception information to None
+        self.__exc_info = None
+
+        # Trigger uj_start event
         self.ujml_module.uj_start.flush_threadsafe(None)
+
+        # If PyQt is active start it's event loop. Otherwise just wait for the semaphore
+        # timed_out_n is True if there was a timeout
         if self.pyqt:
-            return self.pyqt_start(timeout=timeout)
+            timed_out_n = self.pyqt_start(timeout=timeout)
         elif blocking:
-            return self.__semaphore.acquire(timeout=timeout)
+            timed_out_n = self.__semaphore.acquire(timeout=timeout)
+
+        # Execution was stopped.
+        # Check whether it was stopped due to some exception.
+        if self.__exc_info is not None:
+            # If it was print the exception and exit with ext code 1.
+            raise self.__exc_info[1]
+
+        return timed_out_n
 
     def stop(self):
         """
@@ -125,6 +145,24 @@ class UjmlNode(NodeBase):
         self.stop()
         loop = get_event_loop()
         loop.stop()
+
+    def handle_exception(self, exc_info):
+        """
+        The data returned by :func:`sys.exc_info` can be passed to this function in order to stop a run or to log the exeption,
+        depending on the current settings.
+        """
+        # If stop_on_exception is true, stop on all exceptions
+        # If stop_on_assertion_error is true stop on all assertion errors
+        # Otherwise just print/log the exception.
+        if self.stop_on_exception:
+            self.__exc_info = exc_info
+            self.stop()
+        elif self.stop_on_assertion_error and issubclass(exc_info[0], AssertionError):
+            self.__exc_info = exc_info
+            self.stop()
+        else:
+            print_exception(*exc_info)
+            # TODO: Log the exception
 
     def __configure_interpreter(self):
         """
