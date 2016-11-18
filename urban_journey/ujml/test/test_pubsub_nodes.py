@@ -76,3 +76,12 @@ class TestPubSubNodes(unittest.TestCase):
         ujml = from_string(ujml_code)
         assert ujml.start(timeout=0.1)
 
+    def test_ujml_node_exception_handler(self):
+        ujml_code = '''<?xml version="1.0"?>
+                        <ujml version="{uj_version}"
+                              stop_on_exception="true">
+                            <s_stoff error_type="assert"/>
+                        </ujml>
+                        '''.format(uj_version=uj_version)
+        ujml = from_string(ujml_code)
+        assert ujml.start(timeout=10)

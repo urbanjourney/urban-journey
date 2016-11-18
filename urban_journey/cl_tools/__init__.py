@@ -4,7 +4,7 @@ from .run import run
 
 from .list import list
 from .init import init
-from .test_command import test
+from .command_test import test
 from .update import update
 from .clear import clear
 

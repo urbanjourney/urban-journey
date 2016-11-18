@@ -112,13 +112,13 @@ class TestActivity(unittest.TestCase):
                 self.clk.frequency = 100
                 self.clk.start()
 
-            @activity(clk, out)
-            async def tick(self, out):
-                out["qwerty"] = "hello, is it me you're looking for."
+            @activity(clk)
+            async def tick(self):
+                await self.out("hello, is it me you're looking for.")
 
             @activity(inp)
             async def qwerty(self, inp):
-                assert inp["qwerty"] == "hello, is it me you're looking for."
+                assert inp == "hello, is it me you're looking for."
                 self.s.release()
 
         cr = ChannelRegister()

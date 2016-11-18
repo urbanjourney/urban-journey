@@ -213,9 +213,10 @@ class NodeBase:
 
     def update_children(self):
         """Read all child elements from the ujml file."""
-        self.__children = []
-        for element in self.element:
-            self.create_child(element)
+        if self.__children is None:
+            self.__children = []
+            for element in self.element:
+                self.create_child(element)
 
     def __getitem__(self, item):
         return self.children[item]

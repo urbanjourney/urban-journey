@@ -2,6 +2,9 @@ from urban_journey import ModuleNodeBase, activity, Clock
 
 
 class n_stoff(ModuleNodeBase):
+    """
+    Module node that uses ConditionAnd to trigger one if it's activities. It's used to test combining three activities.
+    """
     clk1 = Clock()
     clk2 = Clock()
     clk3 = Clock()

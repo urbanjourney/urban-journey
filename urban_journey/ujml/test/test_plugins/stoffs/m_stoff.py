@@ -10,5 +10,5 @@ class m_stoff(ModuleNodeBase):
 
     @activity(inp)
     async def handle(self, inp):
-        assert inp[0] == "qwertyuiop"
+        assert inp == "qwertyuiop"
         self.root.stop()

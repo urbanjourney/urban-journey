@@ -8,12 +8,15 @@ import pip
 import importlib.util
 import importlib.machinery
 import inspect
+import unittest
+from time import sleep
 
 import yaml  # PyYAML
 
 from urban_journey import __version__ as uj_version, node_register, update_plugins, NodeBase
 from urban_journey.common.rm import rm
 from urban_journey import plugins as plugins_module
+from urban_journey import plugin_tests as plugin_tests_module
 
 
 # Check whether git is available and import gitpython if it is.
@@ -37,7 +40,7 @@ class PluginsMissingError(Exception):
 
 
 class UjProject:
-    def __init__(self, path=None, parent_project=None, verbosity=0):
+    def __init__(self, path=None, parent_project=None, verbosity=0, istest=False):
         # Find project root folder
         self.path = self.find_project_root(os.path.abspath(path or os.getcwd()))
         self.parent_project = parent_project
@@ -55,6 +58,8 @@ class UjProject:
         self.__author = ""
         self.__plugins_updated = False
         self.__nodes = None
+
+        self.is_test = istest
 
         self.update_handlers = {
             "git": self.update_git,
@@ -234,10 +239,25 @@ class UjProject:
         if not self.plugins_updated:
             raise PluginsMissingError("error: Plugin(s) missing. Run 'uj list' to see which plugins are missing and "\
                                       "'uj update' to fetch missing plugins.")
+
+        # Loads in project nodes.
         self.__nodes = {}
         if isfile(join(self.path, "src", "nodes.py")):
             # Import nodes module and scan it for nodes
             nodes_module = importlib.import_module("urban_journey.plugins.{}.nodes".format(self.name))
+            for member_name, member in inspect.getmembers(nodes_module):
+                # Ignore all private members
+                if member_name.startswith('__'):
+                    continue
+                # Add the member to the node register if it's a node.
+                if isinstance(member, type):
+                    if issubclass(member, NodeBase):
+                        self.__nodes[member_name] = member
+
+        # Loads in test nodes
+        if isfile(join(self.path, "test", "nodes.py")) and self.is_test:
+            # Import nodes module and scan it for nodes
+            nodes_module = importlib.import_module("urban_journey.plugin_tests.{}.nodes".format(self.name))
             for member_name, member in inspect.getmembers(nodes_module):
                 # Ignore all private members
                 if member_name.startswith('__'):
@@ -258,24 +278,41 @@ class UjProject:
         # Make sure that the project src is symlinked in '.uj/plugin_symlinks'
         # Make sure that '.uj/plugin_symlinks' is in the plugin_module path.
         # Make sure that plugins src is symlinked in '.uj/plugin_symlinks'.
+        #
+        # Does the same thing for the plugin tests.
+
         if self.parent_project is None:
             plugin_symlinks = join(self.path, '.uj', 'plugin_symlinks')
+            plugin_tests_symlinks = join(self.path, '.uj', 'plugin_tests_symlinks')
         else:
             plugin_symlinks = join(self.parent_project.path, '.uj', 'plugin_symlinks')
+            plugin_tests_symlinks = join(self.parent_project.path, '.uj', 'plugin_tests_symlinks')
 
         if not isdir(plugin_symlinks):
             os.mkdir(plugin_symlinks)
 
+        if not isdir(plugin_tests_symlinks):
+            os.mkdir(plugin_tests_symlinks)
+
         rm(join(plugin_symlinks, self.name))
         symlink(relpath(join(self.path, 'src'), plugin_symlinks), join(plugin_symlinks, self.name))
 
+        rm(join(plugin_tests_symlinks, self.name))
+        symlink(relpath(join(self.path, 'test'), plugin_tests_symlinks), join(plugin_tests_symlinks, self.name))
+
         if self.parent_project is None:
             if plugin_symlinks not in plugins_module.__path__:
-                plugins_module.__path__.append(join(self.path, '.uj', 'plugin_symlinks'))
+                plugins_module.__path__.append(plugin_symlinks)
+
+            if plugin_tests_symlinks not in plugin_tests_module.__path__:
+                plugin_tests_module.__path__.append(plugin_tests_symlinks)
 
             for plugin in self.plugin_projects():
                 rm(join(plugin_symlinks, plugin.name))
                 symlink(relpath(join(plugin.path, 'src'), plugin_symlinks), join(plugin_symlinks, plugin.name))
+
+                rm(join(plugin_tests_symlinks, plugin.name))
+                symlink(relpath(join(plugin.path, 'test'), plugin_tests_symlinks), join(plugin_tests_symlinks, plugin.name))
 
     def update(self, *args, force=False):
         if len(args):
@@ -312,11 +349,15 @@ class UjProject:
 
     def run(self):
         if not self.plugins_updated:
-            raise PluginsMissingError("error: Plugin(s) missing. Run 'uj list' to see which plugins are missing and "\
+            raise PluginsMissingError("error: Plugin(s) missing. Run 'uj list' to see which plugins are missing and "
                                       "'uj update' to fetch missing plugins.")
 
+        # Add default nodes to node register.
         update_plugins()
+
+        # Loads in the plugin nodes.
         self.load_nodes()
+
         # Add plugin nodes to node register.
         for name, node in self.nodes.items():
             if node not in node_register.values():
@@ -329,15 +370,36 @@ class UjProject:
         main([])
         os.chdir(old_cwd)
 
-    def test(self):
-        pass
+    def test(self, verbosity):
+        if not self.plugins_updated:
+            raise PluginsMissingError("error: Plugin(s) missing. Run 'uj list' to see which plugins are missing and "
+                                      "'uj update' to fetch missing plugins.")
+
+        # Add default nodes to node register.
+        update_plugins()
+
+        # Loads in the plugin nodes.
+        self.load_nodes()
+
+        # Add plugin nodes to node register.
+        for name, node in self.nodes.items():
+            if node not in node_register.values():
+                node_register[name] = node
+
+        # Find all unittests
+        test_package = importlib.import_module("urban_journey.plugin_tests.{}".format(self.name))
+        test_suit = unittest.defaultTestLoader.discover(test_package.__path__[0])
+
+        # TODO: Run plugin unit tests.
+
+        test_runner = unittest.TextTestRunner(verbosity=verbosity)
+        test_runner.run(test_suit)
 
     def clear(self):
         rm(join(self.path, '.uj', 'plugin_metadata.yaml'))
         rm(join(self.path, '.uj', 'plugin_symlinks'))
         for name in self.plugins:
             rm(join(self.path, 'plugins', name))
-
 
     @staticmethod
     def find_project_root(path):
@@ -429,7 +491,7 @@ class UjProject:
 
         # Check if source dir is a valid uj project.
         try:
-            UjProject(source, self)
+            UjProject(source, None)
         except InvalidUjProjectError:
             return False
 

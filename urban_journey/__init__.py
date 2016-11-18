@@ -4,8 +4,8 @@ __version__ = "0.0.1"
 
 # Publisher subscriber framework
 from urban_journey.pubsub.activity import activity, ActivityBase, ActivityMode
-from urban_journey.pubsub.ports.input import InputPortStatic as Input
-from urban_journey.pubsub.ports.output import Output
+from urban_journey.pubsub.ports.input import InputPortStatic as Input, InputPort
+from urban_journey.pubsub.ports.output import Output, OutputPort
 from urban_journey.pubsub.trigger import TriggerBase
 from urban_journey.pubsub.module_base import ModuleBase
 from urban_journey.pubsub.channels.channel_register import ChannelRegister
