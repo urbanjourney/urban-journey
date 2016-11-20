@@ -5,8 +5,8 @@ from traceback import print_exception
 
 from urban_journey import ModuleNodeBase
 from urban_journey.pubsub.activity import ActivityBase
-from PyQt4 import QtGui, QtCore, uic
-
+from PyQt5 import QtGui, QtCore, uic
+from PyQt5.QtWidgets import QWidget
 
 # Can't inherit from pyqtSignal. Will have to find some other way to do this.
 # Update: Found it.
@@ -37,7 +37,7 @@ class UjQtSignal(QtCore.QObject, ActivityBase):
         self.signal.emit(instance, sender_parameters)
 
 
-class QWidgetNodeBase(ModuleNodeBase, QtGui.QWidget):
+class QWidgetNodeBase(ModuleNodeBase, QWidget):
     """
     Bases: :class:`urban_journey.ModuleNodeBase`, :class:`PyQt4.QtGui.QWidget`
 

@@ -5,7 +5,7 @@ from traceback import print_exception
 
 from lxml import etree
 import numpy as np
-from PyQt4 import QtGui
+from PyQt5 import QtGui
 
 from .module_node_base import NodeBase
 from .interpreter import UJMLPythonInterpreter
