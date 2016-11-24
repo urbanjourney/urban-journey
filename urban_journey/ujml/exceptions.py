@@ -208,3 +208,19 @@ class PyQt4NotEnabledError(BaseUJMLError):
 
     def _error_message(self):
         return "Starting PyQt without enabling it first. Try adding pyqt=true' to the root ujml element."
+
+
+class MissingSuperInitError(BaseUJMLError):
+    """
+    This error is raised if a NodeBase child constructor, does not initialize the base class.
+    """
+    def __init__(self, filename, lineno, parent, child):
+        super().__init__(filename, lineno)
+        self.parent = parent
+        self.child = child
+
+    def _error_message(self):
+        return "You forgot super().__int__(..) at child node '{}' of parent '{}', you idiot.".format(
+            self.child,
+            self.parent
+        )

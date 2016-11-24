@@ -38,6 +38,9 @@ class AttributeBaseClass(metaclass=ABCMeta):
                 self.attrib_name = attr
 
     def __get__(self, instance, owner):
+        if instance is None:
+            return self
+
         if self.value[instance] is Empty or self.uncached:
             if self.attrib_name is None:
                 self.get_attribute_name(instance)

@@ -84,4 +84,8 @@ class TestPubSubNodes(unittest.TestCase):
                         </ujml>
                         '''.format(uj_version=uj_version)
         ujml = from_string(ujml_code)
-        assert ujml.start(timeout=10)
+        try:
+            assert ujml.start(timeout=10)
+            assert False
+        except AssertionError:
+            pass

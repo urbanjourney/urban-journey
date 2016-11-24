@@ -5,7 +5,7 @@ from lxml import etree
 
 from urban_journey.common.cached import cached
 from urban_journey.ujml.plugin_register import node_register, update_plugins
-from urban_journey.ujml.exceptions import UnknownElementError, IdNotFoundError
+from urban_journey.ujml.exceptions import UnknownElementError, IdNotFoundError, MissingSuperInitError
 from urban_journey.ujml.attributes import String, Data
 
 
@@ -263,6 +263,9 @@ class NodeBase:
                     raise UnknownElementError(self.file_name, element.sourceline, element.tag)
             child = klass(element, self.root)
 
+        if not hasattr(child, "element"):
+            self.raise_exception(MissingSuperInitError, self.tag, element.tag)
+
         # Add child
         self.add_child(child)
 
@@ -272,3 +275,6 @@ class NodeBase:
         be searched in the node and module register.
         """
         pass
+
+    def xpath(self, _path, namespaces=None, extensions=None, smart_strings=True, **_variables):
+        return self.element.xpath(_path, namespaces, extensions, smart_strings, **_variables).node

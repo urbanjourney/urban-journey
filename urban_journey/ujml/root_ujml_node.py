@@ -31,8 +31,8 @@ class UjmlNode(NodeBase):
     pyqt = Bool(optional_value=False)
     pyqt_quit_on_last_window_closed = Bool(optional_value=True)
 
-    stop_on_exception = Bool(optional_value=False)
-    stop_on_assertion_error = Bool(optional_value=False)
+    stop_on_exception = Bool(optional_value=True)
+    stop_on_assertion_error = Bool(optional_value=True)
 
     def __init__(self, element: etree.ElementBase, file_name, globals=None):
         self.__data_container = DataContainer()

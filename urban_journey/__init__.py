@@ -2,6 +2,13 @@
 
 __version__ = "0.0.1"
 
+import sys
+
+if sys.platform == "win32":
+    import signal
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+
+
 # Publisher subscriber framework
 from urban_journey.pubsub.activity import activity, ActivityBase, ActivityMode
 from urban_journey.pubsub.ports.input import InputPortStatic as Input, InputPort

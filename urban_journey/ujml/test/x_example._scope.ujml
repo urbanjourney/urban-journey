@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<ujml version="0.0.0">
+    <sg out="foo"/>
+    <sg out="bar"/>
+    <sg out="baz"/>
+
+    <scope>
+        <subplot>
+            <inp channel="foo"/>
+            <inp channel="baz"/>
+        </subplot>
+        <subplot>
+            <inp channel="bar"/>
+        </subplot>
+    </scope>
+
+    <scope>
+        <inp channel="baz"/>
+    </scope>
+
+    <dtst id="obj1">
+        <integrator>
+            <state id="omega">
+                <property id="tower" property="init_omega"/>
+            </state>
+            <state id="q">[0,0,0,1]</state>
+            <state id="v">[0,0,0]</state>
+            <state id="x">[0,0,0]</state>
+        </integrator>
+        <case>
+            <Tower id="tower">
+                <angle></angle>
+                <heading></heading>
+                <lenght></lenght>
+            </Tower>
+        </case>
+    </dtst>
+
+    <dtst id="obj2">
+        ../obj1/x
+        <integrator>
+
+        </integrator>
+    </dtst>
+
+
+
+    <radar>
+        <obj x="obj1/x"/>
+        <obj x="obj2/x"/>
+    </radar>
+
+
+    <group id="bar">
+        <sg out="foo"/>
+
+    </group>
+
+    <scope inp="foo@bar"/>
+
+    f_{id}
+
+    f_g_sun
+    f_g_jupiter
+    f_g_rocket
+
+
+
+    <gravity>
+        <cb id="sun" pos="x" dcm="baz">
+            <field>
+                <field_file id="baz" file="./path/to/file"/>
+            </field>
+        </cb>
+
+        <cb id="jupiter" pos="x" dcm="baz">
+            <field>
+                <ref id="baz"/>
+            </field>
+        </cb>
+
+        <cb id="earth" pos="x" dcm="baz">
+            <field>
+                <field_file file="./path/to/file"/>
+            </field>
+        </cb>
+
+        <sattelite id="rocket" mass="m" pos=""/>
+    </gravity>
+
+
+
+    <gui/>
+
+    <window>
+        <graph>
+            <curve/>
+            <curve/>
+        </graph>
+    </window>
+
+
+</ujml>

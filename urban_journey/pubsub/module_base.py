@@ -35,7 +35,7 @@ class ModuleBase:
     def __initialize_descriptors(self):
         """Initializes the DescriptorInstance instances in this object."""
         # I'm not sure whether this function has an effect. Descriptors are initialized when they are first requested
-        # anyways. I probably had a reason why some descriptors has to be initialized during initialization back when I
+        # anyways. I probably had a reason why some descriptors had to be initialized during initialization back when I
         # made this function. - Aaron
         klass = type(self)
         for member_name in dir(klass):

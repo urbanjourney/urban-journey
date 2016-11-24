@@ -388,7 +388,7 @@ class UjProject:
 
         # Find all unittests
         test_package = importlib.import_module("urban_journey.plugin_tests.{}".format(self.name))
-        test_suit = unittest.defaultTestLoader.discover(test_package.__path__[0])
+        test_suit = unittest.defaultTestLoader.discover(test_package.__path__[0], )
 
         # TODO: Run plugin unit tests.
 

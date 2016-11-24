@@ -25,16 +25,18 @@ setup(
     author='Aaron de Windt',
     author_email='',
     url='https://github.com/aarondewindt/urban-journey',
-
-    install_requires=['numpy', 'scipy', 'lxml', 'gitpython', 'pip', 'PyYAML'],
+    install_requires=['numpy',
+                      'scipy',
+                      'lxml',
+                      'gitpython',
+                      'pip',
+                      'PyYAML'],
     packages=find_packages('.', exclude=["test"]),
-
     entry_points={
           'console_scripts': [
               'uj = urban_journey.__main__:main'
           ]
     },
-
     classifiers=[
         'Programming Language :: Python :: 3 :: Only',
         'Development Status :: 2 - Pre-Alpha'],

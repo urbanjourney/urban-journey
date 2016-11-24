@@ -23,29 +23,55 @@ class Data(object):
         self.child = None
 
     def __get__(self, instance, owner):
+        """
+        Returns the data that this descriptor represents.
+        :param instance: Instance of the owner class that is requesting the data.
+        :param owner: Class that owns this instance of the descriptor.
+        :return: Data being requested.
+        """
+        # If the descriptor object is being requested from the class, return the descriptor itself.
+        if instance is None:
+            return self
+
+        # If the name of the descriptor is unknown find it.
         if self.name is None:
             self.get_name(owner)
 
+        # If the child element that this descriptor connects to is still unknown, find it.
         if self.child is None:
             for child in instance:
                 if child.tag == self.name:
                     self.child = child
 
         if self.child is not None:
+            # If the child element was found, validate the data it contains and return it.
             return self.validate(self.child, self.child.data)
         else:
+            # Else check whether it's optional and return the optional data. If it's required, raise exception.
             if self.optional_value is Required:
                 instance.raise_exception(MissingRequiredInput, instance.tag, self.name)
             else:
                 return self.validate(instance, self.optional_value)
 
     def get_name(self, owner):
+        """
+        Loops through all members of the owner class to find this descriptors name.
+        :param owner: Owner class
+        :return: Name of this descriptor inside the owner class
+        """
         for key, value in owner.__dict__.items():
             if value is self:
                 self.name = key
         assert self.name
 
     def validate(self, instance, data):
+        """
+        Checks the type and size of the data if needed.
+        :param instance: Instance of the owner class that is requesting data.
+        :param data: Data to be validated.
+        :return: The data if it's valid, otherwise it raises either a class:`urban_journey.exceptions.UJMLTypeError` or
+           class:`urban_journey.exceptions.InvalidShapeError`
+        """
         if self.type is not None:
             if not isinstance(data, self.type):
                 instance.raise_exception(UJMLTypeError, self.name)
