@@ -22,18 +22,18 @@ class ActivityBase:
 
 def activity(trigger: TriggerBase, *args, mode=ActivityMode.schedule, **kwargs):
     """Activity decorator factory. This function returns a function decorator class."""
-    if not isinstance(trigger, TriggerBase):
+    if not isinstance(trigger, TriggerBase) and trigger is not None:
         raise TypeError("trigger must inherit from TriggerBase")
 
     class ActivityDecorator(ActivityBase):
         def __init__(self, target):
             if not iscoroutinefunction(target):
                 raise TypeError("I find your lack of async disturbing.")
-
             self.target = target
 
+            self.__trigger_obj = None
+
             self.trigger_obj = trigger
-            self.trigger_obj.add_activity(self)
 
             self.mode = mode
 
@@ -48,6 +48,18 @@ def activity(trigger: TriggerBase, *args, mode=ActivityMode.schedule, **kwargs):
 
             self._args = args
             self._kwargs = kwargs
+
+        @property
+        def trigger_obj(self):
+            return self.__trigger_obj
+
+        @trigger_obj.setter
+        def trigger_obj(self, trigger):
+            if trigger is not None:
+                if self.__trigger_obj is not None:
+                    self.__trigger_obj.remove_activity(self)
+                self.__trigger_obj = trigger
+                self.__trigger_obj.add_activity(self)
 
         async def trigger(self, senders, sender_parameters, instance, *args, **kwargs):
             """

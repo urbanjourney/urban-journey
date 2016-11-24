@@ -26,16 +26,18 @@ class InputPort(PortBase, TriggerBase):
 
     async def trigger(self, data, *args, **kwargs):
         print_channel_transmit("InputPort.trigger({})".format(data))
-        futures = [None] * len(self._activities)
-        for i, activity in enumerate(self._activities):
-            futures[i] = activity.trigger([self], {self.attribute_name: data}, self.parent_object, *args, **kwargs)
+        # Only transmit the data if there are activities connected to this port.
+        if len(self._activities):
+            futures = [None] * len(self._activities)
+            for i, activity in enumerate(self._activities):
+                futures[i] = activity.trigger([self], {self.attribute_name: data}, self.parent_object, *args, **kwargs)
 
-        try:
-            # TODO: This will stop calling modules as soon as one raises an exception. Figure out a way to handle
-            #       exceptions individually for each future.
-            await wait_for(shield(wait(futures)), self.time_out)
-        except Exception as e:
-            print_exception(**sys.exc_info())
+            try:
+                # TODO: This will stop calling modules as soon as one raises an exception. Figure out a way to handle
+                #       exceptions individually for each future.
+                await wait_for(shield(wait(futures)), self.time_out)
+            except Exception as e:
+                self.parent_object.root.handle_exception(sys.exc_info())
 
 
 class InputPortDescriptorInstance(InputPort, DescriptorInstance):

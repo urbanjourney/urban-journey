@@ -6,8 +6,8 @@ Handles and retransmits data in between ports.
 from asyncio import shield, wait, wait_for, ensure_future
 
 from urban_journey.debug import print_channel_transmit
-from urban_journey.pubsub.ports.output import OutputPortDescriptorInstance
-from urban_journey.pubsub.ports.input import InputPortDescriptorInstance
+from urban_journey.pubsub.ports.output import OutputPortDescriptorInstance, OutputPort
+from urban_journey.pubsub.ports.input import InputPortDescriptorInstance, InputPort
 from urban_journey import event_loop
 
 
@@ -20,10 +20,10 @@ class Channel:
         self.loop = event_loop.get()
 
     def add_port(self, port):
-        if isinstance(port, OutputPortDescriptorInstance):
+        if isinstance(port, (OutputPortDescriptorInstance, OutputPort)):
             self.output_list.append(port)
             port.set_channel(self)
-        elif isinstance(port, InputPortDescriptorInstance):
+        elif isinstance(port, (InputPortDescriptorInstance, InputPort)):
             self.input_list.append(port)
             port.set_channel(self)
         else:
