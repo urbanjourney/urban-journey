@@ -45,7 +45,6 @@ class ConditionAnd(TriggerBase):
         return True
 
     async def trigger(self, senders, sender_params, instance, *args, **kwargs):
-        # TODO: DO something with args and kwargs.
         sender = senders[0]
         trigger_received_instance = self.trigger_received[instance]
 

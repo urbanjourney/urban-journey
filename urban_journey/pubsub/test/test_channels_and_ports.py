@@ -2,7 +2,7 @@ import unittest
 from threading import Semaphore
 import asyncio
 
-from urban_journey.pubsub.ports.output import OutputPort
+from urban_journey.pubsub.ports.output import OutputPortDescriptorInstance
 from urban_journey.pubsub.ports.input import InputPortStatic
 from urban_journey.pubsub.descriptor.static import DescriptorStatic
 from urban_journey.pubsub.module_base import ModuleBase
@@ -14,7 +14,7 @@ from urban_journey import event_loop
 class TestChannelAndPorts(unittest.TestCase):
     def test_simple(self):
         class A(ModuleBase):
-            op = DescriptorStatic(OutputPort)
+            op = DescriptorStatic(OutputPortDescriptorInstance)
 
             def __init__(self, channel_register):
                 super().__init__(channel_register)

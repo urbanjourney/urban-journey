@@ -100,7 +100,7 @@ def trigger_factory(klass):
 
         async def trigger(self, *args, **kwargs):
             for activity in self._activities:
-                print(activity)
+                # print(activity)
                 try:
                     await activity.trigger([self], {}, self.__obj, *args, **kwargs)
                 except:

@@ -1,5 +1,5 @@
 from enum import Enum
-from asyncio import Lock
+from asyncio import Lock, iscoroutinefunction
 import inspect
 from copy import copy
 import sys
@@ -27,7 +27,9 @@ def activity(trigger: TriggerBase, *args, mode=ActivityMode.schedule, **kwargs):
 
     class ActivityDecorator(ActivityBase):
         def __init__(self, target):
-            # TODO: Check if target is a coroutine.
+            if not iscoroutinefunction(target):
+                raise TypeError("I find your lack of async disturbing.")
+
             self.target = target
 
             self.trigger_obj = trigger

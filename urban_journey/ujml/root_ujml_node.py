@@ -5,7 +5,7 @@ from traceback import print_exception
 
 from lxml import etree
 import numpy as np
-from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 
 from .module_node_base import NodeBase
 from .interpreter import UJMLPythonInterpreter
@@ -72,7 +72,7 @@ class UjmlNode(NodeBase):
     def pyqt_enable(self):
         """Enable the use of PyQt4."""
         if self.pyqt_app is None:
-            self.pyqt_app = QtGui.QApplication(sys.argv)
+            self.pyqt_app = QtWidgets.QApplication(sys.argv)
             self.pyqt_app.setQuitOnLastWindowClosed(self.pyqt_quit_on_last_window_closed)
 
     def pyqt_start(self, *, timeout=None):

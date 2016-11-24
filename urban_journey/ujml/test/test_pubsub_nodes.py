@@ -89,3 +89,13 @@ class TestPubSubNodes(unittest.TestCase):
             assert False
         except AssertionError:
             pass
+
+
+    def test_condition_or(self):
+        ujml_code = '''<?xml version="1.0"?>
+                <ujml version="{uj_version}">
+                    <sv_stoff/>
+                </ujml>
+                '''.format(uj_version=uj_version)
+        ujml = from_string(ujml_code)
+        assert ujml.start(timeout=0.1)

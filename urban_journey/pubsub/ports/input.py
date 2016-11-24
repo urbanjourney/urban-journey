@@ -14,11 +14,11 @@ from urban_journey.pubsub.descriptor.static import DescriptorStatic
 from asyncio import wait_for, wait, shield
 
 
-class InputPort(PortBase, DescriptorInstance, TriggerBase):
-    def __init__(self, parent_object, attribute_name, static_descriptor, channel_name=None, time_out=5):
+class InputPort(PortBase, TriggerBase):
+    def __init__(self, parent_object, attribute_name, channel_name=None, time_out=5):
         PortBase.__init__(self, parent_object.channel_register, attribute_name, channel_name)
-        DescriptorInstance.__init__(self, parent_object, attribute_name, static_descriptor)
         TriggerBase.__init__(self)
+        self.parent_object = parent_object
         self.time_out = time_out
 
     async def flush(self, data):
@@ -38,9 +38,15 @@ class InputPort(PortBase, DescriptorInstance, TriggerBase):
             print_exception(**sys.exc_info())
 
 
+class InputPortDescriptorInstance(InputPort, DescriptorInstance):
+    def __init__(self, parent_object, attribute_name, static_descriptor, channel_name=None, time_out=5):
+        InputPort.__init__(self, parent_object, attribute_name, channel_name, time_out)
+        DescriptorInstance.__init__(self, parent_object, attribute_name, static_descriptor)
+
+
 class InputPortStatic(PortDescriptorBase, TriggerBase):
     def __init__(self, channel_name=None):
-        DescriptorStatic.__init__(self, InputPort)
+        DescriptorStatic.__init__(self, InputPortDescriptorInstance)
         TriggerBase.__init__(self)
         self.channel_name = channel_name
 
@@ -69,4 +75,5 @@ class InputPortStatic(PortDescriptorBase, TriggerBase):
         for _, t in self.instances.items():
             # TODO: Fix this.
             # This will cause an error. But I'll deal with that later.
+            # But this shouldn't happen anyways.
             t.trigger(None)

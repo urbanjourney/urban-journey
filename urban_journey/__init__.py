@@ -4,6 +4,8 @@ __version__ = "0.0.1"
 
 import sys
 
+# Workaround for the python bug making asyncio suppress
+# the KeyboardInterrupt on Windows.
 if sys.platform == "win32":
     import signal
     signal.signal(signal.SIGINT, signal.SIG_DFL)
@@ -17,6 +19,7 @@ from urban_journey.pubsub.trigger import TriggerBase
 from urban_journey.pubsub.module_base import ModuleBase
 from urban_journey.pubsub.channels.channel_register import ChannelRegister
 from urban_journey.pubsub.trigger.condition_and import ConditionAnd
+from urban_journey.pubsub.trigger.condition_or import ConditionOr
 
 
 # Urban Journey Markup Language (UJML)

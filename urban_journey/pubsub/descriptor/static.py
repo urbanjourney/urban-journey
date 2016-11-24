@@ -19,9 +19,6 @@ class DescriptorStatic:
         self._instance_kwargs = kwargs
 
     def __get__(self, obj, klass=None):
-        if obj is None:
-            return self
-
         # If being called from Class, return instance
         if obj is None:
             return self

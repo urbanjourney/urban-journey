@@ -44,7 +44,6 @@ class ClockInstance(DescriptorInstance, TriggerBase):
 
         self.loop = event_loop.get()
         self.period = 1
-        self.trigger_time = None
         self.running = False
 
     @property
@@ -61,7 +60,6 @@ class ClockInstance(DescriptorInstance, TriggerBase):
         :return: Returns an Asyncio.Future object.
         """
         self.running = True
-        self.trigger_time = self.loop.time() + self.period
         return asyncio.run_coroutine_threadsafe(self.timer_callback(), loop=self.loop)
 
     def stop(self):

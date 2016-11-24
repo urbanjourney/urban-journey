@@ -8,24 +8,13 @@ from urban_journey.pubsub.descriptor.instance import DescriptorInstance
 
 
 def Output(channel_name=None):
-    return PortDescriptorBase(OutputPort,
+    return PortDescriptorBase(OutputPortDescriptorInstance,
                               channel_name=channel_name)
 
 
-class OutputPort(PortBase, DescriptorInstance):
-    def __init__(self,
-                 parent_object,
-                 attribute_name,
-                 static_descriptor,
-                 channel_name=None):
-        """
-        :param parent_object: ModelBase instance that owns this port
-        :param attribute_name: Name of this port inside the model as instance
-        :param channel_name: Optional. Channel name to connect to. If None, attribute name will be used as channel_name.
-        """
-
-        PortBase.__init__(self, parent_object.channel_register, attribute_name, channel_name)
-        DescriptorInstance.__init__(self, parent_object, attribute_name, static_descriptor)
+class OutputPort(PortBase):
+    def __init__(self, channel_register, attribute_name, channel_name=None):
+        super().__init__(channel_register, attribute_name, channel_name)
 
     async def flush(self, data):
         print_channel_transmit("OutputPort.flush({})".format(data))
@@ -39,5 +28,21 @@ class OutputPort(PortBase, DescriptorInstance):
             asyncio.run_coroutine_threadsafe(self.channel.flush(data), loop)
 
     __call__ = flush
-    # __lshift__ = flush
+
+
+class OutputPortDescriptorInstance(OutputPort, DescriptorInstance):
+    def __init__(self,
+                 parent_object,
+                 attribute_name,
+                 static_descriptor,
+                 channel_name=None):
+        """
+        :param parent_object: ModelBase instance that owns this port
+        :param attribute_name: Name of this port inside the model as instance
+        :param static_descriptor: Instance of the static descriptor that created this instance
+        :param channel_name: Optional. Channel name to connect to. If None, attribute name will be used as channel_name.
+        """
+
+        OutputPort.__init__(self, parent_object.channel_register, attribute_name, channel_name)
+        DescriptorInstance.__init__(self, parent_object, attribute_name, static_descriptor)
 

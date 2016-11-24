@@ -3,7 +3,7 @@
 class TriggerBase:
     """Base class for all triggers"""
     def __init__(self):
-        super().__init__()
+        # super().__init__()
         self._activities = []
 
     def add_activity(self, activity):
@@ -25,3 +25,8 @@ class TriggerBase:
     def __and__(self, other):
         from urban_journey.pubsub.trigger.condition_and import ConditionAnd
         return ConditionAnd(self, other)
+
+    def __or__(self, other):
+        from urban_journey.pubsub.trigger.condition_or import ConditionOr
+        return ConditionOr(self, other)
+

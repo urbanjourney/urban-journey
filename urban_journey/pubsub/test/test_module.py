@@ -22,11 +22,11 @@ class TestModule(unittest.TestCase):
             not_trigger3 = None
 
             @activity(trigger1)
-            def activity1(self):
+            async def activity1(self):
                 pass
 
             @activity(trigger2)
-            def activity2(self):
+            async def activity2(self):
                 pass
 
             def not_activity1(self):

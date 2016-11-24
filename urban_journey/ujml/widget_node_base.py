@@ -5,8 +5,9 @@ from traceback import print_exception
 
 from urban_journey import ModuleNodeBase
 from urban_journey.pubsub.activity import ActivityBase
-from PyQt5 import QtGui, QtCore, uic
+from PyQt5 import QtGui, QtCore, uic, QtWidgets
 from PyQt5.QtWidgets import QWidget
+
 
 # Can't inherit from pyqtSignal. Will have to find some other way to do this.
 # Update: Found it.
@@ -39,9 +40,9 @@ class UjQtSignal(QtCore.QObject, ActivityBase):
 
 class QWidgetNodeBase(ModuleNodeBase, QWidget):
     """
-    Bases: :class:`urban_journey.ModuleNodeBase`, :class:`PyQt4.QtGui.QWidget`
+    Bases: :class:`urban_journey.ModuleNodeBase`, :class:`PyQt5.QtWidgets.QWidget`
 
-    Same as :class:`urban_journey.ModuleNodeBase`, but for modules with GUI's created with PyQt4. To connect uj triggers
+    Same as :class:`urban_journey.ModuleNodeBase`, but for modules with GUI's created with PyQt5. To connect uj triggers
     to QtSignals you can use a :class:`urban_journey.UjQtSignal`
 
     :param element: Lxml element in the ujml document
@@ -50,7 +51,7 @@ class QWidgetNodeBase(ModuleNodeBase, QWidget):
     :type root: :class: `urban_journey.UjmlNode`
     """
     def __init__(self, element, root):
-        QtGui.QWidget.__init__(self)
+        QtWidgets.QWidget.__init__(self)
         ModuleNodeBase.__init__(self, element, root)
         self.show()
 

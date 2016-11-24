@@ -220,7 +220,7 @@ class TestParser(unittest.TestCase):
     def test_script_node(self):
         ujml_code = '<?xml version="1.0"?><ujml version="{}">'.format(uj_version) + '''
                             <script>
-                                print("Heloo")
+                                print("Frankly, my dear, I don't give a damn.")
                             </script>
                         </ujml>'''
         ujml = from_string(ujml_code)
