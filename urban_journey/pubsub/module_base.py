@@ -34,7 +34,7 @@ class ModuleBase:
 
     def __initialize_descriptors(self):
         """Initializes the DescriptorInstance instances in this object."""
-        # I'm not sure whether this function has an effect. Descriptors are initialized when they are first requested
+        # I'm not sure whether this function has any effect. Descriptors are initialized when they are first requested
         # anyways. I probably had a reason why some descriptors had to be initialized during initialization back when I
         # made this function. - Aaron
         klass = type(self)
@@ -42,9 +42,6 @@ class ModuleBase:
             member = inspect.getattr_static(klass, member_name)
             if isinstance(member, DescriptorStatic):
                 getattr(self, member_name)
-
-        # for member_name in dir(self):
-        #     getattr(self, member_name)
 
     @cached_class
     def activities(cls):

@@ -7,16 +7,25 @@ class TriggerBase:
         self._activities = []
 
     def add_activity(self, activity):
-        """Subscribe an activity to this trigger."""
+        """
+        Connect an activity to this trigger.
+
+        :param urban_journey.ActivityBase activity: Activity to add.
+        """
         self._activities.append(activity)
 
     def remove_activity(self, activity):
+        """
+        Disconnect an activity to this trigger.
+
+        :param urban_journey.ActivityBase activity: Activity to remove.
+        """
         if activity in self._activities:
             self._activities.remove(activity)
 
     async def trigger(self, *args, **kwargs):
         """
-        TriggerBase all activities subscribed to this trigger.
+        Trigger all activities connected to this trigger and pass all arguments to the activity.
 
         """
         for activity in self._activities:

@@ -13,6 +13,7 @@ if sys.platform == "win32":
 
 # Publisher subscriber framework
 from urban_journey.pubsub.activity import activity, ActivityBase, ActivityMode
+from urban_journey.pubsub.ports.base import PortBase
 from urban_journey.pubsub.ports.input import InputPortStatic as Input, InputPort
 from urban_journey.pubsub.ports.output import Output, OutputPort
 from urban_journey.pubsub.trigger import TriggerBase

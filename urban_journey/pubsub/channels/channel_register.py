@@ -5,14 +5,26 @@ from urban_journey.pubsub.channels.channel import Channel
 
 
 class ChannelRegister:
+    """
+    The channel register keeps a list of all existing channels and creates
+    a channel when necessary.
+    """
     def __init__(self):
-        self._channels = {}
+        self.channels = {}  #: Dictionary holding the channels.
 
     def get_channel(self, channel_name):
-        if channel_name not in self._channels:
+        """
+        Return the requested channel. If the channel does not exist yet it creates it.
+        :param string channel_name: Name of the requested channel.
+        :return: Requested channel object.
+        """
+        if channel_name not in self.channels:
             self.create_channel(channel_name)
-        return self._channels[channel_name]
+        return self.channels[channel_name]
 
     def create_channel(self, channel_name):
-        # print("Creating channel:", channel_name)
-        self._channels[channel_name] = Channel(channel_name)
+        """
+        Creates a new channel
+        :param channel_name: The name of the new channel.
+        """
+        self.channels[channel_name] = Channel(channel_name)

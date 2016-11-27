@@ -8,7 +8,12 @@ from traceback import print_exception
 from .trigger import TriggerBase
 
 
+# Ahhhh. I don't want to document this. Just look at it. Who would even want to go through this code.  -- Aaron
+
 class ActivityMode(Enum):
+    """
+    Enumerator for the activity mode.
+    """
     drop = 0
     schedule = 2
 
@@ -16,7 +21,9 @@ class ActivityMode(Enum):
 class ActivityBase:
     """This is the base class for all activities."""
     async def trigger(self, senders, sender_parameters, instance, *args, **kwargs):
-        """TriggerBase handler"""
+        """
+        TriggerBase handler
+        """
         pass
 
 
@@ -29,7 +36,7 @@ def activity(trigger: TriggerBase, *args, mode=ActivityMode.schedule, **kwargs):
         def __init__(self, target):
             if not iscoroutinefunction(target):
                 raise TypeError("I find your lack of async disturbing.")
-            self.target = target
+            self.target = target  #: target coroutine for this activity.
 
             self.__trigger_obj = None
 
@@ -51,6 +58,10 @@ def activity(trigger: TriggerBase, *args, mode=ActivityMode.schedule, **kwargs):
 
         @property
         def trigger_obj(self):
+            """
+            Trigger connected to this activity.
+            :rtype: urban_journey.TriggerBase
+            """
             return self.__trigger_obj
 
         @trigger_obj.setter
@@ -73,22 +84,20 @@ def activity(trigger: TriggerBase, *args, mode=ActivityMode.schedule, **kwargs):
                         return
                 with (await self.lock):
                     # TODO: Remove support for "instance is None". This is currently only meant to be used in unittests.
+
+                    # Create new parameters dictionary and fill it in with the data coming in from the triggers.
+                    params = copy(self.empty_param_dict)
+                    for param in params:
+                        if param in sender_parameters:
+                            params[param] = sender_parameters[param]
+
                     if instance is None:
-                        params = copy(self.empty_param_dict)
-                        for param in params:
-                            if param in sender_parameters:
-                                params[param] = sender_parameters[param]
                         await self.target(*args, *self._args, **kwargs, **self._kwargs, **params)
                     else:
-                        params = copy(self.empty_param_dict)
-                        for param in params:
-                            if param in sender_parameters:
-                                params[param] = sender_parameters[param]
                         await self.target(instance, *args, *self._args, **kwargs, **self._kwargs, **params)
 
             except Exception as e:
-                # TODO: Add something here to either call an error handler, stop execution or just ignore based on some
-                # setting somewhere.
+                # On exeption let the exception handler of the root node deal with it.
                 if instance is None:
                     print_exception(*sys.exc_info())
                     raise e

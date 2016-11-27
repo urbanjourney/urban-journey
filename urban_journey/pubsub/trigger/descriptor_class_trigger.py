@@ -1,7 +1,8 @@
 """
 Base classes for triggers.
-WARNING: I don't know exactly how to explain how these work.Before continuing make sure you know what a descriptor is \
-in python. Then continue on reading the rest of the documentation here.
+
+.. warning:: I don't know exactly how to explain how these work. Before continuing make sure you know what a descriptor
+   is in python. Then continue on reading the rest of the documentation here.
 """
 from traceback import print_exception
 import sys
@@ -25,6 +26,9 @@ class DescriptorClassTrigger(TriggerBase):
 
     @cached
     def obj_id(self):
+        """
+        The id of this object.
+        """
         return id(self)
 
     def __get__(self, obj, klass=None):
@@ -45,23 +49,39 @@ class DescriptorClassTrigger(TriggerBase):
         return self.triggers[id(obj)]
 
     def add_obj(self, obj):
+        """
+        Register a instance of the parent class and create a new instance of the ``trigger_class`` for this instance.
+        :param obj: Parent object
+        """
+
         t = self.trigger_class(obj, self._name)
         for activity in self._activities:
             t.add_activity(activity)
         self.triggers[id(obj)] = t
 
     def add_activity(self, activity):
+        """
+        Connect an activity to this trigger to this trigger.
+
+        :param activity: Activity to connect.
+        """
         super().add_activity(activity)
         for _, t in self.triggers.items():
             t.add_activity(activity)
 
     def trigger(self):
+        """Trigger all instances of ``trigger_class``."""
         for _, t in self.triggers.items():
             # This cause an error. But I'll deal with that later.
             t.trigger(None)
 
     @cached
     def trigger_class(self):
+        """
+        Creates a class that inherits from both the `` trigger_base_class`` and
+        ``DescriptorInstanceTrigger`` defined in the class factory function
+        :func:`urban_journey.pubsub.descriptor_class_trigger.trigger_factory`.
+        """
         if self.is_descriptor_instance:
             return self.trigger_base_class
         else:

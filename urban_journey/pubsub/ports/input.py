@@ -15,16 +15,37 @@ from asyncio import wait_for, wait, shield
 
 
 class InputPort(PortBase, TriggerBase):
+    """
+    This class can be used to create a new input port dynamically after
+    the parent module has initialized.
+
+    :param urban_journey.ModuleBase parent_object: Paren module that will own this port.
+    :param string attribute_name: The name of the port.
+    :param string channel_name: The default channel name. If None `attribute_name` is used.
+    :param float time_out: Timeout on the processing time.
+    """
     def __init__(self, parent_object, attribute_name, channel_name=None, time_out=5):
         PortBase.__init__(self, parent_object.channel_register, attribute_name, channel_name)
         TriggerBase.__init__(self)
-        self.parent_object = parent_object
-        self.time_out = time_out
+        self.parent_object = parent_object  #: The parent module object.
+        self.time_out = time_out  #: Time out
 
     async def flush(self, data):
+        """
+        Receives the data coming in from the channel.
+
+        :param data: The data being transmitted.
+        """
         await self.trigger(data)
 
     async def trigger(self, data, *args, **kwargs):
+        """
+        Triggers all activities connected to his port.
+
+        :param data: The data being transmitted.
+        :param args:  Random stuff
+        :param kwargs: More random stuff
+        """
         print_channel_transmit("InputPort.trigger({})".format(data))
         # Only transmit the data if there are activities connected to this port.
         if len(self._activities):
@@ -41,20 +62,40 @@ class InputPort(PortBase, TriggerBase):
 
 
 class InputPortDescriptorInstance(InputPort, DescriptorInstance):
+    """
+    Class used to create input port instances for static/descriptor defined port.
+
+    :param urban_journey.ModuleBase parent_object: Paren module that will own this port.
+    :param string attribute_name: The name of the port.
+    :param string channel_name: The default channel name. If None `attribute_name` is used.
+    :param float time_out: Timeout on the processing time.
+    """
+
     def __init__(self, parent_object, attribute_name, static_descriptor, channel_name=None, time_out=5):
         InputPort.__init__(self, parent_object, attribute_name, channel_name, time_out)
         DescriptorInstance.__init__(self, parent_object, attribute_name, static_descriptor)
 
 
 class InputPortStatic(PortDescriptorBase, TriggerBase):
+    """
+    Class used to statically declare ports using a descriptor.
+
+    :param string channel_name: Default channel to connect to. If None, the descriptor/attribute name is used.
+    """
     def __init__(self, channel_name=None):
         DescriptorStatic.__init__(self, InputPortDescriptorInstance)
         TriggerBase.__init__(self)
         self.channel_name = channel_name
 
     def add_obj(self, obj):
+        """
+        Creates a new instance of `instances_base_class` that corresponds to
+        obj and adds it to the instance dictionary.
+
+        :param obj: Parent instance.
+        """
         t = self.instances_base_class(obj,
-                                      self._attribute_name,
+                                      self.attribute_name,
                                       self,
                                       *self._instance_args,
                                       channel_name=self.channel_name,
@@ -64,16 +105,31 @@ class InputPortStatic(PortDescriptorBase, TriggerBase):
             t.add_activity(activity)
 
     def add_activity(self, activity):
+        """
+        Connects a new activity to this port.
+
+        :param urban_journey.ActivityBase activity: Activity to connect.
+        """
         super().add_activity(activity)
         for _, t in self.instances.items():
             t.add_activity(activity)
 
     def remove_activity(self, activity):
+        """
+        Disconnects a activity from this port.
+
+        :param urban_journey.ActivityBase activity: Activity to disconnect.
+        """
         super().remove_activity(activity)
         for _, t in self.instances.items():
             t.remove_activity(activity)
 
     def trigger(self, s):
+        """
+        .. warning:: Not implemented.
+        :param s:
+        :return:
+        """
         for _, t in self.instances.items():
             # TODO: Fix this.
             # This will cause an error. But I'll deal with that later.

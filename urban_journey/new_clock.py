@@ -14,7 +14,7 @@ class ClockStatic(DescriptorStatic, TriggerBase):
 
     def add_obj(self, obj):
         t = self.instances_base_class(obj,
-                                      self._attribute_name,
+                                      self.attribute_name,
                                       self)
         self.instances[id(obj)] = t
         for activity in self._activities:
