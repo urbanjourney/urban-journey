@@ -1,8 +1,5 @@
-import builtins
 from urban_journey.ujml.attributes.base import AttributeBaseClass
 from urban_journey.ujml.exceptions import InvalidAttributeValueError
-from urban_journey.ujml.unique import Required
-from urban_journey.common.cached import cached
 
 
 class String(AttributeBaseClass):

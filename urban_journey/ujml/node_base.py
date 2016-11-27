@@ -22,8 +22,8 @@ class NodeBase:
 
     def __init__(self, element: etree.ElementBase, root):
         element.node = self
-        self.element = element
-        self.parents = []
+        self.element = element  # :class:`etree.ElementBase` object representing this node in the xlm code.
+        self.parents = []  #: List of paret objects.
         self.__children = None
         self.__file_name = None
         self.__root = root
@@ -277,4 +277,20 @@ class NodeBase:
         pass
 
     def xpath(self, _path, namespaces=None, extensions=None, smart_strings=True, **_variables):
-        return self.element.xpath(_path, namespaces, extensions, smart_strings, **_variables).node
+        """
+        Finds a node using xpath.
+
+        .. warning:: Not implemented.
+
+        Check the lxml documentation for a description of these parameters.
+
+        :param _path:
+        :param namespaces:
+        :param extensions:
+        :param smart_strings:
+        :param _variables:
+        :return: List of nodes found.
+        """
+
+        raise NotImplemented
+        # return self.element.xpath(_path, namespaces, extensions, smart_strings, **_variables).node

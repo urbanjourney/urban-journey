@@ -28,11 +28,11 @@ class UjmlNode(NodeBase):
     """
     req_version = String(name="version")
 
-    pyqt = Bool(optional_value=False)
-    pyqt_quit_on_last_window_closed = Bool(optional_value=True)
+    pyqt = Bool(optional_value=False)  #: True to enable PyQt5
+    pyqt_quit_on_last_window_closed = Bool(optional_value=True)  #: True to make PyQt5 exit after the last window has exited.
 
-    stop_on_exception = Bool(optional_value=True)
-    stop_on_assertion_error = Bool(optional_value=True)
+    stop_on_exception = Bool(optional_value=True)  #: Release the start function in case of an exception.
+    stop_on_assertion_error = Bool(optional_value=True)  #: Release the tart function in case of an assertion error.
 
     def __init__(self, element: etree.ElementBase, file_name, globals=None):
         self.__data_container = DataContainer()
@@ -62,6 +62,7 @@ class UjmlNode(NodeBase):
         self.__semaphore = Semaphore(0)
 
         self.ujml_module = UjmlModule(self.channel_register)
+        """Module that triggers the default ujml channels."""
 
         self.__check_version()
 
@@ -223,6 +224,10 @@ class UjmlNode(NodeBase):
 
 
 class UjmlModule(ModuleBase):
+    """
+    This class is used to contain the ports that are used to trigger the default ujml channels.
+    """
+
     # Ujml events
     uj_start = Output()
     """Event channel that transmits when :func:`UjmlNode.start` is called."""

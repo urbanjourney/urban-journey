@@ -9,6 +9,15 @@ from urban_journey.ujml.exceptions import RequiredAttributeError
 
 
 class AttributeBaseClass(metaclass=ABCMeta):
+    """
+    Base class for all attributes. This base class gives a convinient API to implement descriptor based xml
+    attributes.
+
+    :param string name: Attribute name.
+    :param bool read_only: True to make the attribute read only.
+    :param optional_value: An optional value in case the attribute was not given.
+    """
+
     def __init__(self, name=None, read_only=False, optional_value=Required):
         self.read_only = read_only
         self.attrib_name = name
@@ -22,17 +31,37 @@ class AttributeBaseClass(metaclass=ABCMeta):
         pass
 
     def set(self, instance, value):
-        """This class can optionally be overridden by child classes and should set the attribute value. If not
-        overridden the attribute will be readonly."""
+        """
+        This class can optionally be overridden by child classes and should set the attribute value. If not
+        overridden the attribute will be readonly.
+
+        :param instance: Node instance the attribute value is being set.
+        :param value: New attribute value.
+        :raises urban_journey.exceptions.ReadOnlyAttributeError: If the attribute is readonly.
+        """
         instance.raise_exception(ReadOnlyAttributeError, self.attrib_name)
 
     def get_optional(self, instance):
+        """
+        Get a the optional value for a particular node instance.
+
+        :param instance: Node instance the attribute value is being requested for.
+        :return: Attribute value
+        :raises urban_journey.exceptions.RequiredAttributeError: If the attribute value was not given and there is no
+           optional value.
+        """
         if self.optional_value is not Required:
             return self.optional_value
         else:
             instance.raise_exception(RequiredAttributeError, instance.tag, self.attrib_name)
 
     def get_attribute_name(self, instance):
+        """
+        Finds the name of the attribute.
+
+        :param instance:  Node instance the attribute name is being looked for.
+        :return:
+        """
         for attr in dir(instance):
             if inspect.getattr_static(instance, attr) is self:
                 self.attrib_name = attr

@@ -6,8 +6,13 @@ from .nodes import path as default_nodes_path
 __all__ = ['update_plugins', 'plugin_paths', 'node_register']
 
 plugin_paths = [default_nodes_path]
+"""Path to packages containing uj nodes."""
+
 
 node_register = {}
+"""
+Dictionary containing a all nodes.
+"""
 
 
 def update_plugins():

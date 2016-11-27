@@ -8,6 +8,10 @@ from urban_journey.ujml.exceptions import DataLoadError, RequiredAttributeError
 
 
 class pickle(DataNodeBase):
+    """
+    Load in data from a pickle file.
+    """
+
     file = String()
 
     @cached

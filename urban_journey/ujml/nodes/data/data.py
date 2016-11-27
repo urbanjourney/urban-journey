@@ -12,7 +12,10 @@ to_2d_list_regex = re.compile(r"(?:^|; *)([\s\S]*?)(?:$|(?=;))")
 class data(DataNodeBase):
     """
     Bases: :class:`urban_journey.DataNodeBase`
+
+    Loads data from either a child data node, evaluated python code or 1d/2d array.
     """
+
     ndarray = Bool(optional_value=True)
 
     @cached

@@ -2,10 +2,21 @@ from urban_journey.ujml.exceptions import RequiredAttributeError, UJMLError, UJM
 
 
 class DataContainer(object):
+    """
+    It is used to store the data loaded in by data nodes with id's.
+    """
+
     def __init__(self):
         self.__data_nodes = {}
 
     def add_data_node(self, node):
+        """
+        Add a data node to the list.
+
+        :param urban_journey.DataNode node: Dta node to be added.
+        :raises TypeError: If the object passed is not a valid data node. In other words, it doesn't have a data
+           attribute.
+        """
         if node.id is None:
             return
 

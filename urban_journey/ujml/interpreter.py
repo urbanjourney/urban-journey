@@ -77,7 +77,7 @@ class UJMLPythonInterpreter:
 
 
 class UJMLPythonSource:
-    """Compiles and stores a piece of python source code to be executed later."""
+    """Compiles and stores a piece of python source code to be executed later. When called the source is evaluated."""
     def __init__(self, interpreter: UJMLPythonInterpreter, source, file_name, mode, source_line=1):
         source = tidy_source(source)
         # Perfect example of a buen oplossing right here. It's not possible to pass a line number to compile. So just
@@ -94,14 +94,21 @@ class UJMLPythonSource:
 
     @property
     def code(self):
+        """
+        Code object for the passed python source.
+        """
         return self.__code
 
     @property
     def file_name(self):
+        """
+        Source file name.
+        """
         return self.__file_name
 
     @property
     def source_line(self):
+        """Source line number if the source file."""
         return self.__source_line
 
     def __call__(self, is_global=False, **kwargs):
