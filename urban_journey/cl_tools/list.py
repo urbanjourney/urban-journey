@@ -21,7 +21,7 @@ class list(ClBase):
 
         try:
             uj_project = UjProject(verbosity=1,
-                                   istest=include_tests)
+                                   is_test=include_tests)
         except InvalidUjProjectError as e:
             sys.exit(e.args[0])
 
@@ -30,7 +30,7 @@ class list(ClBase):
         for name in uj_project.plugins:
             try:
                 UjProject(join(uj_project.path, "plugins", name),
-                          istest=include_tests)
+                          is_test=include_tests)
                 if name in uj_project.get_metadata():
                     source = uj_project.get_metadata()[name]
                 else:

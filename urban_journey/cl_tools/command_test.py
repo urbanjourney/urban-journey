@@ -22,7 +22,7 @@ class test(ClBase):
         verbosity = 2 if "-v" in args else 1
 
         try:
-            uj_project = UjProject(verbosity=1, istest=True)
+            uj_project = UjProject(verbosity=1, is_test=True)
         except InvalidUjProjectError as e:
             sys.exit(e.args[0])
 

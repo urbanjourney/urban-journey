@@ -19,6 +19,32 @@ from urban_journey import plugins as plugins_module
 from urban_journey import plugin_tests as plugin_tests_module
 
 
+# Open letter to past Aaron.
+#
+# Dear past Aaron,
+#
+# Your'e an idiot. This is what happens when you start writing code without
+# thinking or even knowing what it should do in the end. This kind of code
+# should only exist in the purgatory repository. Please in the future make
+# sure you have a plan and refrain your'e self from using 'neat' tricks and
+# buen code.
+#
+#
+# Cheers,
+# Nov 2016 Aaron
+
+
+# Open letter to Microsoft.
+#
+# Dear Microsoft,
+#
+# Fuck you.
+#
+#
+# Cheers,
+# Aaron
+
+
 # Check whether git is available and import gitpython if it is.
 try:
     subprocess.run(["git", "--version"], stdout=subprocess.PIPE)
@@ -32,25 +58,43 @@ empty_project_dir = os.path.join(os.path.dirname(__file__), "empty_project")
 
 
 class InvalidUjProjectError(Exception):
+    """
+    This exception is raised if the target directory is not in a valid uj project.
+    """
     pass
 
 
 class PluginsMissingError(Exception):
+    """
+    This exception is raised if the uj project is missing one or more plugins.
+    """
     pass
 
 
 class UjProject:
-    def __init__(self, path=None, parent_project=None, verbosity=0, istest=False):
+    """
+    This class can be use to interact with a urban journey project.
+
+    :param string path: directory holding the uj project.
+    :param urban_journey.UjProject parent_project: If not None. This project will be opened
+       as a plugin for the parent_project.
+    :param int verbosity: Set the verbosity for the :class:`unittest.TextTestRunner` used to
+       unittest the project.
+    :param bool istest: If True, load the unit testing nodes.
+    """
+
+    def __init__(self, path=None, parent_project=None, verbosity=0, is_test=False):
         # Find project root folder
-        self.path = self.find_project_root(os.path.abspath(path or os.getcwd()))
-        self.parent_project = parent_project
+        self.path = self.find_project_root(os.path.abspath(path or os.getcwd()))  #: Project root directory.
+        self.parent_project = parent_project  #: The parent project if this project is opened as a plugin.
 
         if self.path is None:
             raise InvalidUjProjectError("error: Not a uj project (or any of the parent directories)")
 
+        # Check if this is a valid uj project.
         self.check_validity()
 
-        self.verbosity = verbosity
+        self.verbosity = verbosity  #: Verbosity for the :class:`unittest.TextTestRunner` used to unittest the project.
         self.__name = None
         self.__plugins = None
         self.__python_dependencies = None
@@ -59,7 +103,7 @@ class UjProject:
         self.__plugins_updated = False
         self.__nodes = None
 
-        self.is_test = istest
+        self.is_test = is_test  #: If True, the unit testing nodes are also loaded.
 
         self.update_handlers = {
             "git": self.update_git,
@@ -67,7 +111,7 @@ class UjProject:
             "web": self.update_web,
             "zip": self.update_zip,
             "copy": self.update_copy,
-        }
+        }  #: Dictionary holding the handlers for each type of code source.
 
         # Create plugins folder if it doesn't exist.
         if not isdir(join(self.path, "plugins")):
@@ -81,6 +125,11 @@ class UjProject:
         self.load_project()
 
     def print(self, *args):
+        """
+        Print function that will only print if the verbosity is non-zero.
+        :param args:
+        :return:
+        """
         if self.verbosity:
             print(*args)
 
@@ -105,25 +154,34 @@ class UjProject:
 
     @property
     def plugins(self):
+        """List of plugins in the project."""
         return self.__plugins
 
     @property
     def python_dependencies(self):
+        """List of python dependencies for the project."""
         return self.__python_dependencies
 
     @property
     def nodes(self):
+        """List of nodes in the project."""
         return self.__nodes
 
     @property
     def name(self):
+        """The name of the project."""
         return self.__name
 
     @property
     def plugins_updated(self):
+        """True if all plugins are present."""
         return self.__plugins_updated
 
     def get_metadata(self):
+        """
+        Load in the project metadata file.
+        :return: Dictionary with the metadata.
+        """
         if isfile(join(self.path, ".uj", "plugin_metadata.yaml")):
             with open(join(self.path, ".uj", "plugin_metadata.yaml"), "r") as f:
                 data = yaml.load(f) or {}
@@ -132,15 +190,22 @@ class UjProject:
             return {}
 
     def set_metadata(self, value):
+        """
+        Save the metadata to it's file.
+
+        :param value: Dictionary with the metadata.
+        """
         with open(join(self.path, ".uj", "plugin_metadata.yaml"), "w") as f:
             yaml.dump(value, f)
 
     @property
     def version(self):
+        """The project version."""
         return self.__version
 
     @property
     def author(self):
+        """The project author."""
         return self.__author
 
     @staticmethod
@@ -177,6 +242,7 @@ class UjProject:
                 Repo.init(target_directory)
 
     def plugin_projects(self):
+        """Generator yielding a :class:`urban_journey.UjProject` instance for each plugin in the project."""
         for entry in os.scandir(join(self.path, "plugins")):
             if entry.is_dir():
                 try:
@@ -226,6 +292,8 @@ class UjProject:
         else:
             plugin_symlinks = join(self.parent_project.path, '.uj', 'plugin_symlinks')
 
+        # Check if all plugins have been loaded. Any newly added plugins, might have unsatisfied plugins.
+        # So you might want to run this function again.
         for name in self.plugins:
             if not islink(join(plugin_symlinks, name)):
                 self.__plugins_updated = False
@@ -235,6 +303,10 @@ class UjProject:
         return True
 
     def load_nodes(self):
+        """
+        Loads all nodes in the project.
+        """
+
         self.load_project()
         if not self.plugins_updated:
             raise PluginsMissingError("error: Plugin(s) missing. Run 'uj list' to see which plugins are missing and "\
@@ -274,6 +346,9 @@ class UjProject:
                     self.__nodes[name] = node
 
     def create_symlinks(self):
+        """
+        Creates a symlink for the project source and plugins to a location accasible to the
+        """
         # Make sure '.uj/plugin_symlinks' directory exists
         # Make sure that the project src is symlinked in '.uj/plugin_symlinks'
         # Make sure that '.uj/plugin_symlinks' is in the plugin_module path.
@@ -315,6 +390,7 @@ class UjProject:
                 symlink(relpath(join(plugin.path, 'test'), plugin_tests_symlinks), join(plugin_tests_symlinks, plugin.name))
 
     def update(self, *args, force=False):
+        """Updates all plugins in the project."""
         if len(args):
             for arg in args:
                 if arg in self.plugins:
@@ -329,6 +405,7 @@ class UjProject:
                     return
 
     def update_plugin(self, name, sources, force):
+        """Updates a particular plugin in the project."""
         dm = self.get_metadata()
         target_dir = join(self.path, "plugins", name)
 
@@ -348,6 +425,7 @@ class UjProject:
         return False
 
     def run(self):
+        """Run the project."""
         if not self.plugins_updated:
             raise PluginsMissingError("error: Plugin(s) missing. Run 'uj list' to see which plugins are missing and "
                                       "'uj update' to fetch missing plugins.")
@@ -370,7 +448,12 @@ class UjProject:
         main([])
         os.chdir(old_cwd)
 
-    def test(self, verbosity):
+    def test(self, verbosity=None):
+        """
+        Run the unittests in the project.
+        :param int verbosity: Verbosity passed to the instance :class:`unittest.TextTestRunner` use to run the
+           unittests.
+        """
         if not self.plugins_updated:
             raise PluginsMissingError("error: Plugin(s) missing. Run 'uj list' to see which plugins are missing and "
                                       "'uj update' to fetch missing plugins.")
@@ -392,6 +475,8 @@ class UjProject:
 
         # TODO: Run plugin unit tests.
 
+        verbosity = verbosity or self.verbosity
+
         test_runner = unittest.TextTestRunner(verbosity=verbosity)
         test_runner.run(test_suit)
 
@@ -403,18 +488,46 @@ class UjProject:
 
     @staticmethod
     def find_project_root(path):
+        """
+        Finds the root directory of the project, in case path is a subdirectory of the project.
+        This function does not guarantee that the returned directory is a valid uj project. Use
+        :func:`urban_journey.UjProject.check_validity` to check this.
+
+        :returns: Path to the project root. If the root path is not found, ``None`` is returned.
+        :rtype: string
+        """
+
+        # Check whether path is  directory.
         if not isdir(path):
             return None
         prev_path = None
+
+        # Loop until the path doesn't change anymore. This means that we have reached the file system's root directory
+        # and thus path is not inside a valid uj project.
+
         while path != prev_path:
+            # Check whether path contains the ".uj" directory. If it does, this is the project root directory.
+            # However this does not guarantee that this is a valid uj project. Use ``check_validity`` to check this.
             if os.path.isdir(os.path.join(path, ".uj")):
                 return path
+
+            # Not the project root. So step one directory higher and try again.
             prev_path = path
             path = os.path.normpath(os.path.join(path, '..'))
 
     # Loads plugins into project.
     def update_git(self, name, source, force):
-        """Clone plugin from a git repository"""
+        """
+        Updates plugin loaded from a git repository. If it has already been cloned, the repository is pulled.
+        Otherwise it's cloned.
+
+        :param string name: The plugin name.
+        :param string source: Source url with the git repository.
+        :param bool force: If ``True`` the repository will always be cloned.
+        :returns: ``True`` if successful.
+        :rtype: bool
+        """
+        # Check if git is available on this computer.
         if git_available:
             target_dir = join(self.path, "plugins", name)
 
@@ -428,6 +541,14 @@ class UjProject:
             return False
 
     def git_clone(self, name, source):
+        """
+        Clone the plugin from git repository.
+
+        :param name: Plugin name.
+        :param source: Source url.
+        :returns: ``True`` if successful.
+        :rtype: bool
+        """
         if git_available:
             target_dir = join(self.path, "plugins", name)
             temp_dir = join(self.path, "plugins", "temp_" + name)
@@ -456,6 +577,14 @@ class UjProject:
             return False
 
     def git_pull(self, name, source):
+        """
+        Pull the plugin from  git repository.
+
+        :param name: Plugin name.
+        :param source: Source url.
+        :returns: ``True`` if successful.
+        :rtype: bool
+        """
         target_dir = join(self.path, "plugins", name)
         try:
             repo = Repo(target_dir)
@@ -474,7 +603,15 @@ class UjProject:
             return self.git_clone(name, source)
 
     def update_symlink(self, name, source, force):
-        """Create symlink to plugin"""
+        """
+        Load in a plugin by creating a symlink to it.
+
+        :param name: Plugin name.
+        :param source: Source path.
+        :param bool force: Delete any existing symlink and recreate it.
+        :returns: ``True`` if successful.
+        :rtype: bool
+        """
         target_dir = join(self.path, "plugins", name)
 
         # Only update if the plugin doesn't exist or is being forced.
@@ -501,14 +638,37 @@ class UjProject:
         self.print("created symlink '{}' with source '{}'".format(name, target_dir))
         return True
 
+    # TODO: Implement web, zip and copy plugin source handlers.
+
     def update_web(self, name, source, force):
-        """Download and extract zip file from the web"""
+        """
+        Download and extract zip file from the web.
+
+        :param name: Plugin name.
+        :param source: Source url.
+        :param bool force: Delete any existing code and reload it.
+        :returns: ``True`` if successful.
+        """
         raise NotImplementedError()
 
     def update_zip(self, name, source, force):
-        """Extract local zip file."""
+        """
+        Extract local zip file.
+
+        :param name: Plugin name.
+        :param source: Source path.
+        :param bool force: Delete any existing code and re-extract it.
+        :returns: ``True`` if successful.
+        """
         raise NotImplementedError()
 
     def update_copy(self, name, source, force):
-        """Copy plugin from local folder."""
+        """
+        Copy plugin from local folder.
+
+        :param name: Plugin name.
+        :param source: Source path.
+        :param bool force: Delete any existing code and recopy it.
+        :returns: ``True`` if successful.
+        """
         raise NotImplementedError()

@@ -8,7 +8,13 @@ from urban_journey.pubsub.descriptor.static import DescriptorStatic
 from urban_journey import event_loop
 
 
+# TODO: Add a clock that can be created dynamically.
+
+
 class ClockStatic(DescriptorStatic, TriggerBase):
+    """
+    Class used to statically declare a clock using a descriptor.
+    """
     def __init__(self):
         DescriptorStatic.__init__(self, ClockInstance)
 
@@ -38,16 +44,24 @@ class ClockStatic(DescriptorStatic, TriggerBase):
 
 
 class ClockInstance(DescriptorInstance, TriggerBase):
+    """
+    Class used to create clock instances for statically/descriptor defined clocks.
+    """
+
     def __init__(self, parent_object, attribute_name, static_descriptor):
         DescriptorInstance.__init__(self, parent_object, attribute_name, static_descriptor)
         TriggerBase.__init__(self)
 
-        self.loop = event_loop.get()
-        self.period = 1
-        self.running = False
+        self.loop = event_loop.get()  #: main event loop.
+        self.period = 1  #: Clock period.
+        self.running = False  #: True if the clock is running.
 
     @property
     def frequency(self):
+        """
+        Clock frequency.
+        :return:
+        """
         return 1 / self.period
 
     @frequency.setter
@@ -57,20 +71,31 @@ class ClockInstance(DescriptorInstance, TriggerBase):
     def start(self):
         """
         Starts the clock
-        :return: Returns an Asyncio.Future object.
+
+        :return: Returns an Asyncio.Future object that completes after the first tick.
         """
         self.running = True
         return asyncio.run_coroutine_threadsafe(self.timer_callback(), loop=self.loop)
 
     def stop(self):
+        """
+        Stop the clock.
+        """
         self.running = False
 
     async def timer_callback(self):
+        """
+        Co-routine that schedules the clock ticks.
+
+        """
         while self.running:
             await asyncio.sleep(self.period)
             await self.trigger()
 
     async def trigger(self):
+        """
+        Triggers all connected activities.
+        """
         for activity in self._activities:
             try:
                 await activity.trigger([self], {}, self.parent_object)

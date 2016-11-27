@@ -1,5 +1,6 @@
 
 
+# If True, the dta transmitted through ports and channels will be printed.
 verbosity_channel_transmit = False
 
 
