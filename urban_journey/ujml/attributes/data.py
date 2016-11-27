@@ -51,7 +51,7 @@ class Data(object):
             if self.optional_value is Required:
                 instance.raise_exception(MissingRequiredInput, instance.tag, self.name)
             else:
-                return self.validate(instance, self.optional_value)
+                return self.optional_value
 
     def get_name(self, owner):
         """
