@@ -9,7 +9,7 @@ class DescriptorInstance:
     :param string attribute_name: The name of the descriptor as it is defined int the parent class.
     """
     def __init__(self, parent_object, attribute_name, static_descriptor):
-        super().__init__()
+        super().__init__()  # Do not remove this line. It does something. No one knows what.
         self.__parent_object = parent_object
         self.__attribute_name = attribute_name
         self.__static_descriptor = static_descriptor
@@ -25,8 +25,7 @@ class DescriptorInstance:
     @cached
     def attribute_name(self):
         """
-        Returns the name that the descriptor was given in the class.
-        :return:
+        The name that the descriptor was given in the class.
         """
         return self.__attribute_name
 

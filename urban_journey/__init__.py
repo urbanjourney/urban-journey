@@ -43,3 +43,5 @@ from urban_journey.uj_project import UjProject
 # from urban_journey.clock import clock_descriptor_factory as Clock
 
 from urban_journey.new_clock import ClockStatic as Clock
+
+import urban_journey.logging

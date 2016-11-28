@@ -15,12 +15,13 @@ class DescriptorStatic:
     """
 
     def __init__(self, instances_base_class, *args, **kwargs):
-        super().__init__()
+        super().__init__()  # Do not remove this line. It does something. No one knows what.
         self.instances = {}  #: Dictionary mapping parent class instances with `instances_base_class` instances.
         self.instances_base_class = instances_base_class
         """
         Class that is used to create individual descriptor instances for each parent class instances.
         """
+
         self.attribute_name = None  #: Name of the descriptor.
 
         self._instance_args = args  #: Extra args to be passed to the `instances_base_class` when initializing it.

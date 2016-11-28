@@ -1,10 +1,14 @@
 
 from asyncio import wait_for, ensure_future
 
-from urban_journey.debug import print_channel_transmit
+# from urban_journey.debug import print_channel_transmit
 from urban_journey.pubsub.ports.output import OutputPortDescriptorInstance, OutputPort
 from urban_journey.pubsub.ports.input import InputPortDescriptorInstance, InputPort
 from urban_journey import event_loop
+import logging
+
+
+ctlog = logging.getLogger('channels_transmission')
 
 
 class Channel:
@@ -50,7 +54,7 @@ class Channel:
         Flushes the data to all registered input ports.
         :param data: The data to be flushed.
         """
-        print_channel_transmit("Channel.flush({})".format(data))
+        ctlog.debug("Channel.flush({})".format(data))
         for i, port in enumerate(self.input_list):
             # We don't want this function to block until all ports
             # have processed the data or timed-out. So instead we create the futures and

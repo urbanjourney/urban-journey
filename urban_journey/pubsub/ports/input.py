@@ -4,14 +4,17 @@
 from traceback import print_exception
 import sys
 
-from urban_journey.debug import print_channel_transmit
+# from urban_journey.debug import print_channel_transmit
 from urban_journey.pubsub.ports.base import PortBase, PortDescriptorBase
 from urban_journey.pubsub.trigger import TriggerBase
 from urban_journey.pubsub.descriptor.instance import DescriptorInstance
 from urban_journey.pubsub.descriptor.static import DescriptorStatic
-
+import logging
 
 from asyncio import wait_for, wait, shield
+
+
+ctlog = logging.getLogger('channels_transmission')
 
 
 class InputPort(PortBase, TriggerBase):
@@ -46,7 +49,7 @@ class InputPort(PortBase, TriggerBase):
         :param args:  Random stuff
         :param kwargs: More random stuff
         """
-        print_channel_transmit("InputPort.trigger({})".format(data))
+        ctlog.debug("InputPort.trigger({})".format(data))
         # Only transmit the data if there are activities connected to this port.
         if len(self._activities):
             futures = [None] * len(self._activities)

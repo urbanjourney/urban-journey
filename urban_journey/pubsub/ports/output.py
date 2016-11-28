@@ -1,9 +1,13 @@
 import asyncio
 
 from urban_journey.event_loop import get as get_event_loop
-from urban_journey.debug import print_channel_transmit
+# from urban_journey.debug import print_channel_transmit
 from urban_journey.pubsub.ports.base import PortBase, PortDescriptorBase
 from urban_journey.pubsub.descriptor.instance import DescriptorInstance
+import logging
+
+
+ctlog = logging.getLogger('channels_transmission')
 
 
 def Output(channel_name=None):
@@ -31,20 +35,20 @@ class OutputPort(PortBase):
     async def flush(self, data):
         """
         Flushed out the data to the channel.
+
         :param data: Data to flush.
-        :return:
         """
-        print_channel_transmit("OutputPort.flush({})".format(data))
+        ctlog.debug("OutputPort.flush({})".format(data))
         if self.channel is not None:
             await self.channel.flush(data)
 
     def flush_threadsafe(self, data):
         """
         Thread safe version of flush.
+
         :param data: Data to flush.
-        :return:
         """
-        print_channel_transmit("OutputPort.flush_threadsafe({})".format(data))
+        ctlog.debug("OutputPort.flush_threadsafe({})".format(data))
         if self.channel is not None:
             loop = get_event_loop()
             asyncio.run_coroutine_threadsafe(self.channel.flush(data), loop)
