@@ -10,11 +10,11 @@ from urban_journey.ujml.plugin_register import node_register, update_plugins, pl
 from urban_journey.ujml.node_base import NodeBase
 from urban_journey.ujml.root_ujml_node import UjmlNode
 from urban_journey.ujml.nodes.data import data
-from ..loaders import from_string, from_file
+from urban_journey.ujml.loaders import from_string, from_file
 
 from .test_plugins import __path__ as test_ext_path
 from .test_plugins import stoffs
-from ..nodes import path as default_ext_path
+from urban_journey.ujml.nodes import path as default_ext_path
 
 test_ext_path = test_ext_path[0]
 
