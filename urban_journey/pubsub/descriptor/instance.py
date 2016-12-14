@@ -18,6 +18,7 @@ class DescriptorInstance:
     def parent_object(self):
         """
         Returns the parent object of this descriptor.
+
         :return: The parent object.
         """
         return self.__parent_object

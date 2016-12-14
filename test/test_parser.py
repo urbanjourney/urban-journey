@@ -1,7 +1,6 @@
 import unittest
 import os
 import inspect
-import sys
 
 import numpy as np
 
@@ -139,9 +138,11 @@ class TestParser(unittest.TestCase):
 
         correct = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
 
-        assert c_stoff.eval_input == 42
-        assert (correct == c_stoff.csv_input).all()
-        assert (correct == c_stoff.ref_input).all()
+        self.assertTrue(c_stoff.eval_input == 42)
+        self.assertTrue((correct == c_stoff.csv_input).all())
+        self.assertTrue((correct == c_stoff.ref_input).all())
+
+        # print(dtsml_elem.node_dict_by_id)
 
         self.assertTrue((correct == c_stoff.optional_input).all())
         try:

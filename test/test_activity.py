@@ -31,7 +31,7 @@ class TestActivity(unittest.TestCase):
             s.release()
 
         asyncio.run_coroutine_threadsafe(foo.trigger(), self.loop)
-        assert s.acquire(timeout=0.1)
+        self.assertTrue(s.acquire(timeout=0.1))
 
         self.assertEqual(bas[0], "Triggered")
 
@@ -89,11 +89,12 @@ class TestActivity(unittest.TestCase):
             s.release()
 
         asyncio.run_coroutine_threadsafe(foo.trigger(), self.loop)
-        assert s.acquire(timeout=1)
+        self.assertTrue(s.acquire(timeout=1))
 
         self.assertEqual(bas[0], "bar1")
         self.assertEqual(bas[1], "bar2")
 
+    @unittest.skipIf(not __debug__, "Because it will fail at the assert statement if you run it in optimized mode")
     def test_output_handling(self):
         class Foo(ModuleBase):
             out = Output(channel_name="foo")
@@ -118,12 +119,12 @@ class TestActivity(unittest.TestCase):
 
             @activity(inp)
             async def qwerty(self, inp):
-                assert inp == "hello, is it me you're looking for."
+                assert (inp == "hello, is it me you're looking for.")
                 self.s.release()
 
         cr = ChannelRegister()
         s = Semaphore(0)
         foo = Foo(cr, s)
         foo.start()
-        assert s.acquire(timeout=0.1)
+        self.assertTrue(s.acquire(timeout=0.1))
         foo.stop()

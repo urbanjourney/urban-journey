@@ -17,6 +17,7 @@ class ClockStatic(DescriptorStatic, TriggerBase):
     """
     def __init__(self):
         DescriptorStatic.__init__(self, ClockInstance)
+        TriggerBase.__init__(self)
 
     def add_obj(self, obj):
         t = self.instances_base_class(obj,
@@ -49,8 +50,8 @@ class ClockInstance(DescriptorInstance, TriggerBase):
     """
 
     def __init__(self, parent_object, attribute_name, static_descriptor):
-        DescriptorInstance.__init__(self, parent_object, attribute_name, static_descriptor)
         TriggerBase.__init__(self)
+        DescriptorInstance.__init__(self, parent_object, attribute_name, static_descriptor)
 
         self.loop = event_loop.get()  #: main event loop.
         self.period = 1  #: Clock period.

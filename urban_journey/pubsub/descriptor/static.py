@@ -15,7 +15,7 @@ class DescriptorStatic:
     """
 
     def __init__(self, instances_base_class, *args, **kwargs):
-        super().__init__()  # Do not remove this line. It does something. No one knows what.
+        # super().__init__()  # Do not remove this line. It does something. No one knows what.
         self.instances = {}  #: Dictionary mapping parent class instances with `instances_base_class` instances.
         self.instances_base_class = instances_base_class
         """

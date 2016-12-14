@@ -8,6 +8,8 @@ from urban_journey.pubsub.trigger import DescriptorClassTrigger
 from urban_journey.pubsub.module_base import ModuleBase
 
 
+# This is the old clock. I don't care about this clock.
+
 class TestClock(unittest.TestCase):
     def test_clock(self):
         bas = [0]
@@ -24,6 +26,6 @@ class TestClock(unittest.TestCase):
 
         t0 = time()
         clk.start()
-        assert s.acquire(timeout=0.1)
+        self.assertTrue(s.acquire(timeout=0.1))
         self.assertGreaterEqual(time() - t0, 0.05)
         self.assertEqual(bas[0], 5)

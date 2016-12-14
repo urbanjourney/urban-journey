@@ -22,6 +22,15 @@ class RootMustBeUJMLError(BaseUJMLError):
         return "The root element must a 'ujml' element."
 
 
+class UjValueError(BaseUJMLError, ValueError):
+    '''Raised when the root element is not a ujml element.'''
+    def __init__(self, filename, lineno, msg):
+        super().__init__(filename, lineno)
+        self.msg = msg
+
+    def _error_message(self):
+        return self.msg
+
 class ReadOnlyAttributeError(BaseUJMLError):
     '''Raised when attempting to modify a readonly ujml attribute.'''
     def __init__(self, filename, lineno, attr_name):

@@ -25,7 +25,7 @@ class OutputPort(PortBase):
     This class can be used to create a new output port dynamically after
     the parent module has initialized. This object object is callable.
 
-    :param urban_journey.ModuleBase parent_object: Paren module that will own this port.
+    :param urban_journey.ChannelRegister channel_register: Paren module that will own this port.
     :param string attribute_name: The name of the port.
     :param string channel_name: The default channel name. If None `attribute_name` is used.
     """

@@ -70,6 +70,8 @@ class UjmlNode(NodeBase):
 
         self.__exc_info = None
 
+        self.connections = {}
+
     def pyqt_enable(self):
         """Enable the use of PyQt4."""
         if self.pyqt_app is None:

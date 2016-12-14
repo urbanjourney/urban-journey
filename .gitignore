@@ -1,7 +1,7 @@
 
 # Created by https://www.gitignore.io/api/pycharm,python
 
-
+*.log.*
 # For generated data
 *.i.*
 

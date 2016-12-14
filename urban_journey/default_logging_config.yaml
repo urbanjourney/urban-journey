@@ -13,7 +13,7 @@ handlers:
     formatter: brief
     level   : DEBUG
     stream  : ext://sys.stdout
-  root_log:
+  root_file_log:
     class : logging.handlers.RotatingFileHandler
     formatter: default
     filename: log_root.log
@@ -22,7 +22,7 @@ handlers:
 
 root:
   level: WARNING
-  handlers: [root_log]
+  handlers: []
 
 loggers:
 
@@ -31,3 +31,19 @@ loggers:
     handlers: [console]
     level: WARNING
 
+  # This logger is used by the network communication.
+  networking:
+    handlers: [console]
+    level: WARNING
+
+  networking.handshake:
+    handlers: []
+    level: WARNING
+
+  networking.ping_pong:
+    handlers: []
+    level: DEBUG
+
+  networking.data_layer:
+    handlers: []
+    level: WARNING
