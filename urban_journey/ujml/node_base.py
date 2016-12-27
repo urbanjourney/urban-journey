@@ -294,3 +294,13 @@ class NodeBase:
 
         raise NotImplemented
         # return self.element.xpath(_path, namespaces, extensions, smart_strings, **_variables).node
+
+    def __hash__(self):
+        return id(self)
+
+    def __eq__(self, other):
+        return id(self) == id(other)
+
+    def __ne__(self, other):
+        return id(self) != id(other)
+
