@@ -2,15 +2,26 @@
 Creates and destroys channels as needed and keeps a record of all currently living channels.
 """
 from urban_journey.pubsub.channels.channel import Channel
+from urban_journey.pubsub.networking.listener import Listener
 
 
 class ChannelRegister:
     """
     The channel register keeps a list of all existing channels and creates
     a channel when necessary.
+
+    It also keeps a list of all remote connections and listeners if existing.
     """
     def __init__(self):
         self.channels = {}  #: Dictionary holding the channels.
+        self.connections = {}
+        self.listeners = {}
+
+    def new_listener(self, host, port):
+        listener_name = "{}:{}".format(host, port)
+        if listener_name not in self.listeners:
+            listener = Listener(host, port, self.connections)
+            self.listeners[listener_name] = listener
 
     def get_channel(self, channel_name):
         """

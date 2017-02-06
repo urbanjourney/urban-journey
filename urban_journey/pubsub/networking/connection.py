@@ -26,18 +26,19 @@ plog = logging.getLogger("networking.ping_pong")
 # transmitted.
 salt = b"urban_journey"
 
-# Use this regex to comment out all debug logging. Replace logger by logger name
+# Use this regex to comment out all debug logging. Replace logger_name by logger name
 # (?:(\s+)|(?:#\s*))(logger_name\.debug.+)
 # $1# $2
 
 # Use this regex to uncomment them
-# (\s*)(?:#\s*)(hlog\.debug.+)
+# (\s*)(?:#\s*)(logger_name\.debug.+)
 # $1$2
 
 
 class Connection:
     def __init__(self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter, loop=None):
         self.loop = loop or event_loop.get()  #: Event loop onto which the host is running.
+        self.close_event
         self.reader = reader  #: :class:`asyncio.StreamReader` object of the connection.
         self.writer = writer  #: :class:`asyncio.StreamReader` object of the connection.
         self.decoder = Decoder(self.close)  #: Decoder object.
@@ -92,7 +93,6 @@ class Connection:
         reader, writer = await asyncio.open_connection(host, port)
         return cls(reader, writer)
 
-    @log_exc(dlog)
     async def data_reader(self):
         """
         Co-routine that is constantly listening for data coming in through the connection. The data is then passed to
@@ -110,7 +110,6 @@ class Connection:
         dlog.debug(self.log_prefix + "Closed")
         self.__closed_condition.notify_all()
 
-    @log_exc(dlog)
     async def package_handler(self):
         """
         Co-routine that handles the packages coming out of the decoder.
@@ -152,13 +151,14 @@ class Connection:
         self.writer.write(data)
         await self.writer.drain()
 
-    def send_threadsafe(self, obj):
+    def transmit_threadsafe(self, command_id, *args):
         """
         A thread safe version of send.
 
-        :param obj: Object to send
+        :param command_id: Command id
+        :param *args: Command arguments
         """
-        asyncio.run_coroutine_threadsafe(self.transmit(obj), self.loop)
+        asyncio.run_coroutine_threadsafe(self.transmit(command_id, *args), self.loop)
 
     @cached
     def name(self):
@@ -245,8 +245,7 @@ class Connection:
             self.close()
             # hlog.debug(self.log_prefix + "Handshake failed         ")
 
-
-    # ==================================================================================================================
+    # Identify =========================================================================================================
     @network_command(2)
     async def identify(self):
         """
@@ -299,7 +298,6 @@ class Connection:
         await self.pong()
 
     @network_command(5)
-    @print_exc
     async def pong(self):
         """
         Sends a pong back to the remote that requested the ping.
@@ -311,3 +309,5 @@ class Connection:
     @pong.handler
     async def pong(self):
         self.ping_semaphore.release()
+
+

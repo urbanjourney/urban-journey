@@ -42,7 +42,7 @@ loggers:
 
   networking.ping_pong:
     handlers: []
-    level: DEBUG
+    level: WARNING
 
   networking.data_layer:
     handlers: []

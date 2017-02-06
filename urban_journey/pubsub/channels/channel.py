@@ -1,4 +1,3 @@
-
 from asyncio import wait_for, ensure_future
 
 # from urban_journey.debug import print_channel_transmit
@@ -28,8 +27,9 @@ class Channel:
     def add_port(self, port):
         """
         Subscribe either an input or output port the the channel.
-        :param port: The port to be subsribed.
-        :type port: urban_journey.PortBase
+
+        :param port: The port to be subscribed.
+        :type port: urban_journey.PortBase.
         """
         # Check the type of the port and add it to the appropriate list.
         if isinstance(port, (OutputPortDescriptorInstance, OutputPort)):
@@ -52,6 +52,7 @@ class Channel:
     async def flush(self, data):
         """
         Flushes the data to all registered input ports.
+
         :param data: The data to be flushed.
         """
         ctlog.debug("Channel.flush({})".format(data))
