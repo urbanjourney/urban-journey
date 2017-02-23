@@ -49,7 +49,7 @@ class InputPort(PortBase, TriggerBase):
         :param args:  Random stuff
         :param kwargs: More random stuff
         """
-        ctlog.debug("InputPort.trigger({})".format(data))
+        # ctlog.debug("InputPort.trigger({})".format(data))
         # Only transmit the data if there are activities connected to this port.
         if len(self._activities):
             futures = [None] * len(self._activities)
@@ -61,6 +61,7 @@ class InputPort(PortBase, TriggerBase):
                 #       exceptions individually for each future.
                 await wait_for(shield(wait(futures)), self.time_out)
             except Exception as e:
+                print(self.channel_name, self.time_out)
                 self.parent_object.root.handle_exception(sys.exc_info())
 
 
@@ -85,8 +86,8 @@ class InputPortStatic(PortDescriptorBase, TriggerBase):
 
     :param string channel_name: Default channel to connect to. If None, the descriptor/attribute name is used.
     """
-    def __init__(self, channel_name=None):
-        DescriptorStatic.__init__(self, InputPortDescriptorInstance)
+    def __init__(self, channel_name=None, *args, **kwargs):
+        DescriptorStatic.__init__(self, InputPortDescriptorInstance, *args, **kwargs)
         TriggerBase.__init__(self)
         self.channel_name = channel_name
 

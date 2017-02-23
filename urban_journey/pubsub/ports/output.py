@@ -32,13 +32,13 @@ class OutputPort(PortBase):
     def __init__(self, channel_register, attribute_name, channel_name=None):
         super().__init__(channel_register, attribute_name, channel_name)
 
-    async def flush(self, data):
+    async def flush(self, data=None):
         """
         Flushed out the data to the channel.
 
         :param data: Data to flush.
         """
-        ctlog.debug("OutputPort.flush({})".format(data))
+        # ctlog.debug("OutputPort.flush({})".format(data))
         if self.channel is not None:
             await self.channel.flush(data)
 
@@ -48,7 +48,7 @@ class OutputPort(PortBase):
 
         :param data: Data to flush.
         """
-        ctlog.debug("OutputPort.flush_threadsafe({})".format(data))
+        # ctlog.debug("OutputPort.flush_threadsafe({})".format(data))
         if self.channel is not None:
             loop = get_event_loop()
             asyncio.run_coroutine_threadsafe(self.channel.flush(data), loop)

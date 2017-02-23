@@ -25,5 +25,3 @@ class ModuleNodeBase(NodeBase, ModuleBase):
             if channel_name is None:
                 continue
             self.channel_names[port_name] = channel_name
-
-

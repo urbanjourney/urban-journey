@@ -15,7 +15,7 @@ class test(ClBase):
 
     @staticmethod
     def usage():
-        return "usage: uj test"
+        return "usage: uj test [-v]\n    -v  Verbose"
 
     @staticmethod
     def main(args):

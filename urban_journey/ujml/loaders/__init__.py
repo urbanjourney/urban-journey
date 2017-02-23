@@ -6,7 +6,7 @@ from ..ujml__lxml_element import UjmlElement
 
 
 # Public
-def from_string(ujml_string, file_name="<ujml_input>", globals=None):
+def from_string(ujml_string, file_name="<ujml_input>", globals=None) -> UjmlNode:
     """
     Used lo load in a ujml code from a string.
 

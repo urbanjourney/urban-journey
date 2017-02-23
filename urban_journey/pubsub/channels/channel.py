@@ -17,7 +17,7 @@ class Channel:
     :param string name: Name of the channel.
     :param float timeout: Time out for input channels.
     """
-    def __init__(self, name, timeout=5):
+    def __init__(self, name, timeout=6):
         self.name = name  #: Channel name.
         self.output_list = []  #: List of output ports.
         self.input_list = []  #: List of input ports.
@@ -55,9 +55,9 @@ class Channel:
 
         :param data: The data to be flushed.
         """
-        ctlog.debug("Channel.flush({})".format(data))
+        # ctlog.debug("Channel.flush({})".format(data))
         for i, port in enumerate(self.input_list):
             # We don't want this function to block until all ports
             # have processed the data or timed-out. So instead we create the futures and
             # ensure it on the event loop.
-            ensure_future(wait_for(port.flush(data), self.timeout), loop=self.loop)
+            ensure_future(port.flush(data), loop=self.loop)

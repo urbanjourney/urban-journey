@@ -104,6 +104,9 @@ class List(AttributeBaseClass):
             else:
                 return instance.eval("[{}]".format(val_str))
 
+    def set(self, value):
+        self.optional_value = value
+
 
 class FilePath(AttributeBaseClass):
     """

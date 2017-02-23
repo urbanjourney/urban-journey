@@ -20,17 +20,20 @@ class NodeBase:
     """
     id = String(optional_value=None)
 
-    def __init__(self, element: etree.ElementBase, root):
+    def __init__(self, element: etree.ElementBase, root, register=True):
         element.node = self
         self.element = element  # :class:`etree.ElementBase` object representing this node in the xlm code.
         self.parents = []  #: List of paret objects.
         self.__children = None
         self.__file_name = None
         self.__root = root
-        self.root.register_node(self)
+        self.__register = register
+        if register:
+            self.root.register_node(self)
 
     def __del__(self):
-        self.root.deregister_node(self)
+        if self.__register:
+            self.root.deregister_node(self)
         map(self.remove_parent, self.parents)
         if self.__children is not None:
             map(self.remove_child, self.__children)
@@ -223,6 +226,10 @@ class NodeBase:
 
     def __len__(self):
         return len(self.children)
+
+    # TODO: figure this out.
+    # def __next__(self):
+    #     return next(self.children)
 
     def create_child(self, element: etree.ElementBase):
         """

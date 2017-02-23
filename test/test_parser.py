@@ -218,6 +218,7 @@ class TestParser(unittest.TestCase):
         except IdNotFoundError:
             assert True
 
+    @unittest.skip
     def test_script_node(self):
         ujml_code = '<?xml version="1.0"?><ujml version="{}">'.format(uj_version) + '''
                             <script>

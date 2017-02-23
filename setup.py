@@ -30,7 +30,8 @@ setup(
                       'lxml',
                       'gitpython',
                       'pip',
-                      'PyYAML'],
+                      'PyYAML',
+                      'GitPython'],
     packages=find_packages('.', exclude=["test"]),
     entry_points={
           'console_scripts': [

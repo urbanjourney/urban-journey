@@ -55,7 +55,7 @@ class Listener:
         :return: Connection object.
         """
         connection = Connection(reader, writer)
-        nlog.debug(self.log_prefix + "New connection '{}'".format(connection.name))
+        # nlog.debug(self.log_prefix + "New connection '{}'".format(connection.name))
 
         self.connections(connection)
 
