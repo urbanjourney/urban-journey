@@ -2,6 +2,7 @@ import os
 import sys
 from threading import Semaphore
 from traceback import print_exception
+from time import perf_counter
 
 from lxml import etree
 import numpy as np
@@ -18,6 +19,8 @@ from urban_journey.pubsub.module_base import ModuleBase
 from urban_journey.pubsub.channels.channel_register import ChannelRegister
 from urban_journey.pubsub.ports.output import Output
 from urban_journey.event_loop import get as get_event_loop
+
+from sim_common.synchronization import CheckInSemaphore
 
 
 class UjmlNode(NodeBase):
@@ -72,6 +75,8 @@ class UjmlNode(NodeBase):
 
         self.connections = {}
 
+        self.check_list = CheckInSemaphore()
+
     def pyqt_enable(self):
         """Enable the use of PyQt4."""
         if self.pyqt_app is None:
@@ -118,10 +123,16 @@ class UjmlNode(NodeBase):
 
         # If PyQt is active start it's event loop. Otherwise just wait for the semaphore
         # timed_out_n is True if there was a timeout
+        start_time = perf_counter()
         if self.pyqt:
             timed_out_n = self.pyqt_start(timeout=timeout)
         elif blocking:
             timed_out_n = self.__semaphore.acquire(timeout=timeout)
+        else:
+            timed_out_n = True
+
+        if timed_out_n:
+            self.check_list.wait(timeout - (perf_counter() - start_time))
 
         # Execution was stopped.
         # Check whether it was stopped due to some exception.
