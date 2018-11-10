@@ -1,7 +1,6 @@
 """
 WARNING: Before continuing make sure you know what a python descriptor is.
 """
-import inspect
 
 
 class DescriptorStatic:
@@ -14,7 +13,7 @@ class DescriptorStatic:
     :param **kwargs Extra kwargs to be passed to the `instances_base_class` when initializing it.
     """
 
-    def __init__(self, instances_base_class, *args, **kwargs):
+    def __init__(self, instances_base_class, *args, name=None, **kwargs):
         # super().__init__()  # Do not remove this line. It does something. No one knows what.
         self.instances = {}  #: Dictionary mapping parent class instances with `instances_base_class` instances.
         self.instances_base_class = instances_base_class
@@ -22,7 +21,7 @@ class DescriptorStatic:
         Class that is used to create individual descriptor instances for each parent class instances.
         """
 
-        self.attribute_name = None  #: Name of the descriptor.
+        self.attribute_name = name  #: Name of the descriptor.
 
         self._instance_args = args  #: Extra args to be passed to the `instances_base_class` when initializing it.
         self._instance_kwargs = kwargs  #: Extra kwargs to be passed to the `instances_base_class` when initializing it.
@@ -32,10 +31,6 @@ class DescriptorStatic:
         if obj is None:
             return self
 
-        # If the attribute name is still unknown find it.
-        if self.attribute_name is None:
-            self.find_attribute_name(klass)
-
         # If this is the first call from this object register it.
         if id(obj) not in self.instances:
             self.add_obj(obj)
@@ -43,21 +38,8 @@ class DescriptorStatic:
         # Return the instance of DescriptorInstance corresponding to obj.
         return self.instances[id(obj)]
 
-    def find_attribute_name(self, klass):
-        """
-        It finds the name of the descriptor as it is defined in the paret class.
-
-        :param type klass: Parent class
-        """
-        # Loop through each member of the class and get it's static attribute.
-        # This is necessary since descriptor are meant to override the default
-        # behaviour of getattr(..)
-        # If this instance is found get it's name.
-
-        for member_name in dir(klass):
-            member = inspect.getattr_static(klass, member_name)
-            if member is self:
-                self.attribute_name = member_name
+    def __set_name__(self, owner, name):
+        self.attribute_name = self.attribute_name or name
 
     def add_obj(self, obj):
         """

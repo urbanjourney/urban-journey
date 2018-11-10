@@ -8,8 +8,6 @@ from traceback import print_exception
 from .trigger import TriggerBase
 
 
-# Ahhhh. I don't want to document this. Just look at it. Who would even want to go through this code.  -- Aaron
-
 class ActivityMode(Enum):
     """
     Enumerator for the activity mode.

@@ -22,6 +22,7 @@ def from_string(ujml_string, file_name="<ujml_input>", globals=None) -> UjmlNode
     lookup = etree.ElementDefaultClassLookup(element=UjmlElement)
     parser.set_element_class_lookup(lookup)
     root_elem = etree.fromstring(ujml_string, parser)
+
     ujml_node = UjmlNode(root_elem, file_name, globals or {})
     return ujml_node
 

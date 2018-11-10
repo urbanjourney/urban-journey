@@ -84,6 +84,7 @@ class TestNetworking(unittest.TestCase):
         if exc_info is not None:
             raise exc_info[1].with_traceback(exc_info[2])
 
+    @unittest.skip
     def test_ping(self):
         async def run(q):
             try:

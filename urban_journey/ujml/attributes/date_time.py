@@ -1,7 +1,7 @@
 from urban_journey.ujml.attributes.base import AttributeBaseClass
 from urban_journey.ujml.unique import Required
 
-from datetime import datetime
+from dateutil.parser import parse as datetime_parse
 
 
 class DateTime(AttributeBaseClass):
@@ -21,4 +21,4 @@ class DateTime(AttributeBaseClass):
         if val_str is None:
             return self.get_optional(instance)
         else:
-            return datetime.strptime(val_str, "%d/%m/%Y %H:%M")
+            return datetime_parse(val_str)

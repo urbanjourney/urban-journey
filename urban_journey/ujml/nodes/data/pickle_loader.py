@@ -1,7 +1,7 @@
 import sys
 import pickle as pck
 
-from urban_journey.common.cached import cached
+from sim_common.cached import cached
 from urban_journey.ujml.attributes import String
 from urban_journey.ujml.data_node_base import DataNodeBase
 from urban_journey.ujml.exceptions import DataLoadError, RequiredAttributeError

@@ -1,12 +1,12 @@
 from urban_journey.ujml.unique import Required
 from urban_journey.ujml.exceptions import UJMLTypeError, InvalidShapeError, MissingRequiredInput
-from collections import  defaultdict
+from collections import defaultdict
 
 
 import numpy as np
 
 
-class Data(object):
+class Data:
     """Used to declare a data input child nodes. The child nodes will be of type
        :class:`urban_journey.ujml.nodes.data.data.data` and will thus behave the same as a :ref:`data_node_section` node.
 
@@ -16,11 +16,11 @@ class Data(object):
     """
 
     # TODO: Add name as a parameter.
-    def __init__(self, type=None, optional_value=Required, shape=None):
+    def __init__(self, type=None, optional_value=Required, shape=None, name=None):
         self.type = type
         self.optional_value = optional_value
         self.shape = shape
-        self.name = None
+        self.name = name
         self.child_cache = defaultdict(lambda: None)
 
     def __get__(self, instance, owner):
@@ -34,10 +34,6 @@ class Data(object):
         # If the descriptor object is being requested from the class, return the descriptor itself.
         if instance is None:
             return self
-
-        # If the name of the descriptor is unknown find it.
-        if self.name is None:
-            self.get_name(owner)
 
         # If the child element that this descriptor connects to is still unknown, find it.
         if self.child_cache[instance] is None:
@@ -57,17 +53,8 @@ class Data(object):
             else:
                 return self.optional_value
 
-    def get_name(self, owner):
-        """
-        Loops through all members of the owner class to find this descriptors name.
-
-        :param owner: Owner class
-        :return: Name of this descriptor inside the owner class
-        """
-        for key, value in owner.__dict__.items():
-            if value is self:
-                self.name = key
-        assert self.name
+    def __set_name__(self, owner, name):
+        self.name = self.name or name
 
     def validate(self, instance, data):
         """

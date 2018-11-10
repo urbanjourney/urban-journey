@@ -22,6 +22,7 @@ class PortBase:
         """
         Subscribe the port to a channel. If channel_name is ``None`` it will be subsribed to the default channel. If
         no default channel was given that the attribute_name will be used as the default channel name.
+
         :param channel_name:
         :return:
         """

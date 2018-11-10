@@ -55,34 +55,22 @@ class AttributeBaseClass(metaclass=ABCMeta):
         else:
             instance.raise_exception(RequiredAttributeError, instance.tag, self.attrib_name)
 
-    def get_attribute_name(self, instance):
-        """
-        Finds the name of the attribute.
-
-        :param instance:  Node instance the attribute name is being looked for.
-        :return:
-        """
-        for attr in dir(instance):
-            if inspect.getattr_static(instance, attr) is self:
-                self.attrib_name = attr
-
     def __get__(self, instance, owner):
         if instance is None:
             return self
 
         if self.value[instance] is Empty or self.uncached:
-            if self.attrib_name is None:
-                self.get_attribute_name(instance)
             self.value[instance] = self.get(instance, owner)
             return self.value[instance]
         else:
             return self.value[instance]
 
     def __set__(self, instance, value):
-        if self.attrib_name is None:
-            self.get_attribute_name(instance)
         if self.read_only:
             instance.raise_exception(ReadOnlyAttributeError, self.attrib_name)
         else:
             self.set(instance, value)
             self.value[instance] = value
+
+    def __set_name__(self, owner, name):
+        self.attrib_name = self.attrib_name or name

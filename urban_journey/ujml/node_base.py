@@ -270,6 +270,7 @@ class NodeBase:
                     raise UnknownElementError(self.file_name, element.sourceline, element.tag)
             child = klass(element, self.root)
 
+        # Check if the super() was called in the __init__ of the node.
         if not hasattr(child, "element"):
             self.raise_exception(MissingSuperInitError, self.tag, element.tag)
 
